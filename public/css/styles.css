@@ -1,78 +1,116 @@
-.lg-res{padding-left: 50px;}
-body.bg-img {
-    background: url('storage/images/background.png') bottom right no-repeat;
-    background-size: 80%;
+body{
+    background: radial-gradient(circle at top right, #123a63, #050b18);
+    min-height: 100vh;
+    font-family: "Reddit Sans", sans-serif;
+    line-height: 150%;
 }
-
-/* Whatsapp Button */
-.whatsapp-btn-container {
-    position: fixed;
-    right: 50px;
-    opacity: 0;
-    bottom: -50px;
-    padding: 24px;
-    animation: fade-up 1000ms forwards;
-    animation-delay: 1000ms;
-    background-color: #25D366;
-    width: 170px;
-    height: 53px;
-    border-radius: 5000px;
+.auth-wrapper{
+    min-height: 100vh;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
 }
-@keyframes fade-up {
-    100% {
-        bottom: 24px;
-        opacity: 1;
-    }
+.auth-wrapper .container{max-width: 420px;}
+.icons img{
+    width: 40px;
+    margin: 0 6px;
+}
+.btn-primary{
+    background: #3b82f6;
+    border: none;
 }
 
-.whatsapp-btn-container .whatsapp-btn {
-    font-size: 32px;
-    color: #ECE5DD;
-    display: inline-block;
-    transition: all 400ms;
+/* Register Blade */
+.register-title{
+    font-size: 20px;
+    font-weight: 600;
 }
-.whatsapp-btn-container .contact_us {
-    top: 0;
-    left: 30px;
-    font-family: "Roboto", sans-serif;
-    font-weight: bold;
+.start-text{
+    font-size: 24px;
+    font-weight: 600;
+}
+.insight-text{
+    color:#B3B9C4;
     font-size: 16px;
-    color: #ECE5DD;
-    opacity: 1;
-    transition: all 400ms;
-    text-decoration: none;
+    font-weight: 400;
 }
-.whatsapp-btn-container .whatsapp-btn:hover + span {
-    transform: rotateZ(0deg) translateX(0px);
-    opacity: 1;
+.btn-regist{
+    background:#3898FF;
+    color:#FFFFFF;
+    border-radius: 4px;
+    min-height: 24px;
+    padding: 12px 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+.atau-text{
+    color:#7A8699;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 100%;
+    letter-spacing: 2%;
+}
+.btn-login{
+    border-color:#3898FF;
+    color:#3898FF;
+    border-radius: 4px;
+    min-height: 24px;
+    padding: 12px 8px;
+    font-size: 14px;
+    font-weight: 500;
 }
 
-@media only screen and (max-width: 679px ) {
-    .lg-res{padding-left: 10px;}
-    .whatsapp-btn-container{
-        display: flex;
-        animation: fade-up 1000ms forwards;
-        animation-delay: 1000ms;
-        background-color: #25D366;
-        border-radius: 25px;
-        align-items: center;
-        justify-content: center;
-        width: 50px;
-        height: 50px;
-    }
-    .whatsapp-btn-container .whatsapp-btn {
-        font-size: 32px;
-        color: #ECE5DD;
-        transition: all 400ms;
-    }
-    .contact_us{display: none;}
-    @keyframes fade-up {
-        100% {
-            bottom: 24px;
-            opacity: 1;
-        }
-    }
+/* Referral Blade */
+.referral-text{
+    color:#3898FF;
+    font-size: 14px;
+    font-weight: 500;
+}
+.text-form-global{
+    color:#FDFDFD;
+    font-size: 14px;
+    font-weight: 600;
+}
+.form-global{
+    background: transparent;
+    border:1px solid#3898FF;
+    color:#3898FF;
+    border-radius: 4px;
+    min-height: 45px;
+    padding: 12px;
+    gap: 8px;
+    color:#FFFFFF;
+    font-size: 14px;
+    font-weight: 400;
+}
+.lewati-text{
+    min-height: 24px;
+    padding: 12px 8px;
+    color:#3898FF;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Customer Type */
+.customer-type-card{
+    border: 1px solid #3898FF;
+    border-radius: 16px;
+    min-height: 100px;
+    padding: 8px 12px;
+    margin-bottom: 18px;
+}
+.rek-saham-type{
+    color:#FDFDFD;
+    font-size: 16px;
+    font-weight: 600;
+}
+.rek-saham-txt{
+    color:#FDFDFD;
+    font-size: 14px;
+    font-weight: 600;
+}
+.rek-saham-desc{
+    color:#B3B9C4;
+    font-size: 14px;
+    font-weight: 400;
 }
