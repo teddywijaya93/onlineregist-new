@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Kode Referral')
+@section('title','Profits Anywhere')
 @section('content')
 
 <section class="auth-wrapper">

@@ -83,6 +83,10 @@ body{
     font-size: 14px;
     font-weight: 400;
 }
+.form-global::placeholder{
+    color:#7A8699;
+    opacity: 1;
+}
 .lewati-text{
     min-height: 24px;
     padding: 12px 8px;
