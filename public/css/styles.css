@@ -5,7 +5,7 @@ body{
     line-height: 150%;
 }
 .auth-wrapper{
-    min-height: 100vh;
+    /* min-height: 100vh; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -61,6 +61,7 @@ body{
 }
 
 /* Referral Blade */
+.btn-back{font-size: 20px;}
 .referral-text{
     color:#3898FF;
     font-size: 14px;
