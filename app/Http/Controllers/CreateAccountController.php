@@ -96,10 +96,7 @@ class CreateAccountController extends Controller
             $apiResponse = Http::withHeaders([
                 'Accept'       => 'application/json',
                 'Content-Type' => 'application/json',
-            ])->post(
-                'https://dev.profits.co.id:8283/registration/createAccountNewRegistration',
-                $payload
-            );
+            ])->post('https://dev.profits.co.id:8283/registration/createAccountNewRegistration',$payload);
 
             if (!$apiResponse->successful()) {
                 Log::error('API ERROR', [
