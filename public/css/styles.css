@@ -10,7 +10,7 @@ body{
     align-items: center;
     justify-content: center;
 }
-.auth-wrapper .container{max-width: 420px;}
+.auth-wrapper .container{max-width: 520px;}
 .icons img{
     width: 40px;
     margin: 0 6px;
@@ -119,9 +119,7 @@ body{
     font-size: 14px;
     font-weight: 400;
 }
-.username-rule {
-    margin-top: 10px;
-}
+.username-rule {margin-top: 10px;}
 .rule-item {
     display: flex;
     align-items: center;
@@ -140,11 +138,38 @@ body{
     font-size: 11px;
     color: transparent;
 }
-.rule-item.active {
-    color: #22c55e;
-}
+.rule-item.active {color: #22C55E;}
 .rule-item.active .rule-icon {
-    background: #22c55e;
-    border-color: #22c55e;
-    color: #0f172a;
+    background: #22C55E;
+    border-color: #22C55E;
+    color: #0F172A;
+}
+/* Login */
+.congrats-text{
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 150%;
+}
+.silahkan-cek-text{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 150%;
+    color:#B3B9C4;
+}
+.email-text{
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 150%;
+    color:#3898FF;
+}
+.resend-otp{
+    color:#B3B9C4;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 150%;
+}
+.resend-link{
+    color:#505F79;
+    font-weight: 600;
+
 }

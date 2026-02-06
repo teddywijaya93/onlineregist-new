@@ -15,7 +15,7 @@ let minAlertShown = false;   // ⬅ pindah ke global
 
 btnSubmit.disabled = true;
 
-// HELPER
+// Helper
 function validateAll() {
     if (
         usernameInput.dataset.valid === "true" &&
@@ -28,7 +28,7 @@ function validateAll() {
     }
 }
 
-// USERNAME INPUT + CHECKLIST
+// Username Input + Checklist
 usernameInput.addEventListener("input", function () {
     // hanya huruf & angka
     this.value = this.value.replace(/[^a-zA-Z0-9]/g, "");
@@ -67,7 +67,7 @@ usernameInput.addEventListener("input", function () {
     }
 });
 
-// CHECK USERNAME API
+// HIT API Username
 function checkUsername(username) {
     Swal.fire({
         title: "Memeriksa username...",
@@ -107,7 +107,7 @@ function checkUsername(username) {
     });
 }
 
-// RENDER RECOMMENDATION
+// Rekomendasi Username
 function renderAlternatives(list) {
     let html = `
         <small class="text-white">Rekomendasi username:</small>
@@ -132,14 +132,14 @@ function useUsername(username) {
     checkUsername(username);
 }
 
-// EMAIL VALIDATION
+// Email Validation
 emailInput.addEventListener("input", function () {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     this.dataset.valid = regex.test(this.value) ? "true" : "false";
     validateAll();
 });
 
-// PHONE VALIDATION
+// Phone Validation
 phoneInput.addEventListener("focus", function () {
     if (this.value.trim() === "") {
         this.value = "+628";
@@ -164,6 +164,39 @@ phoneInput.addEventListener("input", function () {
         phoneInput.dataset.valid = "false";
     }
     validateAll();
+});
+
+// Local Storage
+function saveDraftAccount() {
+    const draft = JSON.parse(localStorage.getItem("registerDraft")) || {};
+
+    draft.username    = usernameInput.value;
+    draft.email       = emailInput.value;
+    draft.mobilePhone = phoneInput.value;
+
+    localStorage.setItem("registerDraft", JSON.stringify(draft));
+}
+usernameInput.addEventListener("input", saveDraftAccount);
+emailInput.addEventListener("input", saveDraftAccount);
+phoneInput.addEventListener("input", saveDraftAccount);
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const draft = JSON.parse(localStorage.getItem("registerDraft"));
+
+    if (!draft) return;
+
+    if (draft.username) {
+        usernameInput.value = draft.username;
+        usernameInput.dispatchEvent(new Event("input"));
+    }
+
+    if (draft.email) emailInput.value = draft.email;
+
+    if (draft.mobilePhone) {
+        phoneInput.value = draft.mobilePhone;
+        phoneInput.dispatchEvent(new Event("input"));
+    }
 });
 
 // SUBMIT
@@ -212,7 +245,10 @@ function submitAccount() {
             Swal.fire({
                 icon: "success",
                 title: "Akun Berhasil Dibuat",
-                text: "Silakan cek email atau SMS untuk informasi akun."
+                text: "Silakan login menggunakan akun Anda",
+                confirmButtonText: "Ke Halaman Login"
+            }).then(() => {
+                window.location.href = window.routes.login; 
             });
         })
         .catch(() => {

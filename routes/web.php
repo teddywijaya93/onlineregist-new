@@ -10,6 +10,7 @@ Route::view('/referral-code', 'referral-code')->name('referral-form');
 Route::view('/customer-type', 'customer-type')->name('customer-type');
 Route::view('/check-nik-name', 'check-nik-name')->name('check-nik-name');
 Route::view('/create-account', 'create-account')->name('create-account');
+Route::view('/login', 'login')->name('login');
 
 // Step API
 Route::post('/step/account-type',   [CreateAccountController::class, 'saveAccountType'])->name('step.account-type');

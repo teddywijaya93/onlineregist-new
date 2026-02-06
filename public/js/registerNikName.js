@@ -87,6 +87,27 @@ function checkNik(nik) {
     });
 }
 
+// Local Storage
+function saveDraftNik() {
+    const draft = JSON.parse(localStorage.getItem("registerDraft")) || {};
+
+    draft.name = document.getElementById("name").value;
+    draft.nik  = document.getElementById("nik").value;
+
+    localStorage.setItem("registerDraft", JSON.stringify(draft));
+}
+document.getElementById("name").addEventListener("input", saveDraftNik);
+document.getElementById("nik").addEventListener("input", saveDraftNik);
+document.addEventListener("DOMContentLoaded", () => {
+
+    const draft = JSON.parse(localStorage.getItem("registerDraft"));
+
+    if (!draft) return;
+
+    if (draft.name) document.getElementById("name").value = draft.name;
+    if (draft.nik)  document.getElementById("nik").value  = draft.nik;
+});
+
 // Save NIK & Name
 function saveNikName() {
     const name = document.getElementById('name').value.trim();

@@ -51,7 +51,8 @@
 <script>
 window.routes = {
     checkUsername: "{{ route('check.username') }}",
-    submitAccount: "{{ route('create.account.submit') }}"
+    submitAccount: "{{ route('create.account.submit') }}",
+    login: "{{ route('login') }}"
 };
 </script>
 <script src="{{ asset('js/registerCreateAccount.js') }}"></script>

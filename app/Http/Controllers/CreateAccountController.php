@@ -111,7 +111,12 @@ class CreateAccountController extends Controller
             }
             $result = $apiResponse->json();
 
+            // simpan email utk halaman login
+            session()->put('register_email', $request->email);
+            
+            // hapus data step
             session()->forget('register');
+
             return response()->json([
                 'status'  => true,
                 'message' => 'Account created successfully',
