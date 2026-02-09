@@ -38,6 +38,6 @@ window.routes = {
     investmentObjective: "{{ route('master.investmentObjective') }}"
 };
 </script>
-
 <script src="{{ asset('js/penghasilan.js') }}"></script>
+
 @endsection

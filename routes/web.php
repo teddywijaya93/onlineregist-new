@@ -4,26 +4,18 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NIK_UsernameCheckController;
 use App\Http\Controllers\CreateAccountController;
 use App\Http\Controllers\MasterDataController;
+use App\Http\Controllers\OCR_KTPController;
 
 // API Master Data
+Route::get('/master/gender',[MasterDataController::class, 'getGenderMaster'])->name('master.gender');
+Route::get('/master/religion',[MasterDataController::class, 'getReligionMaster'])->name('master.religion');
+Route::get('/master/marital',[MasterDataController::class, 'getMaritalMaster'])->name('master.marital');
 Route::get('/master/employment', [MasterDataController::class, 'getEmploymentMaster'])->name('master.employment');
 Route::get('/master/employment-position',[MasterDataController::class, 'getPositionByEmployment'])->name('master.position');
 Route::get('/master/employment-businessline',[MasterDataController::class, 'getBusinesslineByEmployment'])->name('master.businessline');
 Route::get('/master/income-range',[MasterDataController::class, 'getIncomeRangeMaster'])->name('master.incomeRange');
 Route::get('/master/primary-fund-source',[MasterDataController::class, 'getPrimaryFundMaster'])->name('master.primaryFundSOurce');
 Route::get('/master/investment-objective',[MasterDataController::class, 'getInvestmentObjective'])->name('master.investmentObjective');
-
-// Views
-Route::view('/', 'auth.home');
-Route::view('/referral-code', 'referral-code')->name('referral-form');
-Route::view('/customer-type', 'customer-type')->name('customer-type');
-Route::view('/check-nik-name', 'check-nik-name')->name('check-nik-name');
-Route::view('/create-account', 'create-account')->name('create-account');
-Route::view('/login', 'login')->name('login');
-// Step 2
-Route::view('/pekerjaan', 'pekerjaan')->name('pekerjaan');
-// Step 3
-Route::view('/penghasilan', 'penghasilan')->name('penghasilan');
 
 // Step API
 Route::post('/step/account-type',[CreateAccountController::class, 'saveAccountType'])->name('step.account-type');
@@ -33,3 +25,24 @@ Route::post('/create-account-submit',[CreateAccountController::class, 'createAcc
 // Check 
 Route::post('/check-nik',[NIK_UsernameCheckController::class, 'nikCheck'])->name('check.nik');
 Route::post('/check-username',[NIK_UsernameCheckController::class, 'usernameCheck'])->name('check.username');
+
+// Views
+Route::view('/', 'auth.home');
+Route::view('/referral-code', 'referral-code')->name('referral-form');
+Route::view('/customer-type', 'customer-type')->name('customer-type');
+Route::view('/check-nik-name', 'check-nik-name')->name('check-nik-name');
+Route::view('/create-account', 'create-account')->name('create-account');
+Route::view('/login', 'login')->name('login');
+
+// Step 1
+Route::view('/ocr-ktp/upload', 'ocr-ktp-upload')->name('ocr.ktp.upload');
+Route::post('/ocr-ktp/process', [OCR_KTPController::class, 'process'])->name('ocr.ktp.process');
+Route::get('/data-personal', [OCR_KTPController::class, 'dataPersonal'])->name('data.personal');
+Route::post('/data-personal/submit', [CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
+
+// Step 2
+Route::view('/data-pekerjaan', 'data-pekerjaan')->name('data.pekerjaan');
+Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmployment'])->name('data.pekerjaan.submit');
+
+// Step 3
+Route::view('/data-penghasilan', 'data-penghasilan')->name('data.penghasilan');

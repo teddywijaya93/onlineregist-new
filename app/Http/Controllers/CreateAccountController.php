@@ -136,4 +136,32 @@ class CreateAccountController extends Controller
             ], 500);
         }
     }
+
+    public function savePersonal(Request $request) {
+        session([
+            'personal_data' => $request->except('_token')
+        ]);
+
+        return redirect()->route('data.pekerjaan');
+    }
+
+    public function saveEmployment(Request $request) {
+        $validated = $request->validate([
+            'employment'            => 'required',
+            'company_name'          => 'required|string|max:255',
+            'position'              => 'required',
+            'businessline'          => 'required',
+            'work_year'             => 'required|numeric|min:0',
+            'work_month'            => 'required|numeric|min:0|max:11',
+            'office_address'        => 'required|string',
+            'office_postal_code'    => 'required|string|max:10',
+            'office_phone'          => 'required|string|max:20',
+        ]);
+
+        session([
+            'employment_data' => $validated
+        ]);
+
+        return redirect()->route('data.penghasilan');
+    }
 }

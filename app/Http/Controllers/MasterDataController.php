@@ -8,6 +8,63 @@ use Illuminate\Support\Facades\Log;
 
 class MasterDataController extends Controller
 {
+    public function getGenderMaster() {
+        $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+            ->withHeaders(['Content-Type' => 'text/plain'])
+            ->send(
+                'GET',
+                'https://dev.profits.co.id:8283/onlineRegistrationV1/masterData',
+                [
+                    'body' => json_encode([
+                        'type' => 'gender'
+                    ])
+                ]
+            );
+
+        return response()->json([
+            'status' => true,
+            'data'   => $response->json()['datas'] ?? []
+        ]);
+    }
+
+    public function getReligionMaster() {
+        $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+            ->withHeaders(['Content-Type' => 'text/plain'])
+            ->send(
+                'GET',
+                'https://dev.profits.co.id:8283/onlineRegistrationV1/masterData',
+                [
+                    'body' => json_encode([
+                        'type' => 'religion'
+                    ])
+                ]
+            );
+
+        return response()->json([
+            'status' => true,
+            'data'   => $response->json()['datas'] ?? []
+        ]);
+    }
+
+    public function getMaritalMaster() {
+        $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+            ->withHeaders(['Content-Type' => 'text/plain'])
+            ->send(
+                'GET',
+                'https://dev.profits.co.id:8283/onlineRegistrationV1/masterData',
+                [
+                    'body' => json_encode([
+                        'type' => 'marital_status'
+                    ])
+                ]
+            );
+
+        return response()->json([
+            'status' => true,
+            'data'   => $response->json()['datas'] ?? []
+        ]);
+    }
+
     public function getEmploymentMaster() {
         $response = \Illuminate\Support\Facades\Http::withoutVerifying()
             ->withHeaders(['Content-Type' => 'text/plain'])
