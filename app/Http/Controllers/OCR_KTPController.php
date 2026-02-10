@@ -35,7 +35,7 @@ class OCR_KTPController extends Controller
 
         if ($response->failed()) {
             return redirect()
-                ->route('ocr.ktp.upload')
+                ->route('ocr.ktp')
                 ->withErrors(['ocr' => 'OCR gagal diproses']);
         }
 
@@ -50,7 +50,7 @@ class OCR_KTPController extends Controller
 
     public function dataPersonal() {
         if (!session()->has('ocr_ktp')) {
-            return redirect()->route('ocr.ktp.upload');
+            return redirect()->route('ocr.ktp');
         }
 
         return view('data-personal', [

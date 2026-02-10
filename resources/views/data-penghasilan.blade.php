@@ -9,25 +9,28 @@
             <h3 class="head-lanjut text-white mb-2">Financial Profile</h3>
             <p class="desc-lanjut mb-0">Data dibawah ini diwajibkan oleh OJK dan akan kami lindungi kerahasiaannya.</p>
         </div>
-        <div class="form-group mb-4">
-            <label class="form-label text-white text-form-global mb-2">Penghasilan Per bulan</label>
-            <select id="incomeRangeSelect" class="form-control form-global">
-                <option value="">Pilih Penghasilan Per bulan</option>
-            </select>
-        </div>
-        <div class="form-group mb-4">
-            <label class="form-label text-white text-form-global mb-2">Sumber Dana</label>
-            <select id="primaryFundSelect" class="form-control form-global">
-                <option value="">Pilih Sumber Dana</option>
-            </select>
-        </div>
-        <div class="form-group mb-4">
-            <label class="form-label text-white text-form-global mb-2">Tujuan Investasi</label>
-            <select id="investmentObjectiveSelect" class="form-control form-global">
-                <option value="">Pilih Tujuan Investasi</option>
-            </select>
-        </div>
-        <button id="btnNext" class="btn btn-primary btn-regist w-100 mb-3">Lanjutkan</button>
+        <form method="POST" action="{{ route('data.penghasilan.submit') }}">
+            @csrf
+            <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Penghasilan Per bulan</label>
+                <select name="incomeRange" id="incomeRangeSelect" class="form-control form-global">
+                    <option value="">Pilih Penghasilan Per bulan</option>
+                </select>
+            </div>
+            <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Sumber Dana</label>
+                <select name="primaryFund" id="primaryFundSelect" class="form-control form-global">
+                    <option value="">Pilih Sumber Dana</option>
+                </select>
+            </div>
+            <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Tujuan Investasi</label>
+                <select name="investmentObjective" id="investmentObjectiveSelect" class="form-control form-global">
+                    <option value="">Pilih Tujuan Investasi</option>
+                </select>
+            </div>
+            <button id="btnNext" class="btn btn-primary btn-regist w-100 mb-3">Lanjutkan</button>
+        </form>
     </div>
 </section>
 

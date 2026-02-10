@@ -35,7 +35,7 @@ Route::view('/create-account', 'create-account')->name('create-account');
 Route::view('/login', 'login')->name('login');
 
 // Step 1
-Route::view('/ocr-ktp/upload', 'ocr-ktp-upload')->name('ocr.ktp.upload');
+Route::view('/ocr-ktp', 'ocr-ktp-upload')->name('ocr.ktp');
 Route::post('/ocr-ktp/process', [OCR_KTPController::class, 'process'])->name('ocr.ktp.process');
 Route::get('/data-personal', [OCR_KTPController::class, 'dataPersonal'])->name('data.personal');
 Route::post('/data-personal/submit', [CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
@@ -46,3 +46,7 @@ Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmplo
 
 // Step 3
 Route::view('/data-penghasilan', 'data-penghasilan')->name('data.penghasilan');
+Route::post('/data-penghasilan/submit',[CreateAccountController::class, 'saveFinancial'])->name('data.penghasilan.submit');
+
+// Step 4
+Route::view('/data-referensi-perseorangan', 'data-referensi-perseorangan')->name('data.referensi.perseorangan');

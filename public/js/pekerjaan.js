@@ -39,7 +39,7 @@ function loadPosition(employmentId) {
 
             select.innerHTML = `<option value="">Pilih Jabatan</option>`;
             list.forEach(item => {
-                select.innerHTML += `<option value="${item.id}">${item.description}</option>`;
+                select.innerHTML += `<option value="${item.positionId}">${item.description}</option>`;
             });
         });
 }
@@ -55,7 +55,7 @@ function loadBusinessline(employmentId) {
 
             select.innerHTML = `<option value="">Pilih Bidang Usaha</option>`;
             list.forEach(item => {
-                select.innerHTML += `<option value="${item.id}">${item.description}</option>`;
+                select.innerHTML += `<option value="${item.businessLineId}">${item.description}</option>`;
             });
         });
 }

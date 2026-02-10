@@ -138,15 +138,34 @@ class CreateAccountController extends Controller
     }
 
     public function savePersonal(Request $request) {
+        $personalData = $request->validate([
+            'nama'              => 'required',
+            'nik'               => 'required',
+            'tempat_lahir'      => 'required',
+            'tanggal_lahir'     => 'required',
+            'jenis_kelamin'     => 'required',
+            'agama'             => 'required',
+            'status_perkawinan' => 'required',
+            'nama_ibu_kandung'  => 'required',
+            'alamat'            => 'required',
+            'rt'                => 'required',
+            'rw'                => 'required',
+            'kota'              => 'required',
+            'kelurahan'         => 'required',
+            'kecamatan'         => 'required',
+        ]);
+        // dd($personalData);
+
         session([
-            'personal_data' => $request->except('_token')
+            // 'personal_data' => $request->except('_token')
+            'personal_data' => $personalData
         ]);
 
         return redirect()->route('data.pekerjaan');
     }
 
     public function saveEmployment(Request $request) {
-        $validated = $request->validate([
+        $employmentData = $request->validate([
             'employment'            => 'required',
             'company_name'          => 'required|string|max:255',
             'position'              => 'required',
@@ -157,11 +176,27 @@ class CreateAccountController extends Controller
             'office_postal_code'    => 'required|string|max:10',
             'office_phone'          => 'required|string|max:20',
         ]);
+        // dd($employmentData);
 
         session([
-            'employment_data' => $validated
+            'employment_data' => $employmentData
         ]);
 
         return redirect()->route('data.penghasilan');
+    }
+
+    public function saveFinancial(Request $request) {
+        $finacialData = $request->validate([
+            'incomeRange'          => 'required',
+            'primaryFund'          => 'required',
+            'investmentObjective'  => 'required',
+        ]);
+        dd($finacialData);
+
+        session([
+            'financial_data' => $finacialData
+        ]);
+
+        return redirect()->route('data.referensi.perseorangan');
     }
 }
