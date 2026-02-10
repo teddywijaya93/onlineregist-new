@@ -14,16 +14,16 @@
         <canvas id="canvas" class="d-none"></canvas>
 
         <!-- BUTTON -->
-        <button id="btnCamera" class="btn btn-secondary w-100 mb-2">Aktifkan Kamera</button>
-        <button id="btnCapture" class="btn btn-primary w-100 mb-2 d-none">Capture Foto</button>
+        <button id="btnCamera" class="btn btn-secondary btn-regist w-100 mb-2">Aktifkan Kamera</button>
+        <button id="btnCapture" class="btn btn-primary btn-regist w-100 mb-2 d-none">Capture Foto</button>
 
         <!-- PREVIEW IMAGE -->
         <div id="imageBox" class="d-none mb-3">
             <h6 class="text-white mb-2">Hasil Foto</h6>
             <img id="resultImage" class="w-100 rounded border">
         </div>
-        <button id="btnRetake" class="btn btn-warning w-100 mb-2 d-none">Ambil Ulang</button>
-        <button id="btnSubmit" class="btn btn-success w-100 mb-3 d-none">Kirim & Lihat Hasil Raw</button>
+        <button id="btnRetake" class="btn btn-warning btn-regist w-100 mb-2 d-none">Ambil Ulang</button>
+        <button id="btnSubmit" class="btn btn-success btn-regist w-100 mb-3 d-none">Kirim & Lihat Hasil Raw</button>
 
         <!-- INFO BOX -->
         <div id="infoBox" class="d-none mb-3">

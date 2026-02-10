@@ -12,6 +12,10 @@
         <form method="POST">
             @csrf
             <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Hubungan dengan Nasabah</label>
+                <!-- <input type="text" name="nama_relasi" id="nama_relasi" class="form-control form-global" placeholder="Tulis nama lengkap relasi"> -->
+            </div>
+            <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama</label>
                 <input type="text" name="nama_relasi" id="nama_relasi" class="form-control form-global" placeholder="Tulis nama lengkap relasi">
             </div>

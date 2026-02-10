@@ -6,6 +6,7 @@ use App\Http\Controllers\CreateAccountController;
 use App\Http\Controllers\MasterDataController;
 use App\Http\Controllers\Verifikasi_KTPController;
 use App\Http\Controllers\Verifikasi_WajahController;
+use App\Http\Controllers\ProfilResikoController;
 
 // API Master Data
 Route::get('/master/gender',[MasterDataController::class, 'getGenderMaster'])->name('master.gender');
@@ -57,3 +58,8 @@ Route::post('/data-penghasilan/submit',[CreateAccountController::class, 'saveFin
 
 // Step 4
 Route::view('/data-referensi-perseorangan', 'data-referensi-perseorangan')->name('data.referensi.perseorangan');
+
+// Step 5
+Route::view('/profil-resiko', 'profil-resiko')->name('profil-resiko');
+Route::post('/profil-resiko/submit',[ProfilResikoController::class, 'submit'])->name('profil.resiko.submit');
+Route::get('/profil-resiko-result',[ProfilResikoController::class, 'result'])->name('profil-resiko-result');
