@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
-class OCR_KTPController extends Controller
+class Verifikasi_KTPController extends Controller
 {
     public function process(Request $request) {
         $request->validate([
@@ -35,13 +35,13 @@ class OCR_KTPController extends Controller
 
         if ($response->failed()) {
             return redirect()
-                ->route('ocr.ktp')
+                ->route('verifikasi.ktp')
                 ->withErrors(['ocr' => 'OCR gagal diproses']);
         }
 
         // simpan hasil OCR ke session
         session([
-            'ocr_ktp' => $response->json('result')
+            'verifikasi_ktp' => $response->json('result')
         ]);
 
         // redirect ke halaman data personal (GET)
@@ -49,12 +49,12 @@ class OCR_KTPController extends Controller
     }
 
     public function dataPersonal() {
-        if (!session()->has('ocr_ktp')) {
-            return redirect()->route('ocr.ktp');
+        if (!session()->has('verifikasi_ktp')) {
+            return redirect()->route('verifikasi.ktp');
         }
 
         return view('data-personal', [
-            'data' => session('ocr_ktp')
+            'data' => session('verifikasi_ktp')
         ]);
     }
 }

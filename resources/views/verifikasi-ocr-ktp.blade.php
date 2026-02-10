@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Upload KTP')
+@section('title','Verifikasi KTP')
 @section('content')
 
 <section class="auth-wrapper">
@@ -10,7 +10,7 @@
             <p class="text-danger">{{ $errors->first() }}</p>
         @endif
 
-        <form method="POST" action="{{ route('ocr.ktp.process') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('verifikasi.ktp.process') }}" enctype="multipart/form-data">
             @csrf
             <input type="file" name="ktp_image" accept="image/*" class="form-control mb-3" required>
             <button id="btnNext" class="btn btn-primary btn-regist w-100 mb-3">Lanjutkan</button>

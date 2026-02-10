@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NIK_UsernameCheckController;
 use App\Http\Controllers\CreateAccountController;
 use App\Http\Controllers\MasterDataController;
-use App\Http\Controllers\OCR_KTPController;
+use App\Http\Controllers\Verifikasi_KTPController;
+use App\Http\Controllers\Verifikasi_WajahController;
 
 // API Master Data
 Route::get('/master/gender',[MasterDataController::class, 'getGenderMaster'])->name('master.gender');
@@ -34,10 +35,16 @@ Route::view('/check-nik-name', 'check-nik-name')->name('check-nik-name');
 Route::view('/create-account', 'create-account')->name('create-account');
 Route::view('/login', 'login')->name('login');
 
+// OCR 
+Route::view('/verifikasi-ktp', 'verifikasi-ocr-ktp')->name('verifikasi.ktp');
+Route::post('/verifikasi-ktp/process', [Verifikasi_KTPController::class, 'process'])->name('verifikasi.ktp.process');
+
+// Liveness
+Route::view('/verifikasi-wajah', 'verifikasi-liveness-wajah')->name('verifikasi.wajah');
+Route::post('/verifikasi-wajah/process',[Verifikasi_WajahController::class, 'process'])->name('verifikasi.wajah.process');
+
 // Step 1
-Route::view('/ocr-ktp', 'ocr-ktp-upload')->name('ocr.ktp');
-Route::post('/ocr-ktp/process', [OCR_KTPController::class, 'process'])->name('ocr.ktp.process');
-Route::get('/data-personal', [OCR_KTPController::class, 'dataPersonal'])->name('data.personal');
+Route::get('/data-personal', [Verifikasi_KTPController::class, 'dataPersonal'])->name('data.personal');
 Route::post('/data-personal/submit', [CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
 
 // Step 2
