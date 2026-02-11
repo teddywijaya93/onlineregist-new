@@ -6,7 +6,7 @@ use App\Http\Controllers\CreateAccountController;
 use App\Http\Controllers\MasterDataController;
 use App\Http\Controllers\Verifikasi_KTPController;
 use App\Http\Controllers\Verifikasi_WajahController;
-use App\Http\Controllers\ProfilResikoController;
+// use App\Http\Controllers\ProfilResikoController;
 
 // API Master Data
 Route::get('/master/gender',[MasterDataController::class, 'getGenderMaster'])->name('master.gender');
@@ -18,6 +18,7 @@ Route::get('/master/employment-businessline',[MasterDataController::class, 'getB
 Route::get('/master/income-range',[MasterDataController::class, 'getIncomeRangeMaster'])->name('master.incomeRange');
 Route::get('/master/primary-fund-source',[MasterDataController::class, 'getPrimaryFundMaster'])->name('master.primaryFundSOurce');
 Route::get('/master/investment-objective',[MasterDataController::class, 'getInvestmentObjective'])->name('master.investmentObjective');
+Route::get('/master/bank',[MasterDataController::class, 'getBankMaster'])->name('master.bank');
 
 // Step API
 Route::post('/step/account-type',[CreateAccountController::class, 'saveAccountType'])->name('step.account-type');
@@ -45,21 +46,26 @@ Route::view('/verifikasi-wajah', 'verifikasi-liveness-wajah')->name('verifikasi.
 Route::post('/verifikasi-wajah/process',[Verifikasi_WajahController::class, 'process'])->name('verifikasi.wajah.process');
 
 // Step 1
-Route::get('/data-personal', [Verifikasi_KTPController::class, 'dataPersonal'])->name('data.personal');
+Route::get('/data-personal',[Verifikasi_KTPController::class, 'dataPersonal'])->middleware('check.step')->name('data.personal');
 Route::post('/data-personal/submit', [CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
 
 // Step 2
-Route::view('/data-pekerjaan', 'data-pekerjaan')->name('data.pekerjaan');
+Route::view('/data-pekerjaan', 'data-pekerjaan')->middleware('check.step')->name('data.pekerjaan');
 Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmployment'])->name('data.pekerjaan.submit');
 
 // Step 3
-Route::view('/data-penghasilan', 'data-penghasilan')->name('data.penghasilan');
+Route::view('/data-penghasilan', 'data-penghasilan')->middleware('check.step')->name('data.penghasilan');
 Route::post('/data-penghasilan/submit',[CreateAccountController::class, 'saveFinancial'])->name('data.penghasilan.submit');
 
 // Step 4
-Route::view('/data-referensi-perseorangan', 'data-referensi-perseorangan')->name('data.referensi.perseorangan');
+Route::view('/data-referensi-perseorangan', 'data-referensi-perseorangan')->middleware('check.step')->name('data.referensi.perseorangan');
+Route::get('/data-referensi-perseorangan', function () {return view('data-referensi-perseorangan');})->middleware('check.step')->name('data.referensi.perseorangan');
+Route::post('/data-referensi-perseorangan/submit',[CreateAccountController::class, 'saveReferensiPerseorangan'])->name('data.referensi.perseorangan.submit');
 
 // Step 5
-Route::view('/profil-resiko', 'profil-resiko')->name('profil-resiko');
-Route::post('/profil-resiko/submit',[ProfilResikoController::class, 'submit'])->name('profil.resiko.submit');
-Route::get('/profil-resiko-result',[ProfilResikoController::class, 'result'])->name('profil-resiko-result');
+Route::view('/profil-resiko', 'profil-resiko')->middleware('check.step')->name('data.profil.resiko');
+Route::post('/profil-resiko/submit',[CreateAccountController::class, 'saveProfilResiko'])->name('profil.resiko.submit');
+Route::get('/profil-resiko-result',[CreateAccountController::class, 'resultProfilResiko'])->name('profil.resiko.result');
+
+// Step 6
+Route::view('/data-bank', 'data-bank')->middleware('check.step')->name('data.bank');

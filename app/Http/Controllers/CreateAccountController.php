@@ -158,7 +158,7 @@ class CreateAccountController extends Controller
 
         session([
             // 'personal_data' => $request->except('_token')
-            'personal_data' => $personalData
+            'personal_data' => $personalData,
         ]);
 
         return redirect()->route('data.pekerjaan');
@@ -191,12 +191,68 @@ class CreateAccountController extends Controller
             'primaryFund'          => 'required',
             'investmentObjective'  => 'required',
         ]);
-        dd($finacialData);
+        // dd($finacialData);
 
         session([
             'financial_data' => $finacialData
         ]);
 
         return redirect()->route('data.referensi.perseorangan');
+    }
+
+    public function saveReferensiPerseorangan(Request $request) {
+        $referensiPerseorangan = $request->validate([
+            'nama_relasi'           => 'required',
+            'nomor_ponsel_relasi'   => 'required',
+            'email_relasi'          => 'required',
+        ]);
+        // dd($referensiPerseorangan);
+
+        session([
+            'referensi_perseorangan' => $referensiPerseorangan
+        ]);
+
+        return redirect()->route('data.profil.resiko');
+    }
+
+    public function saveProfilResiko(Request $request) {
+        $profilResiko = $request->validate([
+            'q1'    => 'required',
+            'q2'    => 'required',
+            'q3'    => 'required',
+            'q4'    => 'required',
+            'q5'    => 'required',
+        ]);
+        // dd($profilResiko);
+
+        $total = $request->q1
+               + $request->q2
+               + $request->q3
+               + $request->q4
+               + $request->q5;
+
+        if ($total >= 5 && $total <= 8) {
+            $profil = 'Konservatif';
+        } elseif ($total >= 9 && $total <= 14) {
+            $profil = 'Moderat';
+        } else {
+            $profil = 'Agresif';
+        }
+
+        session([
+            'profil_resiko'       => $profilResiko,
+            'profil_risiko_total' => $total,
+            'profil_risiko_hasil' => $profil,
+        ]);
+
+        return redirect()->route('profil.resiko.result');
+    }
+
+    public function resultProfilResiko() {
+        if (!session()->has('profil_risiko_total')) {
+            return redirect()->route('data.profil.resiko');
+        }
+
+        return redirect()->route('data.bank');
     }
 }

@@ -21,7 +21,7 @@
                 </table>
             </div>
         </div>
-        <a href="{{ route('profil-resiko') }}" class="btn btn-primary btn-regist w-100 mb-3">Ulangi Pengisian</a>
+        <a href="{{ route('data.profil.resiko') }}" class="btn btn-primary btn-regist w-100 mb-3">Ulangi Pengisian</a>
     </div>
 </section>
 

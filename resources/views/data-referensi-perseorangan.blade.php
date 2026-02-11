@@ -5,11 +5,15 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <section class="auth-wrapper">
     <div class="container text-start">
+        @include('components.step-header', [
+            'step' => 4,
+            'back' => route('data.penghasilan')
+        ])
         <div class="mb-5">
             <h3 class="head-lanjut text-white mb-2">Data Orang Tua/Saudara/Wali</h3>
             <p class="desc-lanjut mb-0">Tenang, kontak ini disimpan untuk keadaan darurat dan hanya akan dihubungi bila diperlukan.</p>
         </div>
-        <form method="POST">
+        <form method="POST" action="{{ route('data.referensi.perseorangan.submit') }}">
             @csrf
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Hubungan dengan Nasabah</label>

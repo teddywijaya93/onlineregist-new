@@ -192,4 +192,23 @@ class MasterDataController extends Controller
             'data'   => $response->json()['datas'] ?? []
         ]);
     }
+
+    public function getBankMaster() {
+        $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+            ->withHeaders(['Content-Type' => 'text/plain'])
+            ->send(
+                'GET',
+                'https://dev.profits.co.id:8283/onlineRegistrationV1/masterData',
+                [
+                    'body' => json_encode([
+                        'type' => 'bank'
+                    ])
+                ]
+            );
+
+        return response()->json([
+            'status' => true,
+            'data'   => $response->json()['datas'] ?? []
+        ]);
+    }
 }

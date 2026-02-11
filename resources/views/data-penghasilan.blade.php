@@ -5,6 +5,10 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <section class="auth-wrapper">
     <div class="container text-start">
+        @include('components.step-header', [
+            'step' => 3,
+            'back' => route('data.pekerjaan')
+        ])
         <div class="mb-5">
             <h3 class="head-lanjut text-white mb-2">Financial Profile</h3>
             <p class="desc-lanjut mb-0">Data dibawah ini diwajibkan oleh OJK dan akan kami lindungi kerahasiaannya.</p>

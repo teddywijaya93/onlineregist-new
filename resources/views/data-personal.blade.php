@@ -13,12 +13,16 @@
 
 <section class="auth-wrapper">
     <div class="container text-start">
+        @include('components.step-header', [
+            'step' => 1,
+            'back' => route('data.personal')
+        ])
+        <div class="mb-5">
+            <h3 class="head-lanjut text-white mb-2">Cek dan Pastikan Data Sudah Benar Sebelum Melanjutkan</h3>
+            <p class="desc-lanjut mb-0">Data dibawah ini diwajibkan oleh OJK dan akan kami lindungi kerahasiaannya.</p>
+        </div>
         <form method="POST" action="{{ route('data.personal.submit') }}">
             @csrf
-            <div class="mb-5">
-                <h3 class="head-lanjut text-white mb-2">Cek dan Pastikan Data Sudah Benar Sebelum Melanjutkan</h3>
-                <p class="desc-lanjut mb-0">Data dibawah ini diwajibkan oleh OJK dan akan kami lindungi kerahasiaannya.</p>
-            </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Sesuai e-KTP</label>
                 <input type="text" name="nama" id="nama" value="{{ $data['nama'] ?? '' }}" class="form-control form-global" placeholder="Nama Sesuai e-KTP">
@@ -55,7 +59,7 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Gadis Ibu Kandung</label>
-                <input type="text" name="nama_ibu_kandung" id="name_ibu_kandung" class="form-control form-global" placeholder="Nama Gadis Ibu Kandung">
+                <input type="text" name="nama_ibu_kandung" id="nama_ibu_kandung" value="{{ old('nama_ibu_kandung', session('personal_data.nama_ibu_kandung')) }}" class="form-control form-global" placeholder="Nama Gadis Ibu Kandung">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Sesuai e-KTP</label>
