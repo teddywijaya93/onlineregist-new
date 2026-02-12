@@ -202,6 +202,7 @@ class CreateAccountController extends Controller
 
     public function saveReferensiPerseorangan(Request $request) {
         $referensiPerseorangan = $request->validate([
+            'referenceRelation'     => 'required',
             'nama_relasi'           => 'required',
             'nomor_ponsel_relasi'   => 'required',
             'email_relasi'          => 'required',

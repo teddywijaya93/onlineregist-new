@@ -10,26 +10,24 @@
             'back' => route('data.penghasilan')
         ])
         <div class="mb-5">
-            <h3 class="head-lanjut text-white mb-2">Data Orang Tua/Saudara/Wali</h3>
+            <h3 id="referenceTitle" class="head-lanjut text-white mb-2">Data Referensi</h3>
             <p class="desc-lanjut mb-0">Tenang, kontak ini disimpan untuk keadaan darurat dan hanya akan dihubungi bila diperlukan.</p>
         </div>
         <form method="POST" action="{{ route('data.referensi.perseorangan.submit') }}">
             @csrf
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Hubungan dengan Nasabah</label>
-                <!-- <input type="text" name="nama_relasi" id="nama_relasi" class="form-control form-global" placeholder="Tulis nama lengkap relasi"> -->
+                <select name="referenceRelation" id="referenceSelect" data-selected="{{ old('referenceRelation', session('referensi_perseorangan.referenceRelation')) }}" class="form-control form-global">
+                    <option value="">Pilih Hubungan dengan relasi</option>
+                </select>
             </div>
-            <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Nama</label>
-                <input type="text" name="nama_relasi" id="nama_relasi" class="form-control form-global" placeholder="Tulis nama lengkap relasi">
+            <div id="formSpouse" style="display:none;">
+                <!-- Perseorangan -->
+                @include('partials.data-referensi-spouse')
             </div>
-            <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Nomor Ponsel</label>
-                <input type="text" name="nomor_ponsel_relasi" id="nomor_ponsel_relasi" class="form-control form-global" placeholder="Tulis nomor ponsel relasi">
-            </div>
-            <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Email</label>
-                <input type="email" name="email_relasi" id="email_relasi" class="form-control form-global" placeholder="Tulis email relasi">
+            <div id="formFamily" style="display:none;">
+                <!-- Non Perseorangan -->
+                @include('partials.data-referensi-family')
             </div>
             <button id="btnNext" class="btn btn-primary btn-regist w-100 mb-3">Lanjutkan</button>
         </form>
@@ -37,7 +35,12 @@
 </section>
 
 <script>
-
+window.routes = {
+    referenceRelation   : "{{ route('master.referenceRelation') }}",
+    gender              : "{{ route('master.gender') }}",
+    marital             : "{{ route('master.marital') }}",
+};
 </script>
+<script src="{{ asset('js/referenceRelation.js') }}"></script>
 
 @endsection

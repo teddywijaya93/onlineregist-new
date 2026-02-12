@@ -17,19 +17,19 @@
             @csrf
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Penghasilan Per bulan</label>
-                <select name="incomeRange" id="incomeRangeSelect" class="form-control form-global">
+                <select name="incomeRange" id="incomeRangeSelect" data-selected="{{ old('incomeRange', session('financial_data.incomeRange')) }}" class="form-control form-global">
                     <option value="">Pilih Penghasilan Per bulan</option>
                 </select>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Sumber Dana</label>
-                <select name="primaryFund" id="primaryFundSelect" class="form-control form-global">
+                <select name="primaryFund" id="primaryFundSelect" data-selected="{{ old('primaryFund', session('financial_data.primaryFund')) }}" class="form-control form-global">
                     <option value="">Pilih Sumber Dana</option>
                 </select>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Tujuan Investasi</label>
-                <select name="investmentObjective" id="investmentObjectiveSelect" class="form-control form-global">
+                <select name="investmentObjective" id="investmentObjectiveSelect" data-selected="{{ old('investmentObjective', session('financial_data.investmentObjective')) }}" class="form-control form-global">
                     <option value="">Pilih Tujuan Investasi</option>
                 </select>
             </div>

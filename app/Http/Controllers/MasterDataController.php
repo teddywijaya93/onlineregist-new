@@ -211,4 +211,66 @@ class MasterDataController extends Controller
             'data'   => $response->json()['datas'] ?? []
         ]);
     }
+
+    public function getReferenceRelationMaster(Request $request) {
+        $personal = session('personal_data');
+        $employment = session('employment_data');
+        
+        if (!$personal || !$employment) {
+            return response()->json(['datas' => []]);
+        }
+
+        $jk       = $personal['jenis_kelamin'];
+        $status   = $personal['status_perkawinan'];
+        $jobId    = $employment['employment'];
+
+        // IRT, Pelajar, Pensiunan
+        $familyEmployment = [4, 15, 27];    
+        $formType = in_array($jobId, $familyEmployment)
+            ? 'family'
+            : 'spouse'; 
+
+        $relations = [];
+        $title     = '';
+
+        if ($status == 1) {
+            if ($jk == 1) {
+                $title = 'Data Istri';
+                $relations = [
+                    ['id' => 1, 'description' => 'Istri']
+                ];
+            } else {
+                $title = 'Data Suami';
+                $relations = [
+                    ['id' => 2, 'description' => 'Suami']
+                ];
+            }
+        } elseif ($status == 2) {
+            $title = 'Data Orang Tua / Saudara / Wali';
+            $relations = [
+                ['id' => 3, 'description' => 'Ayah'],
+                ['id' => 4, 'description' => 'Ibu'],
+                ['id' => 5, 'description' => 'Saudara'],
+                ['id' => 6, 'description' => 'Wali'],
+            ];
+        } else { 
+            $title = 'Data Orang Tua / Saudara / Anak / Wali';
+            $relations = [
+                ['id' => 3, 'description' => 'Ayah'],
+                ['id' => 4, 'description' => 'Ibu'],
+                ['id' => 5, 'description' => 'Saudara'],
+                ['id' => 7, 'description' => 'Anak'],
+                ['id' => 6, 'description' => 'Wali'],
+            ];
+        }
+
+        session(['reference_form_type' => $formType]);
+
+        return response()->json([
+            'status'    => true,
+            'title'     => $title,
+            'form_type' => $formType,
+            'datas'     => $relations
+        ]);
+    }
 }

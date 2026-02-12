@@ -1,48 +1,41 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const incomeRangeSelect        = document.getElementById("incomeRangeSelect");
-    const primaryFundSelect        = document.getElementById("primaryFundSelect");
-    const investmentObjectiveSelect = document.getElementById("investmentObjectiveSelect");
+    loadMasterDropdown(
+        "incomeRangeSelect",
+        window.routes.incomeRange,
+        "Pilih Penghasilan Per Bulan"
+    );
 
-    if (!incomeRangeSelect) return;
-    // Load Master Income Range
-    fetch(window.routes.incomeRange)
-        .then(res => res.json())
-        .then(res => {
-            incomeRangeSelect.innerHTML ="<option value=''>Pilih Penghasilan Per Bulan</option>";
-            res.data.forEach(item => {
-                incomeRangeSelect.innerHTML += 
-                `<option value="${item.id}">
-                    ${escapeHtml(item.description)}
-                </option>`;
-            });
-        });
+    loadMasterDropdown(
+        "primaryFundSelect",
+        window.routes.primaryFundSource,
+        "Pilih Sumber Dana"
+    );
 
-    // Load Master Primary Fund Source
-    fetch(window.routes.primaryFundSource)
-        .then(res => res.json())
-        .then(res => {
-            primaryFundSelect.innerHTML ="<option value=''>Pilih Sumber Dana</option>";
-            res.data.forEach(item => {
-                primaryFundSelect.innerHTML += 
-                `<option value="${item.id}">
-                    ${item.description}
-                </option>`;
-            });
-        });
-
-    // Load Master Investment Objective
-    fetch(window.routes.investmentObjective)
-        .then(res => res.json())
-        .then(res => {
-            investmentObjectiveSelect.innerHTML ="<option value=''>Pilih Tujuan Investasi</option>";
-            res.data.forEach(item => {
-                investmentObjectiveSelect.innerHTML += 
-                `<option value="${item.id}">
-                    ${item.description}
-                </option>`;
-            });
-        });
+    loadMasterDropdown(
+        "investmentObjectiveSelect",
+        window.routes.investmentObjective,
+        "Pilih Tujuan Investasi"
+    );
 });
+
+function loadMasterDropdown(selectId, url, placeholder) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    const selectedValue = select.dataset.selected;
+    fetch(url)
+        .then(res => res.json())
+        .then(res => {
+            const list = res.data ?? res.datas ?? [];
+            select.innerHTML = `<option value="">${placeholder}</option>`;
+            list.forEach(item => {
+                const value = item.id;
+                if (!value) return;
+                const isSelected = selectedValue == value ? 'selected' : '';
+                select.innerHTML += `<option value="${value}" ${isSelected}> ${escapeHtml(item.description)}</option>`;
+            });
+        });
+}
 
 function escapeHtml(text) {
     return text

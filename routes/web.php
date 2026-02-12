@@ -19,6 +19,7 @@ Route::get('/master/income-range',[MasterDataController::class, 'getIncomeRangeM
 Route::get('/master/primary-fund-source',[MasterDataController::class, 'getPrimaryFundMaster'])->name('master.primaryFundSOurce');
 Route::get('/master/investment-objective',[MasterDataController::class, 'getInvestmentObjective'])->name('master.investmentObjective');
 Route::get('/master/bank',[MasterDataController::class, 'getBankMaster'])->name('master.bank');
+Route::get('/master/reference-relation',[MasterDataController::class, 'getReferenceRelationMaster'])->name('master.referenceRelation');
 
 // Step API
 Route::post('/step/account-type',[CreateAccountController::class, 'saveAccountType'])->name('step.account-type');
