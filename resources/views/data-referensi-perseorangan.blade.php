@@ -36,9 +36,9 @@
 
 <script>
 window.routes = {
-    referenceRelation   : "{{ route('master.referenceRelation') }}",
-    gender              : "{{ route('master.gender') }}",
-    marital             : "{{ route('master.marital') }}",
+    referenceRelation           : "{{ route('master.referenceRelation') }}",
+    jenis_kelamin_relasi        : "{{ route('master.gender') }}",
+    status_perkawinan_relasi    : "{{ route('master.marital') }}",
 };
 </script>
 <script src="{{ asset('js/referenceRelation.js') }}"></script>

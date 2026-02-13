@@ -1,6 +1,6 @@
 <div class="form-group mb-4">
     <label class="form-label text-white text-form-global mb-2">Nama</label>
-    <input type="text" name="nama_relasi" id="nama_relasi" value="{{ old('nama_relasi', session('referensi_perseorangan.nama_relasi')) }}" class="form-control form-global" placeholder="Tulis nama lengkap relasi">
+    <input type="text" name="nama_relasi_" id="nama_relasi_" value="{{ old('nama_relasi_', session('referensi_perseorangan.nama_relasi_')) }}" class="form-control form-global" placeholder="Tulis nama lengkap relasi">
 </div>
 <div class="form-group mb-4">
     <label class="form-label text-white text-form-global mb-2">Nomor Ponsel</label>

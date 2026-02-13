@@ -6,24 +6,34 @@ document.addEventListener("DOMContentLoaded", function () {
     const selectedValue = select.dataset.selected;
 
     // Load Master Gender
-    fetch(window.routes.gender)
-        .then(res => res.json())
-        .then(res => {
-            genderSelect.innerHTML ="<option value=''>Pilih Jenis Kelamin</option>";
-            res.data.forEach(item => {
-                genderSelect.innerHTML += `<option value="${item.id}">${item.description}</option>`;
+    if (genderSelect) {
+        const selectedValue = genderSelect.dataset.selected;
+        fetch(window.routes.jenis_kelamin_relasi)
+            .then(res => res.json())
+            .then(res => {
+                const list = res.datas ?? res.data ?? [];
+                genderSelect.innerHTML = "<option value=''>Pilih Jenis Kelamin</option>";
+                list.forEach(item => {
+                    const isSelected = selectedValue == item.id ? 'selected' : '';
+                    genderSelect.innerHTML += `<option value="${item.id}" ${isSelected}>${item.description}</option>`;
+                });
             });
-        });
+    }
 
     // Load Master Gender
-    fetch(window.routes.marital)
-        .then(res => res.json())
-        .then(res => {
-            maritalSelect.innerHTML ="<option value=''>Pilih Status Perkawinan</option>";
-            res.data.forEach(item => {
-                maritalSelect.innerHTML += `<option value="${item.id}">${item.description}</option>`;
+    if (maritalSelect) {
+        const selectedValue = maritalSelect.dataset.selected;
+        fetch(window.routes.status_perkawinan_relasi)
+            .then(res => res.json())
+            .then(res => {
+                const list = res.datas ?? res.data ?? [];
+                maritalSelect.innerHTML = "<option value=''>Pilih Status Perkawinan</option>";
+                list.forEach(item => {
+                    const isSelected = selectedValue == item.id ? 'selected' : '';
+                    maritalSelect.innerHTML += `<option value="${item.id}" ${isSelected}>${item.description}</option>`;
+                });
             });
-        });
+    }
 
     // Load Master Reference Relation
     fetch(window.routes.referenceRelation)

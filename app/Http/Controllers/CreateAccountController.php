@@ -176,7 +176,16 @@ class CreateAccountController extends Controller
             'office_postal_code'    => 'required|string|max:10',
             'office_phone'          => 'required|string|max:20',
         ]);
-        // dd($employmentData);
+        $oldEmployment = session('employment_data.employment');
+        if ($oldEmployment && $oldEmployment != $employmentData['employment']) {
+            session()->forget([
+                'referensi_perseorangan',
+                'reference_form_type',
+                'profil_resiko',
+                'profil_risiko_total',
+                'profil_risiko_hasil',
+            ]);
+        }
 
         session([
             'employment_data' => $employmentData
@@ -201,13 +210,36 @@ class CreateAccountController extends Controller
     }
 
     public function saveReferensiPerseorangan(Request $request) {
-        $referensiPerseorangan = $request->validate([
-            'referenceRelation'     => 'required',
-            'nama_relasi'           => 'required',
-            'nomor_ponsel_relasi'   => 'required',
-            'email_relasi'          => 'required',
-        ]);
-        // dd($referensiPerseorangan);
+        $formType = session('reference_form_type');
+
+        if (!$formType) {
+            return redirect()->route('data.pekerjaan');
+        }
+
+        if ($formType === 'spouse') {
+            $referensiPerseorangan = $request->validate([
+                'referenceRelation'     => 'required',
+                'nama_relasi_'          => 'required',
+                'nomor_ponsel_relasi'   => 'required',
+                'email_relasi'          => 'required',
+            ]);
+            // dd($referensiPerseorangan);
+        } else {
+            $referensiPerseorangan = $request->validate([
+                'referenceRelation'         => 'required',
+                'nama_relasi'               => 'required',
+                'nik_relasi'                => 'required',
+                'jenis_kelamin_relasi'      => 'required',
+                'tempat_lahir_relasi'       => 'required',
+                'tanggal_lahir_relasi'      => 'required',
+                'status_perkawinan_relasi'  => 'required',
+                'alamat_relasi'             => 'required',
+                'kota_relasi'               => 'required',
+                'kelurahan_relasi'          => 'required',
+                'kecamatan_relasi'          => 'required',
+            ]);
+            // dd($referensiPerseorangan);
+        }
 
         session([
             'referensi_perseorangan' => $referensiPerseorangan
