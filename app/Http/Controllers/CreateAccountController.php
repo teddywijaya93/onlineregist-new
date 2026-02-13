@@ -113,6 +113,7 @@ class CreateAccountController extends Controller
 
             // simpan email utk halaman login
             session()->put('register_email', $request->email);
+            session()->put('register_phone', $request->mobilePhone);
             
             // hapus data step
             session()->forget('register');
@@ -181,9 +182,9 @@ class CreateAccountController extends Controller
             session()->forget([
                 'referensi_perseorangan',
                 'reference_form_type',
-                'profil_resiko',
-                'profil_risiko_total',
-                'profil_risiko_hasil',
+                // 'profil_resiko',
+                // 'profil_risiko_total',
+                // 'profil_risiko_hasil',
             ]);
         }
 

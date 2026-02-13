@@ -7,6 +7,7 @@ use App\Http\Controllers\MasterDataController;
 use App\Http\Controllers\Verifikasi_KTPController;
 use App\Http\Controllers\Verifikasi_WajahController;
 // use App\Http\Controllers\ProfilResikoController;
+use App\Http\Controllers\AuthController;
 
 // API Master Data
 Route::get('/master/gender',[MasterDataController::class, 'getGenderMaster'])->name('master.gender');
@@ -36,7 +37,12 @@ Route::view('/referral-code', 'referral-code')->name('referral-form');
 Route::view('/customer-type', 'customer-type')->name('customer-type');
 Route::view('/check-nik-name', 'check-nik-name')->name('check-nik-name');
 Route::view('/create-account', 'create-account')->name('create-account');
+
 Route::view('/login', 'login')->name('login');
+Route::post('/login/process', [AuthController::class, 'loginNewRegistration'])->name('login.process');
+Route::view('/otp', 'otp')->name('otp');
+Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->name('otp.verify');
+Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
 
 // OCR 
 Route::view('/verifikasi-ktp', 'verifikasi-ocr-ktp')->name('verifikasi.ktp');
