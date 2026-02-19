@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\Log;
 class MasterDataController extends Controller
 {
     public function getGenderMaster() {
-        $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+       $response = Http::timeout(10)
             ->withHeaders(['Content-Type' => 'text/plain'])
             ->send(
                 'GET',
-                'https://dev.profits.co.id:8283/onlineRegistrationV1/masterData',
+                'https://dev.profits.co.id:8283/registration/masterData',
                 [
                     'body' => json_encode([
                         'type' => 'gender'
@@ -28,11 +28,11 @@ class MasterDataController extends Controller
     }
 
     public function getReligionMaster() {
-        $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+        $response = Http::timeout(10)
             ->withHeaders(['Content-Type' => 'text/plain'])
             ->send(
                 'GET',
-                'https://dev.profits.co.id:8283/onlineRegistrationV1/masterData',
+                'https://dev.profits.co.id:8283/registration/masterData',
                 [
                     'body' => json_encode([
                         'type' => 'religion'
@@ -47,11 +47,11 @@ class MasterDataController extends Controller
     }
 
     public function getMaritalMaster() {
-        $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+       $response = Http::timeout(10)
             ->withHeaders(['Content-Type' => 'text/plain'])
             ->send(
                 'GET',
-                'https://dev.profits.co.id:8283/onlineRegistrationV1/masterData',
+                'https://dev.profits.co.id:8283/registration/masterData',
                 [
                     'body' => json_encode([
                         'type' => 'marital_status'
@@ -65,12 +65,31 @@ class MasterDataController extends Controller
         ]);
     }
 
-    public function getEmploymentMaster() {
-        $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+    public function getEducationMaster() {
+        $response = Http::timeout(10)
             ->withHeaders(['Content-Type' => 'text/plain'])
             ->send(
                 'GET',
-                'https://dev.profits.co.id:8283/onlineRegistrationV1/masterData',
+                'https://dev.profits.co.id:8283/registration/masterData',
+                [
+                    'body' => json_encode([
+                        'type' => 'education'
+                    ])
+                ]
+            );
+
+        return response()->json([
+            'status' => true,
+            'data'   => $response->json()['datas'] ?? []
+        ]);
+    }
+
+    public function getEmploymentMaster() {
+        $response = Http::timeout(10)
+            ->withHeaders(['Content-Type' => 'text/plain'])
+            ->send(
+                'GET',
+                'https://dev.profits.co.id:8283/registration/masterData',
                 [
                     'body' => json_encode([
                         'type' => 'employment'
@@ -92,11 +111,11 @@ class MasterDataController extends Controller
             ]);
         }
 
-        $response = Http::withoutVerifying()
+        $response =Http::timeout(10)
             ->withHeaders(['Content-Type' => 'text/plain'])
             ->send(
                 'GET',
-                'https://dev.profits.co.id:8283/onlineRegistrationV1/getEmploymentPosition'
+                'https://dev.profits.co.id:8283/registration/getEmploymentPosition'
             );
 
         $datas = $response->json()['datas'] ?? [];
@@ -118,11 +137,11 @@ class MasterDataController extends Controller
             ]);
         }
 
-        $response = Http::withoutVerifying()
+        $response = Http::timeout(10)
             ->withHeaders(['Content-Type' => 'text/plain'])
             ->send(
                 'GET',
-                'https://dev.profits.co.id:8283/onlineRegistrationV1/getEmploymentBusinessline'
+                'https://dev.profits.co.id:8283/registration/getEmploymentBusinessline'
             );
 
         $datas = $response->json()['datas'] ?? [];
@@ -137,11 +156,11 @@ class MasterDataController extends Controller
     }
 
     public function getIncomeRangeMaster() {
-        $response = Http::withoutVerifying()
+        $response = Http::timeout(10)
             ->withHeaders(['Content-Type' => 'text/plain'])
             ->send(
                 'GET',
-                'https://dev.profits.co.id:8283/onlineRegistrationV1/masterData',
+                'https://dev.profits.co.id:8283/registration/masterData',
                 [
                     'body' => json_encode([
                         'type' => 'income_range'
@@ -156,11 +175,11 @@ class MasterDataController extends Controller
     }
 
     public function getPrimaryFundMaster() {
-        $response = Http::withoutVerifying()
+        $response = Http::timeout(10)
             ->withHeaders(['Content-Type' => 'text/plain'])
             ->send(
                 'GET',
-                'https://dev.profits.co.id:8283/onlineRegistrationV1/masterData',
+                'https://dev.profits.co.id:8283/registration/masterData',
                 [
                     'body' => json_encode([
                         'type' => 'primary_fund_sources'
@@ -175,11 +194,11 @@ class MasterDataController extends Controller
     }
 
     public function getInvestmentObjective() {
-        $response = Http::withoutVerifying()
+        $response = Http::timeout(10)
             ->withHeaders(['Content-Type' => 'text/plain'])
             ->send(
                 'GET',
-                'https://dev.profits.co.id:8283/onlineRegistrationV1/masterData',
+                'https://dev.profits.co.id:8283/registration/masterData',
                 [
                     'body' => json_encode([
                         'type' => 'investment_objective'
@@ -194,11 +213,11 @@ class MasterDataController extends Controller
     }
 
     public function getBankMaster() {
-        $response = \Illuminate\Support\Facades\Http::withoutVerifying()
+        $response = Http::timeout(10)
             ->withHeaders(['Content-Type' => 'text/plain'])
             ->send(
                 'GET',
-                'https://dev.profits.co.id:8283/onlineRegistrationV1/masterData',
+                'https://dev.profits.co.id:8283/registration/masterData',
                 [
                     'body' => json_encode([
                         'type' => 'bank'

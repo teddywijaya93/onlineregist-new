@@ -14,7 +14,7 @@ class NIK_UsernameCheckController extends Controller
         ]);
 
         try {
-            $response = Http::timeout(15)
+            $response = Http::timeout(10)
                 ->post('https://dev.profits.co.id:8283/registration/nikCheck', [
                     'identity' => $request->identity
                 ]);
@@ -52,7 +52,7 @@ class NIK_UsernameCheckController extends Controller
         ]);
 
         try {
-            $response = Http::withoutVerifying()
+            $response = Http::timeout(10)
                 ->timeout(15)
                 ->asJson()
                 ->post('https://dev.profits.co.id:8283/registration/usernameCheck', [

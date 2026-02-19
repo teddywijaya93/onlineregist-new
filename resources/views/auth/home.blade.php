@@ -12,7 +12,7 @@
 
         <a href="{{ route('referral-form') }}" class="btn btn-primary btn-regist w-100 mb-3">Daftar</a>
         <div class="atau-text mb-0">Atau</div>
-        <a href="" class="btn btn-outline-light btn-login w-100 mt-3">Login</a>
+        <a href="{{ route('login') }}" class="btn btn-outline-light btn-login w-100 mt-3">Login</a>
     </div>
 </section>
 

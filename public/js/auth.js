@@ -9,8 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const password = document.getElementById("password").value.trim();
 
         const loginUrl = form.dataset.loginUrl;
-        const otpUrl   = form.dataset.otpUrl;
-        const ktpUrl   = form.dataset.ktpUrl;
 
         try {
             const response = await fetch(loginUrl, {
@@ -29,25 +27,34 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!response.ok) throw data;
 
             if (data.status === true) {
-               switch (data.registrationStep) {
-                    case "otp":
-                        window.location.replace(otpUrl);
-                        break;
 
-                    case "uploadKTP":
-                        window.location.replace(ktpUrl);
-                        break;
+                await Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: data.message || "Login berhasil",
+                    confirmButtonColor: "#3085d6"
+                });
 
-                    default:
-                        window.location.replace("/dashboard");
-                }
+                window.location.replace(data.redirect);
+
                 return;
             }
 
-            alert(data.message || "Username / Password Salah!");
+            await Swal.fire({
+                icon: "error",
+                title: "Gagal",
+                text: data.message || "Login gagal",
+                confirmButtonColor: "#d33"
+            });
 
         } catch (err) {
-            alert(err.message || "Terjadi kesalahan sistem");
+
+            await Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: err.message || "Terjadi kesalahan sistem",
+                confirmButtonColor: "#d33"
+            });
         }
     });
 });

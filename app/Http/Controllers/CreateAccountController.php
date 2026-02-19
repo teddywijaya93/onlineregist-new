@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Services\OcrNormalizer;
 
 class CreateAccountController extends Controller
 {
@@ -138,33 +139,98 @@ class CreateAccountController extends Controller
         }
     }
 
-    public function savePersonal(Request $request) {
-        $personalData = $request->validate([
-            'nama'              => 'required',
-            'nik'               => 'required',
-            'tempat_lahir'      => 'required',
-            'tanggal_lahir'     => 'required',
-            'jenis_kelamin'     => 'required',
-            'agama'             => 'required',
-            'status_perkawinan' => 'required',
-            'nama_ibu_kandung'  => 'required',
-            'alamat'            => 'required',
-            'rt'                => 'required',
-            'rw'                => 'required',
-            'kota'              => 'required',
-            'kelurahan'         => 'required',
-            'kecamatan'         => 'required',
-        ]);
-        // dd($personalData);
+    public function showPersonal()
+    {
+        $ocr = session('ocr_result');
 
-        session([
-            // 'personal_data' => $request->except('_token')
-            'personal_data' => $personalData,
-        ]);
+        $data = OcrNormalizer::normalize($ocr['result'] ?? []);
 
-        return redirect()->route('data.pekerjaan');
+        $showMaritalWarning = OcrNormalizer::isCerai(
+            $ocr['result']['status_perkawinan'] ?? ''
+        );
+
+        return view('data-personal', compact('data','showMaritalWarning'));
     }
 
+   public function savePersonal(Request $request)
+{
+    $validated = $request->validate([
+        'nama' => 'required',
+        'nik' => 'required',
+        'tempatLahir' => 'required',
+        'tanggalLahir' => 'required',
+        'jenisKelamin' => 'required',
+        'agama' => 'required',
+        'education' => 'required',
+        'statusPerkawinan' => 'required',
+        'motherMaidenName' => 'required',
+        'alamat' => 'required',
+        'rt' => 'required',
+        'rw' => 'required',
+        'kota' => 'required',
+        'kelurahan' => 'required',
+        'kecamatan' => 'required',
+    ]);
+
+    $rt_rw = $validated['rt'].'/'.$validated['rw'];
+
+    $payload = [
+        "registrationId" => session('registrationId'),
+        "step" => "personalInformation",
+        "process" => "CREATE",
+        "datas" => [
+            "nik" => $validated['nik'],
+            "nama" => $validated['nama'],
+            "tanggalLahir" => $validated['tanggalLahir'],
+            "tempatLahir" => $validated['tempatLahir'],
+            "agama" => $validated['agama'],
+            "jenisKelamin" => $validated['jenisKelamin'],
+            "statusPerkawinan" => $validated['statusPerkawinan'],
+            "alamat" => $validated['alamat'],
+            "rt_rw" => $rt_rw,
+            "kelurahan" => $validated['kelurahan'],
+            "kecamatan" => $validated['kecamatan'],
+            "kota" => $validated['kota'],
+            "education" => $validated['education'],
+            "motherMaidenName" => $validated['motherMaidenName'],
+        ]
+    ];
+
+    try {
+
+        $url = 'https://dev.profits.co.id:8283/registration/saveRegistration';
+
+        Log::info('Calling API', [
+            'url' => $url,
+            'payload' => $payload
+        ]);
+
+        $response = Http::timeout(30)->post($url, $payload);
+
+        if (!$response->successful()) {
+            Log::error('HTTP error', ['body' => $response->body()]);
+            return back()->withErrors('HTTP error dari server');
+        }
+
+        $result = $response->json();
+
+        Log::info('API response', $result);
+
+        if (!($result['status'] ?? false)) {
+            return back()->withErrors($result['message'] ?? 'API gagal');
+        }
+
+        return redirect()->route('data.pekerjaan');
+
+    } catch (\Throwable $e) {
+
+        Log::error('API exception', [
+            'message' => $e->getMessage()
+        ]);
+
+        return back()->withErrors('Server tidak dapat dihubungi');
+    }
+}
     public function saveEmployment(Request $request) {
         $employmentData = $request->validate([
             'employment'            => 'required',

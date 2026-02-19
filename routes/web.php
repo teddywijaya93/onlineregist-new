@@ -13,6 +13,7 @@ use App\Http\Controllers\AuthController;
 Route::get('/master/gender',[MasterDataController::class, 'getGenderMaster'])->name('master.gender');
 Route::get('/master/religion',[MasterDataController::class, 'getReligionMaster'])->name('master.religion');
 Route::get('/master/marital',[MasterDataController::class, 'getMaritalMaster'])->name('master.marital');
+Route::get('/master/education',[MasterDataController::class, 'getEducationMaster'])->name('master.education');
 Route::get('/master/employment', [MasterDataController::class, 'getEmploymentMaster'])->name('master.employment');
 Route::get('/master/employment-position',[MasterDataController::class, 'getPositionByEmployment'])->name('master.position');
 Route::get('/master/employment-businessline',[MasterDataController::class, 'getBusinesslineByEmployment'])->name('master.businessline');
@@ -38,41 +39,50 @@ Route::view('/customer-type', 'customer-type')->name('customer-type');
 Route::view('/check-nik-name', 'check-nik-name')->name('check-nik-name');
 Route::view('/create-account', 'create-account')->name('create-account');
 
-Route::view('/login', 'login')->name('login');
+Route::middleware('ensure.login')->group(function () {
+    Route::get('/verifikasi-ktp', function () {
+        if (!session()->has('accountId')) {
+            return redirect()->route('login');
+        }
+        return view('verifikasi-ocr-ktp');
+    })->name('verifikasi.ktp');
+    Route::view('/verifikasi-wajah', 'verifikasi-liveness-wajah')->name('verifikasi.wajah');
+});
+
+Route::middleware(['ensure.login','check.step'])->group(function () {
+    Route::get('/data-personal',[Verifikasi_KTPController::class, 'dataPersonal'])->name('data.personal');
+    Route::view('/data-pekerjaan', 'data-pekerjaan')->name('data.pekerjaan');
+    Route::view('/data-penghasilan', 'data-penghasilan')->name('data.penghasilan');
+    Route::view('/data-referensi-perseorangan', 'data-referensi-perseorangan')->name('data.referensi.perseorangan');
+    Route::view('/profil-resiko', 'profil-resiko')->name('data.profil.resiko');
+    Route::view('/data-bank', 'data-bank')->name('data.bank');
+});
+
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login/process', [AuthController::class, 'loginNewRegistration'])->name('login.process');
-Route::view('/otp', 'otp')->name('otp');
+Route::get('/otp', [AuthController::class, 'showOtp'])->name('otp');
 Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->name('otp.verify');
 Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
 
-// OCR 
-Route::view('/verifikasi-ktp', 'verifikasi-ocr-ktp')->name('verifikasi.ktp');
+// OCR + Liveness
 Route::post('/verifikasi-ktp/process', [Verifikasi_KTPController::class, 'process'])->name('verifikasi.ktp.process');
-
-// Liveness
-Route::view('/verifikasi-wajah', 'verifikasi-liveness-wajah')->name('verifikasi.wajah');
 Route::post('/verifikasi-wajah/process',[Verifikasi_WajahController::class, 'process'])->name('verifikasi.wajah.process');
 
 // Step 1
-Route::get('/data-personal',[Verifikasi_KTPController::class, 'dataPersonal'])->middleware('check.step')->name('data.personal');
-Route::post('/data-personal/submit', [CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
+Route::post('/data-personal', [CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
 
 // Step 2
-Route::view('/data-pekerjaan', 'data-pekerjaan')->middleware('check.step')->name('data.pekerjaan');
 Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmployment'])->name('data.pekerjaan.submit');
 
 // Step 3
-Route::view('/data-penghasilan', 'data-penghasilan')->middleware('check.step')->name('data.penghasilan');
 Route::post('/data-penghasilan/submit',[CreateAccountController::class, 'saveFinancial'])->name('data.penghasilan.submit');
 
 // Step 4
-Route::view('/data-referensi-perseorangan', 'data-referensi-perseorangan')->middleware('check.step')->name('data.referensi.perseorangan');
 Route::get('/data-referensi-perseorangan', function () {return view('data-referensi-perseorangan');})->middleware('check.step')->name('data.referensi.perseorangan');
 Route::post('/data-referensi-perseorangan/submit',[CreateAccountController::class, 'saveReferensiPerseorangan'])->name('data.referensi.perseorangan.submit');
 
 // Step 5
-Route::view('/profil-resiko', 'profil-resiko')->middleware('check.step')->name('data.profil.resiko');
 Route::post('/profil-resiko/submit',[CreateAccountController::class, 'saveProfilResiko'])->name('profil.resiko.submit');
 Route::get('/profil-resiko-result',[CreateAccountController::class, 'resultProfilResiko'])->name('profil.resiko.result');
 
 // Step 6
-Route::view('/data-bank', 'data-bank')->middleware('check.step')->name('data.bank');

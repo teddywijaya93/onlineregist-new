@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-
+use App\Services\StepRedirectService;
 
 class AuthController extends Controller
 {
@@ -45,8 +45,9 @@ class AuthController extends Controller
             if (!empty($result['status']) && $result['status'] === true) {
 
                 session([
-                    'accountId'        => $result['accountId'],
-                    'registrationStep' => $result['registrationStep'],
+                    'accountId'         => $result['accountId'],
+                    'registrationId'    => $result['registrationId'],
+                    'registrationStep'  => $result['registrationStep'],
                     // 'otpRequired'      => $result['otpRequired'],
                 ]);
 
@@ -56,16 +57,16 @@ class AuthController extends Controller
                 }
 
                 return response()->json([
-                    'status'           => true,
-                    // 'otpRequired'      => $result['otpRequired'],
+                    'status' => true,
                     'registrationStep' => $result['registrationStep'],
+                    'redirect' => StepRedirectService::routeByStep($result['registrationStep'])
                 ]);
             }
 
             // Jika username/password salah
             return response()->json([
                 'status'  => false,
-                'message' => $result['message'] ?? 'Username / Password Salah!'
+                'message' => $result['message'],
             ], 400);
 
         } catch (\Throwable $e) {
@@ -128,7 +129,8 @@ class AuthController extends Controller
                 return response()->json([
                     'status' => true,
                     'message' => $result['message'],
-                    'registrationStep' => $result['registrationStep']
+                    'registrationStep' => $result['registrationStep'],
+                    'redirect' => StepRedirectService::routeByStep($result['registrationStep'])
                 ]);
             }
 
@@ -194,22 +196,21 @@ class AuthController extends Controller
         }
     }
 
- public function showLogin()
-{
-    if (session()->has('accountId')) {
-
-        switch (session('registrationStep')) {
-            case 'otp':
-                return redirect()->route('otp');
-
-            case 'uploadKTP':
-                return redirect()->route('verifikasi.ktp');
-
-            default:
-                return redirect('/dashboard');
-        }
+    public function showLogin()
+    {
+        return view('login');
     }
 
-    return view('login');
-}
+    public function showOtp()
+    {
+        if (!session()->has('accountId')) {
+            return redirect()->route('login');
+        }
+
+        if (session('registrationStep') !== 'verificationWA') {
+            return redirect()->route('verifikasi.ktp');
+        }
+
+        return view('otp');
+    }
 }

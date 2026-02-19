@@ -32,16 +32,20 @@
                 <input type="text" name="nik" id="nik" value="{{ $data['nik'] ?? '' }}" class="form-control form-global" placeholder="Nomor e-KTP">
             </div>
             <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Nama Gadis Ibu Kandung</label>
+                <input type="text" name="motherMaidenName" id="motherMaidenName" value="{{ $data['motherMaidenName'] ?? '' }}" class="form-control form-global"  placeholder="Nama Gadis Ibu Kandung">
+            </div>
+            <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Tempat Lahir</label>
-                <input type="text" name="tempat_lahir" id="tempat_lahir" value="{{ $data['tempat_lahir'] ?? '' }}" class="form-control form-global" placeholder="Tempat Lahir">
+                <input type="text" name="tempatLahir" id="tempatLahir" value="{{ $data['tempatLahir'] ?? '' }}" class="form-control form-global" placeholder="Tempat Lahir">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Tanggal Lahir</label>
-                <input type="text" name="tanggal_lahir" id="tanggal_lahir" value="{{ $data['tanggal_lahir'] ?? '' }}"  class="form-control form-global" placeholder="Tanggal Lahir">
+                <input type="date" name="tanggalLahir" id="tanggalLahir" value="{{ $data['tanggalLahir'] ?? '' }}"  class="form-control form-global" placeholder="Tanggal Lahir">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Jenis Kelamin</label>
-                <select name="jenis_kelamin" id="genderSelect" class="form-control" data-selected="{{ $data['jenis_kelamin'] ?? '' }}">
+                <select name="jenisKelamin" id="genderSelect" class="form-control" data-selected="{{ $data['jenisKelamin'] ?? '' }}">
                     <option value="">Pilih Jenis Kelamin</option>
                 </select>
             </div>
@@ -52,15 +56,18 @@
                 </select>
             </div>
             <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Status Perkawinan</label>
-                <select name="status_perkawinan" id="maritalSelect" class="form-control" data-selected="{{ $data['status_perkawinan'] ?? '' }}">
-                    <option value="">Pilih Status Perkawinan</option>
+                <label class="form-label text-white text-form-global mb-2">Pendidikan Terakhir</label>
+                <select name="education" id="educationSelect" data-selected="{{ $data['education'] ?? '' }}" class="form-control form-global">
+                    <option value="">Pilih Pendidikan Terakhir</option>
                 </select>
             </div>
             <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Nama Gadis Ibu Kandung</label>
-                <input type="text" name="nama_ibu_kandung" id="nama_ibu_kandung" value="{{ old('nama_ibu_kandung', session('personal_data.nama_ibu_kandung')) }}" class="form-control form-global" placeholder="Nama Gadis Ibu Kandung">
+                <label class="form-label text-white text-form-global mb-2">Status Perkawinan</label>
+                <select name="statusPerkawinan" id="maritalSelect" class="form-control" data-selected="{{ $data['statusPerkawinan   '] ?? '' }}">
+                    <option value="">Pilih Status Perkawinan</option>
+                </select>
             </div>
+           
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Sesuai e-KTP</label>
                 <input type="text" name="alamat" id="alamat" value="{{ $data['alamat'] ?? '' }}" class="form-control form-global" placeholder="Alamat Sesuai e-KTP">
@@ -99,6 +106,7 @@ window.routes = {
     gender        : "{{ route('master.gender') }}",
     religion      : "{{ route('master.religion') }}",
     marital       : "{{ route('master.marital') }}",
+    education     : "{{ route('master.education') }}",
 };
 </script>
 <script src="{{ asset('js/personal.js') }}"></script>
