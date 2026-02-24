@@ -142,96 +142,103 @@ class CreateAccountController extends Controller
     public function showPersonal()
     {
         $ocr = session('ocr_result');
+        if (!$ocr) {
+            return redirect()
+            ->route('verifikasi.ktp')
+            ->with('api_message','Silakan upload KTP terlebih dahulu');
+        }
+        $raw = isset($ocr['result']) ? $ocr['result'] : $ocr;
+        $data = \App\Services\OcrNormalizer::normalize($raw);
 
-        $data = OcrNormalizer::normalize($ocr['result'] ?? []);
-
-        $showMaritalWarning = OcrNormalizer::isCerai(
-            $ocr['result']['status_perkawinan'] ?? ''
-        );
-
-        return view('data-personal', compact('data','showMaritalWarning'));
+        return view('data-personal', compact('data'));
     }
 
-   public function savePersonal(Request $request)
-{
-    $validated = $request->validate([
-        'nama' => 'required',
-        'nik' => 'required',
-        'tempatLahir' => 'required',
-        'tanggalLahir' => 'required',
-        'jenisKelamin' => 'required',
-        'agama' => 'required',
-        'education' => 'required',
-        'statusPerkawinan' => 'required',
-        'motherMaidenName' => 'required',
-        'alamat' => 'required',
-        'rt' => 'required',
-        'rw' => 'required',
-        'kota' => 'required',
-        'kelurahan' => 'required',
-        'kecamatan' => 'required',
-    ]);
-
-    $rt_rw = $validated['rt'].'/'.$validated['rw'];
-
-    $payload = [
-        "registrationId" => session('registrationId'),
-        "step" => "personalInformation",
-        "process" => "CREATE",
-        "datas" => [
-            "nik" => $validated['nik'],
-            "nama" => $validated['nama'],
-            "tanggalLahir" => $validated['tanggalLahir'],
-            "tempatLahir" => $validated['tempatLahir'],
-            "agama" => $validated['agama'],
-            "jenisKelamin" => $validated['jenisKelamin'],
-            "statusPerkawinan" => $validated['statusPerkawinan'],
-            "alamat" => $validated['alamat'],
-            "rt_rw" => $rt_rw,
-            "kelurahan" => $validated['kelurahan'],
-            "kecamatan" => $validated['kecamatan'],
-            "kota" => $validated['kota'],
-            "education" => $validated['education'],
-            "motherMaidenName" => $validated['motherMaidenName'],
-        ]
-    ];
-
-    try {
-
-        $url = 'https://dev.profits.co.id:8283/registration/saveRegistration';
-
-        Log::info('Calling API', [
-            'url' => $url,
-            'payload' => $payload
-        ]);
-
-        $response = Http::timeout(30)->post($url, $payload);
-
-        if (!$response->successful()) {
-            Log::error('HTTP error', ['body' => $response->body()]);
-            return back()->withErrors('HTTP error dari server');
+    public function savePersonal(Request $request)
+    {
+        if (!session()->has('registrationId')) {
+            return back()->with('error', 'Session registrasi tidak ada');
         }
 
-        $result = $response->json();
-
-        Log::info('API response', $result);
-
-        if (!($result['status'] ?? false)) {
-            return back()->withErrors($result['message'] ?? 'API gagal');
-        }
-
-        return redirect()->route('data.pekerjaan');
-
-    } catch (\Throwable $e) {
-
-        Log::error('API exception', [
-            'message' => $e->getMessage()
+        $personalData = $request->validate([
+            'nama' => 'required',
+            'nik' => 'required|digits:16',
+            'tanggalLahir' => 'required|date|after:1900-01-01',
+            'tempatLahir' => 'required',
+            'agama' => 'required',
+            'jenisKelamin' => 'required',
+            'statusPerkawinan' => 'required',
+            'alamat' => 'required',
+            'rt' => 'required',
+            'rw' => 'required',
+            'kota' => 'required',
+            'kelurahan' => 'required',
+            'kecamatan' => 'required',
+            'education' => 'required',
+            'motherMaidenName' => 'required',
+            'residenceAddress' => 'required',
+            'residenceRT' => 'required',
+            'residenceRW' => 'required',
+            'residenceCity' => 'required',
+            'residenceKelurahan' => 'required',
+            'residenceKecamatan' => 'required',
         ]);
+        dd($personalData);
 
-        return back()->withErrors('Server tidak dapat dihubungi');
+        $rt = str_pad($personalData['rt'], 3, '0', STR_PAD_LEFT);
+        $rw = str_pad($personalData['rw'], 3, '0', STR_PAD_LEFT);
+
+        $datas = collect($personalData)->except(['rt','rw'])->toArray();
+        $datas['rt_rw'] = "$rt/$rw";
+
+        // simpan session untuk refill form
+        session(['personal_data' => $personalData]);
+
+        $payload = [
+            "registrationId" => session('registrationId'),
+            "step" => "personalInformation",
+            "process" => "CREATE",
+            "datas" => $datas
+        ];
+
+        try {
+            // \Log::info('Personal Payload', $payload);
+            $response = Http::timeout(15)
+                ->connectTimeout(5)
+                ->retry(1, 200)
+                ->post('https://dev.profits.co.id:8283/registration/saveRegistration',$payload
+            );
+            $result = $response->json();
+
+            // \Log::info('Personal API Response', $result);
+            $message = $result['message'] ?? 'No message';
+            $status  = $result['status'] ?? false;
+
+            if ($status || str_contains($message, 'sudah dibuat')) {
+                return redirect()
+                ->route('data.pekerjaan')
+                ->with('api_message', $result['message'] ?? 'Berhasil');
+            }
+            return back()
+            ->withInput()
+            ->with('api_message', $result['message'] ?? 'Gagal Menyimpan Data');
+
+        } catch (\Throwable $e) {
+            \Log::error('Personal API Exception', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()
+            ->withInput()
+            ->with('api_message', 'Server Tidak Dapat Dihubungi');
+        }
     }
-}
-    public function saveEmployment(Request $request) {
+
+    public function saveEmployment(Request $request)
+    {
+        if (!session()->has('registrationId')) {
+            return back()->with('error', 'Session registrasi tidak ada');
+        }
+
         $employmentData = $request->validate([
             'employment'            => 'required',
             'company_name'          => 'required|string|max:255',
@@ -243,22 +250,61 @@ class CreateAccountController extends Controller
             'office_postal_code'    => 'required|string|max:10',
             'office_phone'          => 'required|string|max:20',
         ]);
-        $oldEmployment = session('employment_data.employment');
-        if ($oldEmployment && $oldEmployment != $employmentData['employment']) {
-            session()->forget([
-                'referensi_perseorangan',
-                'reference_form_type',
-                // 'profil_resiko',
-                // 'profil_risiko_total',
-                // 'profil_risiko_hasil',
+        dd($employmentData);
+
+        // simpan session untuk refill form
+        session(['employment_data' => $employmentData]);
+
+        $payload = [
+            "registrationId" => session('registrationId'),
+            "step" => "employmentInformation",
+            "process" => "CREATE",
+            "datas" => [
+                "employer" => $employmentData['company_name'],
+                "businessLine" => $employmentData['businessline'],
+                "employmentType" => $employmentData['employment'],
+                "employmentPosition" => $employmentData['position'],
+                "employmentDurationYear" => (int) $employmentData['work_year'],
+                "employmentDurationMonth" => (int) $employmentData['work_month'],
+                "officeAddress" => $employmentData['office_address'],
+                "officePostalCode" => $employmentData['office_postal_code'],
+                "officeTelephone" => $employmentData['office_phone'],
+            ]
+        ];
+
+        try {
+            \Log::info('Employment Payload', $payload);
+
+            $response = Http::timeout(15)
+                ->connectTimeout(5)
+                ->retry(1, 200)
+                ->post('https://dev.profits.co.id:8283/registration/saveRegistration',$payload
+            );
+            $result = $response->json();
+
+            \Log::info('Employment API Response', $result);
+
+            $message = strtolower($result['message'] ?? '');
+            $status  = $result['status'] ?? false;
+
+            if ($status || str_contains($message, 'sudah dibuat')) {
+                return redirect()
+                ->route('data.penghasilan')
+                ->with('api_message', $result['message'] ?? 'Berhasil');
+            }
+            return back()
+            ->withInput()
+            ->with('api_message', $result['message'] ?? 'Gagal Menyimpan');
+
+        } catch (\Throwable $e) {
+            \Log::error('Employment API Exception', [
+                'error' => $e->getMessage()
             ]);
+
+            return back()
+            ->withInput()
+            ->with('api_message', 'Server Tidak Dapat Dihubungi');
         }
-
-        session([
-            'employment_data' => $employmentData
-        ]);
-
-        return redirect()->route('data.penghasilan');
     }
 
     public function saveFinancial(Request $request) {

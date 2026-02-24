@@ -50,7 +50,7 @@ Route::middleware('ensure.login')->group(function () {
 });
 
 Route::middleware(['ensure.login','check.step'])->group(function () {
-    Route::get('/data-personal',[Verifikasi_KTPController::class, 'dataPersonal'])->name('data.personal');
+    Route::get('/data-personal',[CreateAccountController::class, 'showPersonal'])->name('data.personal');
     Route::view('/data-pekerjaan', 'data-pekerjaan')->name('data.pekerjaan');
     Route::view('/data-penghasilan', 'data-penghasilan')->name('data.penghasilan');
     Route::view('/data-referensi-perseorangan', 'data-referensi-perseorangan')->name('data.referensi.perseorangan');

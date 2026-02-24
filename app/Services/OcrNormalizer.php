@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
+
 class OcrNormalizer
 {
     public static function normalize(array $ocr)
@@ -22,32 +24,48 @@ class OcrNormalizer
         ];
     }
 
-    public static function mapGender($value)
+    // private static function digits($v)
+    // {
+    //     return $v ? preg_replace('/\D/', '', $v) : null;
+    // }
+
+    // private static function cleanText($v)
+    // {
+    //     if (!$v) return null;
+    //     $v = strtoupper($v);
+    //     return trim(preg_replace('/\s+/', ' ', $v));
+    // }
+
+    // private static function cleanAlpha($v)
+    // {
+    //     if (!$v) return null;
+    //     return trim(preg_replace('/[^A-Za-z\s]/', '', strtoupper($v)));
+    // }
+
+    // private static function date($v)
+    // {
+    //     if (!$v) return null;
+
+    //     try {
+    //         return Carbon::parse($v)->format('Y-m-d');
+    //     } catch (\Exception $e) {
+    //         return null;
+    //     }
+    // }
+
+    private static function mapGender($v)
     {
-        $v = strtoupper($value);
-
-        if (str_contains($v, 'LAKI')) return 'Pria';
-        if (str_contains($v, 'PEREMPUAN')) return 'Wanita';
-
+        $v = strtoupper($v);
+        if (str_contains($v,'LAKI')) return 'Pria';
+        if (str_contains($v,'PEREMPUAN')) return 'Wanita';
         return null;
     }
 
-    public static function mapMarital($value)
+    private static function mapMarital($v)
     {
-        $v = strtoupper($value);
-
-        if (str_contains($v, 'KAWIN') && !str_contains($v, 'BELUM'))
-            return 'Menikah';
-
-        if (str_contains($v, 'BELUM'))
-            return 'Belum Menikah';
-
-        // Cerai → user pilih manual
+        $v = strtoupper($v);
+        if (str_contains($v,'KAWIN')) return 'Menikah';
+        if (str_contains($v,'BELUM')) return 'Belum Menikah';
         return null;
-    }
-
-    public static function isCerai($value)
-    {
-        return str_contains(strtoupper($value), 'CERAI');
     }
 }

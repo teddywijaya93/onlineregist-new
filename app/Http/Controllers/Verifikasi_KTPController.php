@@ -41,7 +41,8 @@ class Verifikasi_KTPController extends Controller
 
         // simpan hasil OCR ke session
         session([
-            'verifikasi_ktp' => $response->json('result')
+            // 'verifikasi_ktp' => $response->json('result')
+            'ocr_result' => $response->json('result')
         ]);
 
         // redirect ke halaman data personal (GET)
