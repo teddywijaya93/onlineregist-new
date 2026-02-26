@@ -4,18 +4,36 @@ namespace App\Services;
 
 class StepRedirectService
 {
+    public const STEP_ROUTE = [
+        'verificationWA'        => 'otp',
+        'uploadKTP'             => 'verifikasi.ktp',
+        'personalInformation'   => 'data.personal',
+        'employmentInformation' => 'data.pekerjaan',
+        'financialProfile'      => 'data.penghasilan',
+        'referenceInformation'  => 'data.referensi.perseorangan',
+        'riskProfile'           => 'profil.resiko',
+        'bankInformation'       => 'data.bank',
+    ];
+
     public static function routeByStep(?string $step): string
     {
-        return match ($step) {
+        if (!$step || !isset(self::STEP_ROUTE[$step])) {
+        return route('login');
+        }
 
-            'verificationWA' => route('otp'),
+        // kalau user sudah di route itu, jangan redirect lagi
+        if (request()->routeIs(self::STEP_ROUTE[$step])) {
+            return url()->current();
+        }
 
-            'uploadKTP' => route('verifikasi.ktp'),
+        return route(self::STEP_ROUTE[$step]);
+    }
 
-            // future step
-            'dataPersonal' => route('data.personal'),
+    public static function nextStep(string $currentStep): ?string
+    {
+        $keys = array_keys(self::STEP_ROUTE);
+        $index = array_search($currentStep, $keys);
 
-            default => url('/')
-        };
+        return $keys[$index + 1] ?? null;
     }
 }

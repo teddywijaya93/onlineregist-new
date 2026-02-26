@@ -49,9 +49,10 @@ Route::middleware('ensure.login')->group(function () {
     Route::view('/verifikasi-wajah', 'verifikasi-liveness-wajah')->name('verifikasi.wajah');
 });
 
-Route::middleware(['ensure.login','check.step'])->group(function () {
+Route::middleware(['ensure.login','step.guard'])->group(function () {
     Route::get('/data-personal',[CreateAccountController::class, 'showPersonal'])->name('data.personal');
-    Route::view('/data-pekerjaan', 'data-pekerjaan')->name('data.pekerjaan');
+    Route::get('/data-pekerjaan', [CreateAccountController::class, 'showEmployment'])->name('data.pekerjaan');
+    Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmployment'])->name('data.pekerjaan.submit');
     Route::view('/data-penghasilan', 'data-penghasilan')->name('data.penghasilan');
     Route::view('/data-referensi-perseorangan', 'data-referensi-perseorangan')->name('data.referensi.perseorangan');
     Route::view('/profil-resiko', 'profil-resiko')->name('data.profil.resiko');
@@ -69,7 +70,7 @@ Route::post('/verifikasi-ktp/process', [Verifikasi_KTPController::class, 'proces
 Route::post('/verifikasi-wajah/process',[Verifikasi_WajahController::class, 'process'])->name('verifikasi.wajah.process');
 
 // Step 1
-Route::post('/data-personal', [CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
+Route::post('/data-personal/submit',[CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
 
 // Step 2
 Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmployment'])->name('data.pekerjaan.submit');
@@ -78,7 +79,7 @@ Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmplo
 Route::post('/data-penghasilan/submit',[CreateAccountController::class, 'saveFinancial'])->name('data.penghasilan.submit');
 
 // Step 4
-Route::get('/data-referensi-perseorangan', function () {return view('data-referensi-perseorangan');})->middleware('check.step')->name('data.referensi.perseorangan');
+Route::get('/data-referensi-perseorangan', function () {return view('data-referensi-perseorangan');})->middleware('step.guard')->name('data.referensi.perseorangan');
 Route::post('/data-referensi-perseorangan/submit',[CreateAccountController::class, 'saveReferensiPerseorangan'])->name('data.referensi.perseorangan.submit');
 
 // Step 5
@@ -86,3 +87,8 @@ Route::post('/profil-resiko/submit',[CreateAccountController::class, 'saveProfil
 Route::get('/profil-resiko-result',[CreateAccountController::class, 'resultProfilResiko'])->name('profil.resiko.result');
 
 // Step 6
+
+// TEST API ADVANCED AI
+Route::get('/verifikasi-ktp-advanced', [Verifikasi_KTPController::class, 'viewOcrRaw'])->name('verifikasi.ktp.advanced');
+Route::post('/verifikasi-ktp-advance-raw', [Verifikasi_KTPController::class, 'processAdvanceOcrRaw'])->name('verifikasi.ktp.advance.raw');
+Route::post('/bank-account-check', [Verifikasi_KTPController::class, 'checkBankAccount'])->name('bank.account.check');

@@ -12,15 +12,14 @@ class AuthController extends Controller
 {
     public function loginNewRegistration(Request $request)
     {
-        try {
-            if (empty($request->username) || empty($request->password)) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'Username dan Password wajib diisi'
-                ], 422);
-            }
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required'
+        ]);
 
+        try {
             $response = Http::timeout(15)
+                ->retry(2, 300)
                 ->withHeaders([
                     'Authorization' => 'Bearer ' . config('services.profits.token'),
                     'Accept'        => 'application/json',
@@ -31,46 +30,37 @@ class AuthController extends Controller
                     'password' => trim($request->password),
                 ]);
 
-            // Jika API error (500 / 404 / dll)
             if (!$response->ok()) {
                 return response()->json([
                     'status'  => false,
-                    'message' => 'Server API sedang bermasalah'
+                    'message' => 'Server API bermasalah'
                 ], 500);
             }
 
             $result = $response->json();
-
-            // Success
-            if (!empty($result['status']) && $result['status'] === true) {
-
+            $isSuccess = filter_var($result['status'] ?? false, FILTER_VALIDATE_BOOLEAN);
+            if ($isSuccess) {
+                $request->session()->regenerate();
                 session([
-                    'accountId'         => $result['accountId'],
-                    'registrationId'    => $result['registrationId'],
-                    'registrationStep'  => $result['registrationStep'],
-                    // 'otpRequired'      => $result['otpRequired'],
+                    'accountId'        => $result['accountId'],
+                    'registrationId'   => $result['registrationId'],
+                    // 'registrationStep' => $result['registrationStep'],
                 ]);
 
-                // fallback mobilePhone dari createAccount
-                if (!empty(session('register_phone'))) {
-                    session(['mobilePhone' => session('register_phone')]);
-                }
-
                 return response()->json([
-                    'status' => true,
-                    'registrationStep' => $result['registrationStep'],
-                    'redirect' => StepRedirectService::routeByStep($result['registrationStep'])
+                    'status'   => true,
+                    'redirect' => StepRedirectService::routeByStep(
+                        $result['registrationStep']
+                    )
                 ]);
             }
 
-            // Jika username/password salah
             return response()->json([
                 'status'  => false,
-                'message' => $result['message'],
+                'message' => $result['message'] ?? 'Login gagal'
             ], 400);
 
         } catch (\Throwable $e) {
-
             Log::error('LOGIN ERROR', [
                 'message' => $e->getMessage()
             ]);
@@ -84,24 +74,21 @@ class AuthController extends Controller
 
     public function verifyOtp(Request $request)
     {
-        try {   
-            if (empty($request->otp)) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'Kode OTP wajib diisi'
-                ], 422);
-            }
+        $request->validate([
+            'otp' => 'required'
+        ]);
 
-            $accountId = session('accountId');
+        $accountId = session('accountId');
+        if (!$accountId) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Session expired, silakan login kembali'
+            ], 401);
+        }
 
-            if (!$accountId) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'Session expired, silakan login kembali'
-                ], 401);
-            }
-
+        try {
             $response = Http::timeout(15)
+                ->retry(2, 300)
                 ->withHeaders([
                     'Content-Type' => 'application/json',
                     'Accept'       => 'application/json',
@@ -119,18 +106,17 @@ class AuthController extends Controller
             }
 
             $result = $response->json();
-
-            if (!empty($result['status']) && $result['status'] === true) {
-                // update registrationStep terbaru
-                session([
-                    'registrationStep' => $result['registrationStep']
-                ]);
+            $isSuccess = filter_var($result['status'] ?? false, FILTER_VALIDATE_BOOLEAN);
+            if ($isSuccess) {
+                // session([
+                //     'registrationStep' => $result['registrationStep']
+                // ]);
 
                 return response()->json([
-                    'status' => true,
-                    'message' => $result['message'],
-                    'registrationStep' => $result['registrationStep'],
-                    'redirect' => StepRedirectService::routeByStep($result['registrationStep'])
+                    'status'   => true,
+                    'redirect' => StepRedirectService::routeByStep(
+                        $result['registrationStep']
+                    )
                 ]);
             }
 
@@ -140,7 +126,6 @@ class AuthController extends Controller
             ], 400);
 
         } catch (\Throwable $e) {
-
             Log::error('VERIFY OTP ERROR', [
                 'message' => $e->getMessage()
             ]);
@@ -154,18 +139,17 @@ class AuthController extends Controller
 
     public function resendOtp(Request $request)
     {
+        $accountId = session('accountId');
+        if (!$accountId) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Session expired, silakan login kembali'
+            ], 401);
+        }
+
         try {
-
-            $accountId = session('accountId');
-
-            if (!$accountId) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'Session expired, silakan login kembali'
-                ], 401);
-            }
-
             $response = Http::timeout(15)
+                ->retry(2, 300)
                 ->withHeaders([
                     'Content-Type' => 'application/json',
                     'Accept'       => 'application/json',
@@ -180,11 +164,9 @@ class AuthController extends Controller
                     'message' => 'Server resend OTP bermasalah'
                 ], 500);
             }
-
             return response()->json($response->json());
 
         } catch (\Throwable $e) {
-
             Log::error('RESEND OTP ERROR', [
                 'message' => $e->getMessage()
             ]);
@@ -207,10 +189,14 @@ class AuthController extends Controller
             return redirect()->route('login');
         }
 
-        if (session('registrationStep') !== 'verificationWA') {
-            return redirect()->route('verifikasi.ktp');
-        }
-
         return view('otp');
+    }
+
+    public function logout(Request $request)
+    {
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 }

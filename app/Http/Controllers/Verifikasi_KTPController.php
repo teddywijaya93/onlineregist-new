@@ -58,4 +58,110 @@ class Verifikasi_KTPController extends Controller
             'data' => session('verifikasi_ktp')
         ]);
     }
+
+    // API ADVANCED AI
+    public function processAdvanceOcrRaw(Request $request)
+    {
+        $request->validate([
+            'ktp_image' => 'required|image|mimes:jpg,jpeg,png|max:4096',
+        ]);
+
+        try {
+
+            $response = Http::timeout(60)
+                ->withHeaders([
+                    'X-ADVAI-KEY'    => env('ADVAI_KEY'),
+                    'X-ACCESS-TOKEN' => env('ADVAI_ACCESS_TOKEN'),
+                ])
+                ->attach(
+                    'ocrImage',
+                    file_get_contents($request->file('ktp_image')->getRealPath()),
+                    $request->file('ktp_image')->getClientOriginalName()
+                )
+                ->post('https://api.advance.ai/openapi/face-recognition/v3/ocr-ktp-check');
+
+            if ($response->failed()) {
+
+                \Log::error('Advance OCR Failed', [
+                    'status' => $response->status(),
+                    'body'   => $response->body()
+                ]);
+
+                return back()->withErrors(['ocr' => 'OCR Advance.AI gagal']);
+            }
+
+            // simpan RAW JSON string
+            session([
+                'ocr_raw' => $response->body()
+            ]);
+
+            \Log::info('Advance OCR RAW', [
+                'response' => $response->body()
+            ]);
+
+            return redirect()->route('verifikasi.ktp.advanced');
+
+        } catch (\Exception $e) {
+
+            \Log::error('Advance OCR Exception', [
+                'error' => $e->getMessage()
+            ]);
+
+            return back()->withErrors(['ocr' => $e->getMessage()]);
+        }
+    }
+
+    public function viewOcrRaw()
+    {
+        return view('verifikasi-ktp-advanced', [
+            'raw' => session('ocr_raw')
+        ]);
+    }
+
+    public function checkBankAccount(Request $request)
+    {
+        $request->validate([
+            'bank' => 'required',
+            'nomor_rekening' => 'required'
+        ]);
+
+        try {
+
+            $response = Http::timeout(30)
+                ->withHeaders([
+                    'X-ADVAI-KEY' => env('ADVAI_KEY'),
+                    'Content-Type' => 'application/json',
+                ])
+                ->post('https://api.advance.ai/openapi/verification/v1/bank-account-check', [
+                    'bankCode' => $request->bank,
+                    'bankAccount' => $request->nomor_rekening,
+                ]);
+
+            if ($response->failed()) {
+
+                \Log::error('Bank Check Failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+
+                return back()->withErrors(['bank' => 'Bank verification gagal']);
+            }
+
+            $raw = $response->body();
+
+            \Log::info('Bank Check RAW', [
+                'response' => $raw
+            ]);
+
+            return back()->with('bank_raw', $raw);
+
+        } catch (\Exception $e) {
+
+            \Log::error('Bank Check Exception', [
+                'error' => $e->getMessage()
+            ]);
+
+            return back()->withErrors(['bank' => $e->getMessage()]);
+        }
+    }
 }

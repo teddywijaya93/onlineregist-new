@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function(){
                     return;
                 }
 
-                window.location.href = "/dashboard";
+                window.location.href = "/data-personal";
                 return;
             }
 

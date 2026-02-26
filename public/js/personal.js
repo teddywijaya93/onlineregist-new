@@ -1,9 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
     initSelects();
     initSameAddress();
-    initValidation();
     initInputFilters();
+    showApiMessage();
+    initFormValidation();
 });
+
+function showApiMessage() {
+    if (window.apiMessage) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Informasi',
+            text: window.apiMessage
+        });
+    }
+}
 
 function initSelects() {
     loadSelect("genderSelect", window.routes.gender);
@@ -65,35 +76,36 @@ function initSameAddress() {
     });
 }
 
-function initValidation() {
+function initFormValidation() {
     const form = document.querySelector('form');
     if (!form) return;
-    form.addEventListener('submit', function(e) {
-        const fields = [
-            ['nama','Nama sesuai e-KTP'],
-            ['nik','Nomor e-KTP'],
-            ['motherMaidenName','Nama gadis ibu kandung'],
-            ['tempatLahir','Tempat lahir'],
-            ['tanggalLahir','Tanggal lahir'],
-            ['genderSelect','Jenis kelamin'],
-            ['religionSelect','Agama'],
-            ['educationSelect','Pendidikan terakhir'],
-            ['maritalSelect','Status perkawinan'],
-            ['alamat','Alamat sesuai e-KTP'],
-            ['rt','RT'],
-            ['rw','RW'],
-            ['kota','Kota'],
-            ['kelurahan','Kelurahan'],
-            ['kecamatan','Kecamatan'],
-            ['residenceAddress','Alamat domisili'],
-            ['residenceRT','RT domisili'],
-            ['residenceRW','RW domisili'],
-            ['residenceCity','Kota domisili'],
-            ['residenceKelurahan','Kelurahan domisili'],
-            ['residenceKecamatan','Kecamatan domisili']
-        ];
+    const fields = [
+        ['nama','Nama'],
+        ['nik','NIK'],
+        ['motherMaidenName','Nama ibu'],
+        ['tempatLahir','Tempat lahir'],
+        ['tanggalLahir','Tanggal lahir'],
+        ['genderSelect','Jenis kelamin'],
+        ['religionSelect','Agama'],
+        ['educationSelect','Pendidikan'],
+        ['maritalSelect','Status kawin'],
+        ['alamat','Alamat'],
+        ['rt','RT'],
+        ['rw','RW'],
+        ['kota','Kota'],
+        ['kelurahan','Kelurahan'],
+        ['kecamatan','Kecamatan'],
+        ['residenceAddress','Alamat domisili'],
+        ['residenceRT','RT domisili'],
+        ['residenceRW','RW domisili'],
+        ['residenceCity','Kota domisili'],
+        ['residenceKelurahan','Kelurahan domisili'],
+        ['residenceKecamatan','Kecamatan domisili']
+    ];
 
-        const errors = [];
+    form.addEventListener('submit', function(e) {
+        let errors = [];
+
         fields.forEach(([id,label]) => {
             const el = document.getElementById(id);
             if (!el || !el.value.trim()) {
@@ -106,7 +118,10 @@ function initValidation() {
             Swal.fire({
                 icon: 'error',
                 title: 'Data belum lengkap',
-                html: `<ul style="text-align:left">${errors.map(e=>`<li>${e}</li>`).join('')}</ul>`
+                html: 
+                '<ul style="text-align:left">' +
+                    errors.map(err => '<li>'+err+'</li>').join('') +
+                '</ul>'
             });
         }
     });
@@ -123,67 +138,5 @@ function initInputFilters() {
         input.addEventListener('input', () => {
             input.value = input.value.replace(/\D/g,'').slice(0,max);
         });
-
     });
-
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    // ===== SweetAlert message dari session =====
-    if (window.apiMessage) {
-        Swal.fire({
-            icon: 'info',
-            title: 'Informasi',
-            text: window.apiMessage
-        });
-    }
-
-    // ===== Validation submit =====
-    const form = document.querySelector('form');
-    if (!form) return;
-
-    form.addEventListener('submit', function(e) {
-        let errors = [];
-        function check(id, label) {
-            const el = document.getElementById(id);
-            if (!el || !el.value.trim()) {
-                errors.push(label + ' wajib diisi');
-            }
-        }
-
-        check('nama','Nama sesuai e-KTP');
-        check('nik','Nomor e-KTP');
-        check('motherMaidenName','Nama Gadis Ibu Kandung');
-        check('tempatLahir','Tempat Lahir');
-        check('tanggalLahir','Tanggal Lahir');
-        check('genderSelect','Jenis Kelamin');
-        check('religionSelect','Agama');
-        check('educationSelect','Pendidikan Terakhir');
-        check('maritalSelect','Status Perkawinan');
-        check('alamat','Alamat Sesuai e-KTP');
-        check('rt','RT');
-        check('rw','RW');
-        check('kota','Kota');
-        check('kelurahan','Kelurahan');
-        check('kecamatan','Kecamatan');
-        check('residenceAddress','Alamat Domisili');
-        check('residenceRT','RT Domisili');
-        check('residenceRW','RW Domisili');
-        check('residenceCity','Kota Domisili');
-        check('residenceKelurahan','Kelurahan Domisili');
-        check('residenceKecamatan','Kecamatan Domisili');
-
-        if (errors.length > 0) {
-            e.preventDefault();
-            Swal.fire({
-                icon: 'error',
-                title: 'Data belum lengkap',
-                html: 
-                '<ul style="text-align:left">' +
-                    errors.map(err => '<li>'+err+'</li>').join('') +
-                '</ul>'
-            });
-        }
-    });
-});
