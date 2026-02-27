@@ -44,7 +44,7 @@ class AuthController extends Controller
                 session([
                     'accountId'        => $result['accountId'],
                     'registrationId'   => $result['registrationId'],
-                    // 'registrationStep' => $result['registrationStep'],
+                    'registrationStep' => $result['registrationStep'],
                 ]);
 
                 return response()->json([
@@ -108,9 +108,9 @@ class AuthController extends Controller
             $result = $response->json();
             $isSuccess = filter_var($result['status'] ?? false, FILTER_VALIDATE_BOOLEAN);
             if ($isSuccess) {
-                // session([
-                //     'registrationStep' => $result['registrationStep']
-                // ]);
+                session([
+                    'registrationStep' => $result['registrationStep']
+                ]);
 
                 return response()->json([
                     'status'   => true,

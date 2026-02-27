@@ -10,7 +10,8 @@ use App\Services\OcrNormalizer;
 
 class CreateAccountController extends Controller
 {
-    public function saveAccountType(Request $request) {
+    public function saveAccountType(Request $request) 
+    {
         try {
             $request->validate([
                 'accountType' => 'required|in:REGULAR,SYARIAH'
@@ -37,7 +38,8 @@ class CreateAccountController extends Controller
         }
     }
 
-    public function saveIdentity(Request $request) {
+    public function saveIdentity(Request $request) 
+    {
         try {
             $request->validate([
                 'name' => 'required|string|min:3',
@@ -66,7 +68,8 @@ class CreateAccountController extends Controller
         }
     }
 
-    public function createAccount(Request $request) {
+    public function createAccount(Request $request) 
+    {
         try {
             $request->validate([
                 'username'    => 'required|string|min:7|max:15',
@@ -253,47 +256,11 @@ class CreateAccountController extends Controller
         if (!session()->has('registrationId')) {
             return redirect()->route('login');
         }
-        $employmentData = null;
 
-        try {
-            $response = Http::timeout(15)
-                ->connectTimeout(5)
-                ->retry(1, 200)
-                ->withHeaders([
-                    'Authorization' => 'Bearer ' . config('services.profits.token'),
-                    'Accept'        => 'application/json',
-                    'Content-Type'  => 'application/json',
-                ])
-                ->post(
-                    'https://dev.profits.co.id:8283/registration/getRegistration',
-                    [
-                        'registrationId' => session('registrationId'),
-                    ]
-                );
+        $employmentData = session('employmentData', []);
+        $isUpdate = !empty($employmentData);
 
-             if ($response->ok()) {
-                $result = $response->json();
-
-                // ambil employment dari API
-                $employmentData = data_get($result, 'datas.employmentInformation')
-                    ?? data_get($result, 'data.employmentInformation')
-                    ?? null;
-
-                // Penentu UPDATE hanya dari API
-                $isUpdate = !empty($employmentData);
-            }
-        } catch (\Throwable $e) {
-            \Log::error('GET EMPLOYMENT ERROR', [
-                'message' => $e->getMessage()
-            ]);
-        }
-
-        if (empty($employmentData) && session()->has('employment_last_input')) {
-            $employmentData = session('employment_last_input');
-        }
-
-        $isUpdate = session('employment_saved', false);
-        return view('data-pekerjaan', compact('employmentData','isUpdate'));
+        return view('data-pekerjaan', compact('employmentData', 'isUpdate'));
     }
 
     public function saveEmployment(Request $request)
@@ -302,41 +269,28 @@ class CreateAccountController extends Controller
             return redirect()->route('login');
         }
 
-        $employmentData = $request->validate([
-            'employment'         => 'required',
-            'company_name'       => 'required|string|max:255',
-            'position'           => 'required',
-            'businessline'       => 'required',
-            'work_year'          => 'required|numeric|min:0',
-            'work_month'         => 'required|numeric|min:0|max:11',
-            'office_address'     => 'required|string',
-            'office_postal_code' => 'required|string|max:10',
-            'office_phone'       => 'required|string|max:20',
-            'process_type'       => 'required|in:CREATE,UPDATE',
+        $validated = $request->validate([
+            'employmentType'          => 'required',
+            'employer'                => 'required|string|max:255',
+            'employmentPosition'      => 'required',
+            'businessLine'            => 'required',
+            'employmentDurationYear'  => 'required|numeric|min:0',
+            'employmentDurationMonth' => 'required|numeric|min:0|max:11',
+            'officeAddress'           => 'required|string',
+            'officePostalCode'        => 'required|string|max:10',
+            'officeTelephone'         => 'required|string|max:20',
+            'process_type'            => 'required|in:CREATE,UPDATE',
         ]);
 
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "employmentInformation",
             "process"        => $request->process_type,
-            "datas" => [
-                "employer" => $employmentData['company_name'],
-                "businessLine" => $employmentData['businessline'],
-                "employmentType" => $employmentData['employment'],
-                "employmentPosition" => $employmentData['position'],
-                "employmentDurationYear" => (int)$employmentData['work_year'],
-                "employmentDurationMonth" => (int)$employmentData['work_month'],
-                "officeAddress" => $employmentData['office_address'],
-                "officePostalCode" => $employmentData['office_postal_code'],
-                "officeTelephone" => $employmentData['office_phone'],
-            ]
+            "datas"          => $validated
         ];
 
         try {
-            $response = Http::timeout(15)
-                ->connectTimeout(5)
-                ->retry(1, 200)
-                ->withHeaders([
+            $response = Http::withHeaders([
                     'Authorization' => 'Bearer ' . config('services.profits.token'),
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
@@ -355,31 +309,32 @@ class CreateAccountController extends Controller
 
             $result  = $response->json();
             $status  = $result['status'] ?? false;
-            $message = strtolower($result['message'] ?? '');
+            $message = $result['message'] ?? '';
+            $nextStep = $result['registrationStep'] ?? null;
 
-            if ($status || str_contains($message, 'sudah dibuat')) {
-                session([
-                    'registrationStep' => 'financialProfile',
-                    'employment_saved' => true
-                ]);
+            if ($status) {
+                session(['employmentData' => $validated]);
 
-                return redirect()
-                    ->route('data.penghasilan')
+                if ($nextStep === 'financialProfile') {
+                    return redirect()->route('data.penghasilan')
+                        ->with([
+                            'api_message' => $message,
+                            'api_status'  => true
+                        ]);
+                }
+
+                return redirect()->route('data.pekerjaan')
                     ->with([
-                        'api_message' => $result['message'] ?? 'Berhasil',
+                        'api_message' => $message,
                         'api_status'  => true
                     ]);
             }
 
             return back()->withInput()->with([
-                'api_message' => $result['message'] ?? 'Gagal menyimpan',
+                'api_message' => $message,
                 'api_status'  => false
             ]);
         } catch (\Throwable $e) {
-            \Log::error('SAVE EMPLOYMENT ERROR', [
-                'message' => $e->getMessage()
-            ]);
-
             return back()->withInput()->with([
                 'api_message' => 'Server tidak dapat dihubungi',
                 'api_status'  => false
@@ -387,23 +342,99 @@ class CreateAccountController extends Controller
         }
     }
 
-    public function saveFinancial(Request $request)
+    public function showFinancial()
     {
-        $finacialData = $request->validate([
-            'incomeRange'         => 'required',
-            'primaryFund'         => 'required',
-            'investmentObjective' => 'required',
-        ]);
+        if (!session()->has('registrationId')) {
+            return redirect()->route('login');
+        }
 
-        session([
-            'financial_data'   => $finacialData,
-            'registrationStep' => 'financialProfile',
-        ]);
+        $financialData = session('financialData', []);
+        $isUpdate = !empty($financialData);
 
-        return redirect()->route('data.referensi.perseorangan');
+        return view('data-penghasilan', compact('financialData', 'isUpdate'));
     }
 
-    public function saveReferensiPerseorangan(Request $request) {
+    public function saveFinancial(Request $request)
+    {
+        if (!session()->has('registrationId')) {
+            return redirect()->route('login');
+        }
+
+        $validated = $request->validate([
+            'mainIncomeRange'     => 'required',
+            'primaryFundSources'  => 'required',
+            'investmentObjective' => 'required',
+            'process_type'        => 'required|in:CREATE,UPDATE',
+        ]);
+
+        $payload = [
+            "registrationId" => session('registrationId'),
+            "step"           => "financialProfile",
+            "process"        => $request->process_type,
+            "datas"          => $validated
+        ];
+
+        try {
+            \Log::info('Financial Payload', $payload);
+            $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . config('services.profits.token'),
+                    'Accept'        => 'application/json',
+                    'Content-Type'  => 'application/json',
+                ])
+                ->post(
+                    'https://dev.profits.co.id:8283/registration/saveRegistration',
+                    $payload
+                );
+
+            if (!$response->ok()) {
+                return back()->withInput()->with([
+                    'api_message' => 'Server API tidak merespon',
+                    'api_status'  => false
+                ]);
+            }
+
+            $result  = $response->json();
+            $status  = $result['status'] ?? false;
+            $message = $result['message'] ?? '';
+            $nextStep = $result['registrationStep'] ?? null;
+            \Log::info('Financial API Response', $result);
+
+            if ($status) {
+                session(['financialData' => $validated]);
+
+                if ($nextStep === 'relation') {
+                    return redirect()->route('data.referensi.perseorangan')
+                        ->with([
+                            'api_message' => $message,
+                            'api_status'  => true
+                        ]);
+                }
+
+                return redirect()->route('data.penghasilan')
+                    ->with([
+                        'api_message' => $message,
+                        'api_status'  => true
+                    ]);
+            }
+
+            return back()->withInput()->with([
+                'api_message' => $message,
+                'api_status'  => false
+            ]);
+        } catch (\Throwable $e) {
+            return back()->withInput()->with([
+                'api_message' => 'Server tidak dapat dihubungi',
+                'api_status'  => false
+            ]);
+        }
+    }
+
+    public function saveReferensiPerseorangan(Request $request)
+    {
+        if (!session()->has('registrationId')) {
+            return redirect()->route('login');
+        }
+
         $formType = session('reference_form_type');
 
         if (!$formType) {
@@ -411,35 +442,110 @@ class CreateAccountController extends Controller
         }
 
         if ($formType === 'spouse') {
-            $referensiPerseorangan = $request->validate([
-                'referenceRelation'     => 'required',
-                'nama_relasi_'          => 'required',
-                'nomor_ponsel_relasi'   => 'required',
-                'email_relasi'          => 'required',
+            $validated = $request->validate([
+                'referenceRelation'   => 'required',
+                'nama_relasi'         => 'required',
+                'nomor_ponsel_relasi' => 'required',
+                'email_relasi'        => 'required',
+                'process_type'        => 'required|in:CREATE,UPDATE',
             ]);
-            // dd($referensiPerseorangan);
+
+            $datas = [
+                "referenceRelation" => $validated['referenceRelation'],
+                "name"              => $validated['nama_relasi'],
+                "mobilePhone"       => $validated['nomor_ponsel_relasi'],
+                "email"             => $validated['email_relasi'],
+            ];
         } else {
-            $referensiPerseorangan = $request->validate([
-                'referenceRelation'         => 'required',
-                'nama_relasi'               => 'required',
-                'nik_relasi'                => 'required',
-                'jenis_kelamin_relasi'      => 'required',
-                'tempat_lahir_relasi'       => 'required',
-                'tanggal_lahir_relasi'      => 'required',
-                'status_perkawinan_relasi'  => 'required',
-                'alamat_relasi'             => 'required',
-                'kota_relasi'               => 'required',
-                'kelurahan_relasi'          => 'required',
-                'kecamatan_relasi'          => 'required',
+            $validated = $request->validate([
+                'referenceRelation'        => 'required',
+                'nama_relasi'              => 'required',
+                'nik_relasi'               => 'required',
+                'jenis_kelamin_relasi'     => 'required',
+                'tempat_lahir_relasi'      => 'required',
+                'tanggal_lahir_relasi'     => 'required',
+                'status_perkawinan_relasi' => 'required',
+                'alamat_relasi'            => 'required',
+                'kota_relasi'              => 'required',
+                'kelurahan_relasi'         => 'required',
+                'kecamatan_relasi'         => 'required',
+                'process_type'             => 'required|in:CREATE,UPDATE',
             ]);
-            // dd($referensiPerseorangan);
+
+            $datas = [
+                "referenceRelation" => $validated['referenceRelation'],
+                "name"              => $validated['nama_relasi'],
+                "nik"               => $validated['nik_relasi'],
+                "gender"            => $validated['jenis_kelamin_relasi'],
+                "birthPlace"        => $validated['tempat_lahir_relasi'],
+                "birthDate"         => $validated['tanggal_lahir_relasi'],
+                "maritalStatus"     => $validated['status_perkawinan_relasi'],
+                "address"           => $validated['alamat_relasi'],
+                "city"              => $validated['kota_relasi'],
+                "subDistrict"       => $validated['kecamatan_relasi'],
+                "village"           => $validated['kelurahan_relasi'],
+            ];
         }
 
-        session([
-            'referensi_perseorangan' => $referensiPerseorangan
-        ]);
+        $payload = [
+            "registrationId" => session('registrationId'),
+            "step"           => "relation",
+            "process"        => $validated['process_type'],
+            "datas"          => $datas
+        ];
 
-        return redirect()->route('data.profil.resiko');
+        try {
+            $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . config('services.profits.token'),
+                    'Accept'        => 'application/json',
+                    'Content-Type'  => 'application/json',
+                ])
+                ->post(
+                    'https://dev.profits.co.id:8283/registration/saveRegistration',
+                    $payload
+                );
+
+            if (!$response->ok()) {
+                return back()->withInput()->with([
+                    'api_message' => 'Server API tidak merespon',
+                    'api_status'  => false
+                ]);
+            }
+
+            $result  = $response->json();
+            $status  = $result['status'] ?? false;
+            $message = $result['message'] ?? '';
+            $nextStep = $result['registrationStep'] ?? null;
+
+            if ($status) {
+                session(['referensiData' => $datas]);
+
+                if ($nextStep === 'riskProfile') {
+                    return redirect()->route('data.profil.resiko')
+                        ->with([
+                            'api_message' => $message,
+                            'api_status'  => true
+                        ]);
+                }
+
+                return redirect()->route('data.referensi.perseorangan')
+                    ->with([
+                        'api_message' => $message,
+                        'api_status'  => true
+                    ]);
+            }
+
+            return back()->withInput()->with([
+                'api_message' => $message,
+                'api_status'  => false
+            ]);
+        } catch (\Throwable $e) {
+
+            return back()->withInput()->with([
+                'api_message' => 'Server tidak dapat dihubungi',
+                'api_status'  => false
+            ]);
+        }
     }
 
     public function saveProfilResiko(Request $request) {

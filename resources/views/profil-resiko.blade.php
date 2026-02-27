@@ -74,4 +74,25 @@
     </div>
 </section>
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const message = @json(session('api_message'));
+    const status  = @json(session('api_status'));
+
+    if (message) {
+        let iconType = 'info';
+        if (status === true || status === 'true') {
+            iconType = 'success';
+        } else if (status === false || status === 'false') {
+            iconType = 'warning';
+        }
+        Swal.fire({
+            icon: iconType,
+            title: 'Informasi',
+            text: message,
+            confirmButtonColor: '#3085d6'
+        });
+    }
+});
+</script>
 @endsection

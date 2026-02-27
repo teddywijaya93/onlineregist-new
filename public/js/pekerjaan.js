@@ -1,12 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     loadEmployment();
+
     document.getElementById('employmentSelect')
         .addEventListener('change', function () {
-            const selectedOption = this.options[this.selectedIndex];
-            const employmentId = selectedOption?.dataset.id;
-
-            loadPosition(employmentId);
-            loadBusinessline(employmentId);
+            loadPosition(this.value);
+            loadBusinessline(this.value);
         });
 });
 
@@ -22,16 +20,13 @@ function loadEmployment() {
         .then(res => {
             const list = extractArray(res);
             const select = document.getElementById('employmentSelect');
-            const selectedDesc = select.dataset.selected;
+            const selectedValue = select.dataset.selected;
 
             select.innerHTML = `<option value="">Pilih Pekerjaan Nasabah</option>`;
             list.forEach(item => {
-                if (!item.id || !item.description) return;
-                const isSelected = selectedDesc == item.description ? 'selected' : '';
-                select.innerHTML += `
-                <option value="${item.description}" data-id="${item.id}" ${isSelected}>
-                    ${item.description}
-                </option>`;
+                if (!item.id) return;
+                const isSelected = selectedValue == item.id ? 'selected' : '';
+                select.innerHTML += `<option value="${item.id}" ${isSelected}>${item.description}</option>`;
             });
         });
 }
@@ -44,16 +39,13 @@ function loadPosition(employmentId) {
         .then(res => {
             const list = extractArray(res);
             const select = document.getElementById('positionSelect');
-            const selectedDesc = select.dataset.selected;
+            const selectedValue = select.dataset.selected;
 
             select.innerHTML = `<option value="">Pilih Jabatan</option>`;
             list.forEach(item => {
-                if (!item.positionId || !item.description) return;
-                const isSelected = selectedDesc == item.description ? 'selected' : '';
-                select.innerHTML += `
-                <option value="${item.description}" data-id="${item.positionId}" ${isSelected}>
-                    ${item.description}
-                </option>`;
+                if (!item.positionId) return;
+                const isSelected = selectedValue == item.positionId ? 'selected' : '';
+                select.innerHTML += `<option value="${item.positionId}" ${isSelected}>${item.description}</option>`;
             });
         });
 }
@@ -66,16 +58,13 @@ function loadBusinessline(employmentId) {
         .then(res => {
             const list = extractArray(res);
             const select = document.getElementById('businesslineSelect');
-            const selectedDesc = select.dataset.selected;
-            
+            const selectedValue = select.dataset.selected;
+
             select.innerHTML = `<option value="">Pilih Bidang Usaha</option>`;
             list.forEach(item => {
-                if (!item.businessLineId || !item.description) return;
-                const isSelected = selectedDesc == item.description ? 'selected' : '';
-                select.innerHTML += `
-                <option value="${item.description}" data-id="${item.businessLineId}" ${isSelected}>
-                    ${item.description}
-                </option>`;
+                if (!item.businessLineId) return;
+                const isSelected = selectedValue == item.businessLineId ? 'selected' : '';
+                select.innerHTML += `<option value="${item.businessLineId}" ${isSelected}>${item.description}</option>`;
             });
         });
 }

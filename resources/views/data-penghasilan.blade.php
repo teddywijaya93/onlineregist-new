@@ -15,25 +15,28 @@
         </div>
         <form method="POST" action="{{ route('data.penghasilan.submit') }}">
             @csrf
+            <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Penghasilan Per bulan</label>
-                <select name="incomeRange" id="incomeRangeSelect" data-selected="{{ old('incomeRange', session('financial_data.incomeRange')) }}" class="form-control form-global">
+                <select name="mainIncomeRange" id="incomeRangeSelect" data-selected="{{ old('mainIncomeRange', $financialData['mainIncomeRange'] ?? '') }}" class="form-control form-global">
                     <option value="">Pilih Penghasilan Per bulan</option>
                 </select>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Sumber Dana</label>
-                <select name="primaryFund" id="primaryFundSelect" data-selected="{{ old('primaryFund', session('financial_data.primaryFund')) }}" class="form-control form-global">
+                <select name="primaryFundSources" id="primaryFundSelect" data-selected="{{ old('primaryFundSources', $financialData['primaryFundSources'] ?? '') }}" class="form-control form-global">
                     <option value="">Pilih Sumber Dana</option>
                 </select>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Tujuan Investasi</label>
-                <select name="investmentObjective" id="investmentObjectiveSelect" data-selected="{{ old('investmentObjective', session('financial_data.investmentObjective')) }}" class="form-control form-global">
+                <select name="investmentObjective" id="investmentObjectiveSelect" data-selected="{{ old('investmentObjective', $financialData['investmentObjective'] ?? '') }}" class="form-control form-global">
                     <option value="">Pilih Tujuan Investasi</option>
                 </select>
             </div>
-            <button id="btnNext" class="btn btn-primary btn-regist w-100 mb-3">Lanjutkan</button>
+            <button type="submit" class="btn btn-primary btn-regist w-100">
+                {{ $isUpdate ? 'Ubah' : 'Lanjutkan' }}
+            </button>
         </form>
     </div>
 </section>
@@ -58,7 +61,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
-
 window.routes = {
     incomeRange        : "{{ route('master.incomeRange') }}",
     primaryFundSource  : "{{ route('master.primaryFundSOurce') }}",

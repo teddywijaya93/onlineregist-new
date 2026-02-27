@@ -53,7 +53,8 @@ Route::middleware(['ensure.login','step.guard'])->group(function () {
     Route::get('/data-personal',[CreateAccountController::class, 'showPersonal'])->name('data.personal');
     Route::get('/data-pekerjaan', [CreateAccountController::class, 'showEmployment'])->name('data.pekerjaan');
     Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmployment'])->name('data.pekerjaan.submit');
-    Route::view('/data-penghasilan', 'data-penghasilan')->name('data.penghasilan');
+    Route::get('/data-penghasilan', [CreateAccountController::class, 'showFinancial'])->name('data.penghasilan');
+    Route::post('/data-penghasilan/submit',[CreateAccountController::class, 'saveFinancial'])->name('data.penghasilan.submit');
     Route::view('/data-referensi-perseorangan', 'data-referensi-perseorangan')->name('data.referensi.perseorangan');
     Route::view('/profil-resiko', 'profil-resiko')->name('data.profil.resiko');
     Route::view('/data-bank', 'data-bank')->name('data.bank');

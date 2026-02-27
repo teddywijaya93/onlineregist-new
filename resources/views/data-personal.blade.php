@@ -132,8 +132,6 @@
     </div>
 </section>
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{ asset('js/personal.js') }}"></script>
 <script>
 window.routes = {
     gender        : "{{ route('master.gender') }}",
@@ -143,4 +141,6 @@ window.routes = {
 };
 window.apiMessage = @json(session('api_message'));
 </script>
+<script src="{{ asset('js/personal.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endsection
