@@ -101,7 +101,10 @@ class CreateAccountController extends Controller
             $apiResponse = Http::withHeaders([
                 'Accept'       => 'application/json',
                 'Content-Type' => 'application/json',
-            ])->post('https://dev.profits.co.id:8283/registration/createAccountNewRegistration',$payload);
+            ])->post(
+                'https://dev.profits.co.id:8283/registration/createAccountNewRegistration',
+                $payload
+            );
 
             if (!$apiResponse->successful()) {
                 Log::error('API ERROR', [
@@ -197,8 +200,12 @@ class CreateAccountController extends Controller
             'residenceCity' => 'required',
             'residenceKelurahan' => 'required',
             'residenceKecamatan' => 'required',
+            'process_type' => 'required|in:CREATE,UPDATE'
         ]);
         // dd($personalData);
+
+        $processType = $validated['process_type'];
+        unset($validated['process_type']);
 
         $rt = str_pad($personalData['rt'], 3, '0', STR_PAD_LEFT);
         $rw = str_pad($personalData['rw'], 3, '0', STR_PAD_LEFT);
@@ -208,13 +215,19 @@ class CreateAccountController extends Controller
         $payload = [
             "registrationId" => session('registrationId'),
             "step" => "personalInformation",
-            "process" => "CREATE",
+            "process" => $processType,
             "datas" => $datas
         ];
 
-       try {
-            \Log::info('Personal Payload', $payload);
-            $response = Http::timeout(15)
+        try {
+            Log::info('Personal Payload', $payload);
+            $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . config('services.profits.token'),
+                    'Accept'        => 'application/json',
+                    'Content-Type'  => 'application/json',
+                ])
+                ->withoutVerifying()
+                ->timeout(15)
                 ->connectTimeout(5)
                 ->retry(1, 200)
                 ->post(
@@ -222,32 +235,47 @@ class CreateAccountController extends Controller
                     $payload
                 );
 
-            $result  = $response->json();
-            $message = $result['message'] ?? 'Berhasil';
-            $status  = $result['status'] ?? false;
-
-            \Log::info('Personal API Response', $result);
-            session()->put('personal_data', $personalData);
-
-            // Tetap lanjut ke step 2 apapun statusnya
-            return redirect()
-                ->route('data.pekerjaan')
-                ->with([
-                    'api_message' => $message,
-                    'api_status'  => $status
-                ]);
-
-        } catch (\Throwable $e) {
-            \Log::error('Personal API Exception', [
-                'error' => $e->getMessage(),
-            ]);
-
-            return redirect()
-                ->route('data.pekerjaan')
-                ->with([
-                    'api_message' => 'Server Tidak Dapat Dihubungi',
+            if (!$response->ok()) {
+                return back()->withInput()->with([
+                    'api_message' => 'Server API tidak merespon',
                     'api_status'  => false
                 ]);
+            }
+
+            $result   = $response->json();
+            $status   = $result['status'] ?? false;
+            $message  = $result['message'] ?? '';
+            $nextStep = $result['registrationStep'] ?? null;
+            Log::info('Personal API Response', $result);
+
+            if ($status) {
+                session(['personal_data' => $validated]);
+
+                if ($nextStep === 'employmentInformation') {
+                    return redirect()->route('data.pekerjaan')
+                        ->with([
+                            'api_message' => $message,
+                            'api_status'  => true
+                        ]);
+                }
+
+                return redirect()->route('data.personal')
+                    ->with([
+                        'api_message' => $message,
+                        'api_status'  => true
+                    ]);
+            }
+
+            return back()->withInput()->with([
+                'api_message' => $message,
+                'api_status'  => false
+            ]);
+
+        } catch (\Throwable $e) {
+            return back()->withInput()->with([
+                'api_message' => 'Server tidak dapat dihubungi',
+                'api_status'  => false
+            ]);
         }
     }
 
@@ -271,14 +299,14 @@ class CreateAccountController extends Controller
 
         $validated = $request->validate([
             'employmentType'          => 'required',
-            'employer'                => 'required|string|max:255',
+            'employer'                => 'nullable|string|max:255',
             'employmentPosition'      => 'required',
             'businessLine'            => 'required',
-            'employmentDurationYear'  => 'required|numeric|min:0',
-            'employmentDurationMonth' => 'required|numeric|min:0|max:11',
-            'officeAddress'           => 'required|string',
-            'officePostalCode'        => 'required|string|max:10',
-            'officeTelephone'         => 'required|string|max:20',
+            'employmentDurationYear'  => 'nullable|string',
+            'employmentDurationMonth' => 'nullable|string',
+            'officeAddress'           => 'nullable|string',
+            'officePostalCode'        => 'nullable|string|max:5',
+            'officeTelephone'         => 'nullable|string|max:13',
             'process_type'            => 'required|in:CREATE,UPDATE',
         ]);
 
@@ -290,11 +318,16 @@ class CreateAccountController extends Controller
         ];
 
         try {
+            Log::info('Employment Payload', $payload);
             $response = Http::withHeaders([
                     'Authorization' => 'Bearer ' . config('services.profits.token'),
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                 ])
+                ->withoutVerifying()
+                ->timeout(15)
+                ->connectTimeout(5)
+                ->retry(1, 200)
                 ->post(
                     'https://dev.profits.co.id:8283/registration/saveRegistration',
                     $payload
@@ -311,6 +344,7 @@ class CreateAccountController extends Controller
             $status  = $result['status'] ?? false;
             $message = $result['message'] ?? '';
             $nextStep = $result['registrationStep'] ?? null;
+            Log::info('Employment API Response', $result);
 
             if ($status) {
                 session(['employmentData' => $validated]);
@@ -375,12 +409,16 @@ class CreateAccountController extends Controller
         ];
 
         try {
-            \Log::info('Financial Payload', $payload);
+            Log::info('Financial Payload', $payload);
             $response = Http::withHeaders([
                     'Authorization' => 'Bearer ' . config('services.profits.token'),
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                 ])
+                ->withoutVerifying()
+                ->timeout(15)
+                ->connectTimeout(5)
+                ->retry(1, 200)
                 ->post(
                     'https://dev.profits.co.id:8283/registration/saveRegistration',
                     $payload
@@ -397,7 +435,7 @@ class CreateAccountController extends Controller
             $status  = $result['status'] ?? false;
             $message = $result['message'] ?? '';
             $nextStep = $result['registrationStep'] ?? null;
-            \Log::info('Financial API Response', $result);
+            Log::info('Financial API Response', $result);
 
             if ($status) {
                 session(['financialData' => $validated]);
@@ -500,6 +538,10 @@ class CreateAccountController extends Controller
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                 ])
+                ->withoutVerifying()
+                ->timeout(15)
+                ->connectTimeout(5)
+                ->retry(1, 200)
                 ->post(
                     'https://dev.profits.co.id:8283/registration/saveRegistration',
                     $payload
@@ -540,7 +582,6 @@ class CreateAccountController extends Controller
                 'api_status'  => false
             ]);
         } catch (\Throwable $e) {
-
             return back()->withInput()->with([
                 'api_message' => 'Server tidak dapat dihubungi',
                 'api_status'  => false

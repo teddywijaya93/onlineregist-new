@@ -23,6 +23,7 @@
         </div>
         <form method="POST" action="{{ route('data.personal.submit') }}">
             @csrf
+            <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Sesuai e-KTP</label>
                 <input type="text" name="nama" id="nama" value="{{ old('nama', $data['nama'] ?? '') }}" class="form-control form-global" placeholder="Nama Sesuai e-KTP">
@@ -127,7 +128,9 @@
                 <label class="form-label text-white text-form-global mb-2">Kecamatan Domisili</label>
                 <input type="text" name="residenceKecamatan" id="residenceKecamatan" value="{{ old('residenceKecamatan', $data['residenceKecamatan'] ?? '') }}" class="form-control form-global" placeholder="Kecamatan">
             </div>
-            <button type="submit" id="btnNext" class="btn btn-primary btn-regist w-100 mb-3">Lanjutkan</button>
+            <button type="submit" class="btn btn-primary btn-regist w-100">
+                {{ $isUpdate ? 'Ubah' : 'Lanjutkan' }}
+            </button>
         </form>
     </div>
 </section>
@@ -143,4 +146,5 @@ window.apiMessage = @json(session('api_message'));
 </script>
 <script src="{{ asset('js/personal.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 @endsection

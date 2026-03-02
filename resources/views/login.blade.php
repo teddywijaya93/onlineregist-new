@@ -21,7 +21,9 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Password</label>
-                <input type="password" name="password" id="password" class="form-control form-global" placeholder="Isi password kamu disini">
+                <div class="password-toggle">
+                    <input type="password" name="password" id="password" class="form-control form-global" placeholder="Isi password kamu disini">
+                </div>
             </div>
 
             <p class="resend-otp">Tidak menerima verifikasi email?<br/>

@@ -27,7 +27,7 @@ function loadSelect(id, url) {
     const select = document.getElementById(id);
     if (!select) return;
 
-    const selected = (select.dataset.selected || '').toUpperCase();
+    const selected = select.dataset.selected || '';
 
     fetch(url)
         .then(r => r.json())
@@ -36,9 +36,10 @@ function loadSelect(id, url) {
             select.innerHTML = `<option value="">Pilih</option>`;
             list.forEach(item => {
                 const opt = document.createElement("option");
-                opt.value = item.description;
+                opt.value = item.id;
                 opt.textContent = item.description;
-                if (item.description.toUpperCase() === selected) {
+
+                if (String(item.id) === String(selected)) {
                     opt.selected = true;
                 }
                 select.appendChild(opt);
