@@ -22,6 +22,9 @@ Route::get('/master/primary-fund-source',[MasterDataController::class, 'getPrima
 Route::get('/master/investment-objective',[MasterDataController::class, 'getInvestmentObjective'])->name('master.investmentObjective');
 Route::get('/master/bank',[MasterDataController::class, 'getBankMaster'])->name('master.bank');
 Route::get('/master/reference-relation',[MasterDataController::class, 'getReferenceRelationMaster'])->name('master.referenceRelation');
+Route::get('/master/city',[MasterDataController::class, 'getCityMaster'])->name('master.city');
+Route::get('/master/kecamatan',[MasterDataController::class, 'getKecamatanMaster'])->name('master.kecamatan');
+Route::get('/master/kelurahan',[MasterDataController::class, 'getKelurahanMaster'])->name('master.kelurahan');
 
 // Step API
 Route::post('/step/account-type',[CreateAccountController::class, 'saveAccountType'])->name('step.account-type');

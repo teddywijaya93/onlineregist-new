@@ -231,6 +231,79 @@ class MasterDataController extends Controller
         ]);
     }
 
+    public function getCityMaster() {
+        $response = Http::timeout(10)
+            ->withHeaders(['Content-Type' => 'text/plain'])
+            ->send(
+                'GET',
+                'https://dev.profits.co.id:8283/registration/masterData',
+                [
+                    'body' => json_encode([
+                        'type' => 'city'
+                    ])
+                ]
+            );
+
+        return response()->json([
+            'status' => true,
+            'data'   => $response->json()['data'] ?? []
+        ]);
+    }
+
+    public function getKecamatanMaster(Request $request)
+    {
+        if (!$request->city_id) {
+            return response()->json([
+                'status' => true,
+                'data' => []
+            ]);
+        }
+
+        $response = Http::timeout(10)
+            ->withHeaders(['Content-Type' => 'application/json'])
+            ->send(
+                'GET',
+                'https://dev.profits.co.id:8283/registration/getKecamatan',
+                [
+                    'body' => json_encode([
+                        'cityId' => (string)$request->city_id
+                    ]),
+                ]
+            );
+
+        return response()->json([
+            'status' => true,
+            'data'   => $response->json()['data'] ?? []
+        ]);
+    }
+
+    public function getKelurahanMaster(Request $request)
+    {
+        if (!$request->kecamatan_id) {
+            return response()->json([
+                'status' => true,
+                'data' => []
+            ]);
+        }
+
+        $response = Http::timeout(10)
+            ->withHeaders(['Content-Type' => 'application/json'])
+            ->send(
+                'GET',
+                'https://dev.profits.co.id:8283/registration/getKelurahan',
+                [
+                    'body' => json_encode([
+                        'kecamatanId' => (string)$request->kecamatan_id
+                    ]),
+                ]
+            );
+
+        return response()->json([
+            'status' => true,
+            'data'   => $response->json()['data'] ?? []
+        ]);
+    }
+
     public function getReferenceRelationMaster(Request $request) {
         $personal = session('personal_data');
         $employment = session('employment_data');

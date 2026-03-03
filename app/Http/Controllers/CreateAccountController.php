@@ -156,12 +156,14 @@ class CreateAccountController extends Controller
         }
         $raw = isset($ocr['result']) ? $ocr['result'] : $ocr;
         $ocrData = \App\Services\OcrNormalizer::normalize($raw);
-        $sessionData = session('personal_data', []);
+        // dd($ocrData);
+        $personalData = session('personal_data', []);    
+        $isUpdate = !empty($personalData);
 
         // merge session override OCR
-        $data = array_merge($ocrData, $sessionData);
+        $data = array_merge($ocrData, $personalData);
 
-        return view('data-personal', compact('data'));
+        return view('data-personal', compact('data','isUpdate'));
     }
 
     public function savePersonal(Request $request)
@@ -204,8 +206,8 @@ class CreateAccountController extends Controller
         ]);
         // dd($personalData);
 
-        $processType = $validated['process_type'];
-        unset($validated['process_type']);
+        $processType = $personalData['process_type'];
+        unset($personalData['process_type']);
 
         $rt = str_pad($personalData['rt'], 3, '0', STR_PAD_LEFT);
         $rw = str_pad($personalData['rw'], 3, '0', STR_PAD_LEFT);

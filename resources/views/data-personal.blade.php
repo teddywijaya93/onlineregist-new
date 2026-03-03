@@ -86,15 +86,21 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Kota</label>
-                <input type="text" name="kota" id="kota" value="{{ old('kota', $data['kota'] ?? '') }}" class="form-control form-global" placeholder="Kota">
-            </div>
-            <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Kelurahan</label>
-                <input type="text" name="kelurahan" id="kelurahan" value="{{ old('kelurahan', $data['kelurahan'] ?? '') }}" class="form-control form-global" placeholder="Kelurahan">
+                <select name="kota" id="citySelect" class="form-control" data-selected="{{ old('kota', $data['kota'] ?? '') }}">
+                    <option value="">Pilih Kota</option>
+                </select>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Kecamatan</label>
-                <input type="text" name="kecamatan" id="kecamatan" value="{{ old('kecamatan', $data['kecamatan'] ?? '') }}" class="form-control form-global" placeholder="Kecamatan">
+                <select name="kecamatan" id="kecamatanSelect" class="form-control" data-selected="{{ old('kecamatan', $data['kecamatan'] ?? '') }}">
+                    <option value="">Pilih Kecamatan</option>
+                </select>
+            </div>
+            <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Kelurahan</label>
+                <select name="kelurahan" id="kelurahanSelect" class="form-control" data-selected="{{ old('kelurahan', $data['kelurahan'] ?? '') }}">
+                    <option value="">Pilih Kelurahan</option>
+                </select>
             </div>
             <div class="form-group mb-4">
                 <input class="form-check-input me-2" type="checkbox" id="sameAddress">
@@ -141,6 +147,9 @@ window.routes = {
     religion      : "{{ route('master.religion') }}",
     marital       : "{{ route('master.marital') }}",
     education     : "{{ route('master.education') }}",
+    city          : "{{ route('master.city') }}",
+    kecamatan     : "{{ route('master.kecamatan') }}",
+    kelurahan     : "{{ route('master.kelurahan') }}",
 };
 window.apiMessage = @json(session('api_message'));
 </script>

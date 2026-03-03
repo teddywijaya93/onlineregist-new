@@ -1,5 +1,7 @@
-document.addEventListener("DOMContentLoaded", () => {
-    initSelects();
+document.addEventListener("DOMContentLoaded", async () => {
+    await initSelects();
+    initCityKecamatan();
+    initKecamatanKelurahan();
     initSameAddress();
     initInputFilters();
     showApiMessage();
@@ -16,36 +18,150 @@ function showApiMessage() {
     }
 }
 
-function initSelects() {
-    loadSelect("genderSelect", window.routes.gender);
-    loadSelect("religionSelect", window.routes.religion);
-    loadSelect("maritalSelect", window.routes.marital);
-    loadSelect("educationSelect", window.routes.education);
-}
-
-function loadSelect(id, url) {
+async function loadSelect(id, url, placeholder = "Pilih") {
     const select = document.getElementById(id);
     if (!select) return;
 
     const selected = select.dataset.selected || '';
 
-    fetch(url)
-        .then(r => r.json())
-        .then(res => {
-            const list = res.data || res.datas || [];
-            select.innerHTML = `<option value="">Pilih</option>`;
+    try {
+        const response = await fetch(url);
+        const json = await response.json();
+        const list = json.data || [];
+
+        select.innerHTML = `<option value="">${placeholder}</option>`;
+        list.forEach(item => {
+            const value = item.id ?? '';
+            const text  = item.name ?? item.description ?? '';
+
+            const opt = document.createElement("option");
+            opt.value = value;
+            opt.textContent = text;
+
+            // MATCH BY ID OR TEXT (OCR SAFE)
+            if (
+                String(value) === String(selected) ||
+                String(text).toLowerCase() === String(selected).toLowerCase()
+            ) {
+                opt.selected = true;
+            }
+            select.appendChild(opt);
+        });
+
+    } catch (err) {
+        console.error("Load select error:", id, err);
+    }
+}
+
+// INIT MASTER DROPDOWNS
+async function initSelects() {
+    await loadSelect("genderSelect", window.routes.gender, "Pilih Jenis Kelamin");
+    await loadSelect("religionSelect", window.routes.religion, "Pilih Agama");
+    await loadSelect("maritalSelect", window.routes.marital, "Pilih Status Perkawinan");
+    await loadSelect("educationSelect", window.routes.education, "Pilih Pendidikan Terakhir");
+    await loadSelect("citySelect", window.routes.city, "Pilih Kota");
+}
+
+// CITY -> KECAMATAN
+function initCityKecamatan() {
+    const citySelect = document.getElementById("citySelect");
+    const kecamatanSelect = document.getElementById("kecamatanSelect");
+
+    if (!citySelect || !kecamatanSelect) return;
+
+    kecamatanSelect.innerHTML = '<option value="">Pilih Kota terlebih dahulu</option>';
+    kecamatanSelect.disabled = true;
+
+    citySelect.addEventListener("change", async function () {
+        const cityId = this.value;
+        if (!cityId) {
+            kecamatanSelect.innerHTML = '<option value="">Pilih Kota terlebih dahulu</option>';
+            kecamatanSelect.disabled = true;
+            return;
+        }
+        kecamatanSelect.disabled = false;
+        kecamatanSelect.innerHTML = '<option value="">Loading...</option>';
+
+        try {
+            const response = await fetch(`${window.routes.kecamatan}?city_id=${cityId}`);
+            const json = await response.json();
+            const list = json.data || [];
+            const selected = kecamatanSelect.dataset.selected || '';
+
+            kecamatanSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+
             list.forEach(item => {
                 const opt = document.createElement("option");
                 opt.value = item.id;
-                opt.textContent = item.description;
+                opt.textContent = item.name;
 
                 if (String(item.id) === String(selected)) {
                     opt.selected = true;
                 }
-                select.appendChild(opt);
+                kecamatanSelect.appendChild(opt);
             });
-        })
-        .catch(err => console.error("Load select error", id, err));
+
+            // AUTO LOAD KELURAHAN SAAT EDIT
+            if (kecamatanSelect.value) {
+                kecamatanSelect.dispatchEvent(new Event('change'));
+            }
+
+        } catch (err) {
+            console.error("Load kecamatan error", err);
+            kecamatanSelect.innerHTML = '<option value="">Gagal load</option>';
+        }
+    });
+    // TRIGGER IF EDIT MODE
+    if (citySelect.value) {
+        citySelect.dispatchEvent(new Event('change'));
+    }
+}
+
+// KECAMATAN → KELURAHAN
+function initKecamatanKelurahan() {
+    const kecamatanSelect = document.getElementById("kecamatanSelect");
+    const kelurahanSelect = document.getElementById("kelurahanSelect");
+
+    if (!kecamatanSelect || !kelurahanSelect) return;
+
+    kelurahanSelect.innerHTML = '<option value="">Pilih Kecamatan terlebih dahulu</option>';
+    kelurahanSelect.disabled = true;
+
+    kecamatanSelect.addEventListener("change", async function () {
+        const kecamatanId = this.value;
+        if (!kecamatanId) {
+            kelurahanSelect.innerHTML = '<option value="">Pilih Kecamatan terlebih dahulu</option>';
+            kelurahanSelect.disabled = true;
+            return;
+        }
+        kelurahanSelect.disabled = false;
+        kelurahanSelect.innerHTML = '<option value="">Loading...</option>';
+
+        try {
+            const response = await fetch(`${window.routes.kelurahan}?kecamatan_id=${kecamatanId}`);
+            const json = await response.json();
+            const list = json.data || [];
+            const selected = kelurahanSelect.dataset.selected || '';
+
+            kelurahanSelect.innerHTML = '<option value="">Pilih Kelurahan</option>';
+
+            list.forEach(item => {
+                const opt = document.createElement("option");
+                opt.value = item.id;
+                opt.textContent = item.name;
+
+                if (String(item.id) === String(selected)) {
+                    opt.selected = true;
+                }
+
+                kelurahanSelect.appendChild(opt);
+            });
+
+        } catch (err) {
+            console.error("Load kelurahan error", err);
+            kelurahanSelect.innerHTML = '<option value="">Gagal load</option>';
+        }
+    });
 }
 
 function initSameAddress() {
@@ -57,7 +173,7 @@ function initSameAddress() {
             ['alamat','residenceAddress'],
             ['rt','residenceRT'],
             ['rw','residenceRW'],
-            ['kota','residenceCity'],
+            ['citySelect','residenceCity'],
             ['kelurahan','residenceKelurahan'],
             ['kecamatan','residenceKecamatan']
         ];
@@ -93,9 +209,9 @@ function initFormValidation() {
         ['alamat','Alamat'],
         ['rt','RT'],
         ['rw','RW'],
-        ['kota','Kota'],
-        ['kelurahan','Kelurahan'],
-        ['kecamatan','Kecamatan'],
+        ['citySelect','Kota'],
+        ['kecamatanSelect','Kecamatan'],
+        ['kelurahanSelect','Kelurahan'],
         ['residenceAddress','Alamat domisili'],
         ['residenceRT','RT domisili'],
         ['residenceRW','RW domisili'],
