@@ -65,6 +65,7 @@ Route::middleware(['ensure.login','step.guard'])->group(function () {
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login/process', [AuthController::class, 'loginNewRegistration'])->name('login.process');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/otp', [AuthController::class, 'showOtp'])->name('otp');
 Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->name('otp.verify');
 Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->name('otp.resend');

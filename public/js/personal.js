@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
     await initSelects();
-    initCityKecamatan();
     initKecamatanKelurahan();
+    initCityKecamatan();
     initSameAddress();
     initInputFilters();
     showApiMessage();
@@ -60,6 +60,8 @@ async function initSelects() {
     await loadSelect("maritalSelect", window.routes.marital, "Pilih Status Perkawinan");
     await loadSelect("educationSelect", window.routes.education, "Pilih Pendidikan Terakhir");
     await loadSelect("citySelect", window.routes.city, "Pilih Kota");
+
+    initCityKecamatan();
 }
 
 // CITY -> KECAMATAN
@@ -102,7 +104,7 @@ function initCityKecamatan() {
             });
 
             // AUTO LOAD KELURAHAN SAAT EDIT
-            if (kecamatanSelect.value) {
+            if (selected) {
                 kecamatanSelect.dispatchEvent(new Event('change'));
             }
 

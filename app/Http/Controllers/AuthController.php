@@ -178,6 +178,48 @@ class AuthController extends Controller
         }
     }
 
+    public function logout(Request $request)
+    {
+        if (!session()->has('accountId')) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Anda belum login'
+            ], 401);
+        }
+
+        $accountId = session('accountId');
+
+        try {
+            $response = Http::timeout(10)
+                ->withHeaders([
+                    'Authorization' => 'Bearer ' . config('services.profits.token'),
+                    'Content-Type'  => 'application/json',
+                    'Accept'        => 'application/json',
+                ])
+                ->post('https://dev.profits.co.id:8283/registration/logoutNewRegistration', [
+                    'accountId' => (string) $accountId
+                ]);
+            $result = $response->json();
+        } catch (\Throwable $e) {
+            \Log::error('LOGOUT ERROR', [
+                'message' => $e->getMessage()
+            ]);
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Logout Gagal'
+            ]);
+        }
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->json([
+            'status'  => true,
+            'message' => $result['message'],
+        ]);
+    }
+
     public function showLogin()
     {
         return view('login');
@@ -190,13 +232,5 @@ class AuthController extends Controller
         }
 
         return view('otp');
-    }
-
-    public function logout(Request $request)
-    {
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('login');
     }
 }
