@@ -11,7 +11,7 @@ class StepRedirectService
         'employmentInformation' => 'data.pekerjaan',
         'financialProfile'      => 'data.penghasilan',
         'relation'              => 'data.referensi.perseorangan',
-        'riskProfile'           => 'profil.resiko',
+        // 'riskProfile'           => 'profil.resiko',
         'bankInformation'       => 'data.bank',
     ];
 

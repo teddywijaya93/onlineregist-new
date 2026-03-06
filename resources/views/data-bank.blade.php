@@ -17,7 +17,7 @@
             @csrf
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Pemilik Rekening</label>
-                <input type="text" name="nama" id="nama" class="form-control form-global" value="{{ session('personal_data.nama') }}" disabled style="background:#42526D; border:unset;">
+                <input type="text" name="nama" id="nama" class="form-control form-global" value="{{ session('personalData.nama') }}" disabled style="background:#42526D; border:unset;">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Bank Tujuan Penarikan</label>

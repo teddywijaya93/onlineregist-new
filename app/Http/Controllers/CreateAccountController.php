@@ -157,7 +157,8 @@ class CreateAccountController extends Controller
         $raw = isset($ocr['result']) ? $ocr['result'] : $ocr;
         $ocrData = \App\Services\OcrNormalizer::normalize($raw);
         // dd($ocrData);
-        $personalData = session('personal_data', []);    
+        
+        $personalData = session('personalData', []);    
         $isUpdate = !empty($personalData);
 
         // merge session override OCR
@@ -205,7 +206,6 @@ class CreateAccountController extends Controller
             'process_type' => 'required|in:CREATE,UPDATE'
         ]);
         // dd($personalData);
-
         $processType = $personalData['process_type'];
         unset($personalData['process_type']);
 
@@ -251,7 +251,10 @@ class CreateAccountController extends Controller
             Log::info('Personal API Response', $result);
 
             if ($status) {
-                session(['personal_data' => $validated]);
+                session([
+                    'personalData' => $personalData,
+                    'registrationStep' => $nextStep,
+                ]);
 
                 if ($nextStep === 'employmentInformation') {
                     return redirect()->route('data.pekerjaan')
@@ -299,7 +302,7 @@ class CreateAccountController extends Controller
             return redirect()->route('login');
         }
 
-        $validated = $request->validate([
+        $employmentData = $request->validate([
             'employmentType'          => 'required',
             'employer'                => 'nullable|string|max:255',
             'employmentPosition'      => 'required',
@@ -311,12 +314,15 @@ class CreateAccountController extends Controller
             'officeTelephone'         => 'nullable|string|max:13',
             'process_type'            => 'required|in:CREATE,UPDATE',
         ]);
+        // dd($employmentData);
+        $processType = $employmentData['process_type'];
+        unset($employmentData['process_type']);
 
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "employmentInformation",
-            "process"        => $request->process_type,
-            "datas"          => $validated
+            "process"        => $processType,
+            "datas"          => $employmentData
         ];
 
         try {
@@ -349,7 +355,10 @@ class CreateAccountController extends Controller
             Log::info('Employment API Response', $result);
 
             if ($status) {
-                session(['employmentData' => $validated]);
+                session([
+                    'employmentData' => $employmentData,
+                    'registrationStep' => $nextStep,
+                ]);
 
                 if ($nextStep === 'financialProfile') {
                     return redirect()->route('data.penghasilan')
@@ -396,18 +405,21 @@ class CreateAccountController extends Controller
             return redirect()->route('login');
         }
 
-        $validated = $request->validate([
+        $financialData = $request->validate([
             'mainIncomeRange'     => 'required',
             'primaryFundSources'  => 'required',
             'investmentObjective' => 'required',
             'process_type'        => 'required|in:CREATE,UPDATE',
         ]);
+        // dd($financialData);
+        $processType = $financialData['process_type'];
+        unset($financialData['process_type']);
 
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "financialProfile",
-            "process"        => $request->process_type,
-            "datas"          => $validated
+            "process"        => $processType,
+            "datas"          => $financialData
         ];
 
         try {
@@ -440,7 +452,10 @@ class CreateAccountController extends Controller
             Log::info('Financial API Response', $result);
 
             if ($status) {
-                session(['financialData' => $validated]);
+                session([
+                    'financialData' => $financialData,
+                    'registrationStep' => $nextStep,
+                ]);
 
                 if ($nextStep === 'relation') {
                     return redirect()->route('data.referensi.perseorangan')
@@ -591,44 +606,43 @@ class CreateAccountController extends Controller
         }
     }
 
-    public function saveProfilResiko(Request $request) {
-        $profilResiko = $request->validate([
-            'q1'    => 'required',
-            'q2'    => 'required',
-            'q3'    => 'required',
-            'q4'    => 'required',
-            'q5'    => 'required',
-        ]);
-        // dd($profilResiko);
+    // public function saveProfilResiko(Request $request) {
+    //     $profilResiko = $request->validate([
+    //         'q1'    => 'required',
+    //         'q2'    => 'required',
+    //         'q3'    => 'required',
+    //         'q4'    => 'required',
+    //         'q5'    => 'required',
+    //     ]);
 
-        $total = $request->q1
-               + $request->q2
-               + $request->q3
-               + $request->q4
-               + $request->q5;
+    //     $total = $request->q1
+    //            + $request->q2
+    //            + $request->q3
+    //            + $request->q4
+    //            + $request->q5;
 
-        if ($total >= 5 && $total <= 8) {
-            $profil = 'Konservatif';
-        } elseif ($total >= 9 && $total <= 14) {
-            $profil = 'Moderat';
-        } else {
-            $profil = 'Agresif';
-        }
+    //     if ($total >= 5 && $total <= 8) {
+    //         $profil = 'Konservatif';
+    //     } elseif ($total >= 9 && $total <= 14) {
+    //         $profil = 'Moderat';
+    //     } else {
+    //         $profil = 'Agresif';
+    //     }
 
-        session([
-            'profil_resiko'       => $profilResiko,
-            'profil_risiko_total' => $total,
-            'profil_risiko_hasil' => $profil,
-        ]);
+    //     session([
+    //         'profil_resiko'       => $profilResiko,
+    //         'profil_risiko_total' => $total,
+    //         'profil_risiko_hasil' => $profil,
+    //     ]);
 
-        return redirect()->route('profil.resiko.result');
-    }
+    //     return redirect()->route('profil.resiko.result');
+    // }
 
-    public function resultProfilResiko() {
-        if (!session()->has('profil_risiko_total')) {
-            return redirect()->route('data.profil.resiko');
-        }
+    // public function resultProfilResiko() {
+    //     if (!session()->has('profil_risiko_total')) {
+    //         return redirect()->route('data.profil.resiko');
+    //     }
 
-        return redirect()->route('data.bank');
-    }
+    //     return redirect()->route('data.bank');
+    // }
 }

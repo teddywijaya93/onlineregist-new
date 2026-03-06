@@ -305,16 +305,16 @@ class MasterDataController extends Controller
     }
 
     public function getReferenceRelationMaster(Request $request) {
-        $personal = session('personal_data');
-        $employment = session('employment_data');
+        $personal = session('personalData');
+        $employment = session('employmentData');
         
         if (!$personal || !$employment) {
             return response()->json(['datas' => []]);
         }
 
-        $jk       = $personal['jenis_kelamin'];
-        $status   = $personal['status_perkawinan'];
-        $jobId    = $employment['employment'];
+        $jk       = $personal['jenisKelamin'];
+        $status   = $personal['statusPerkawinan'];
+        $jobId    = $employment['employmentType'];
 
         // IRT, Pelajar, Pensiunan
         $familyEmployment = [4, 15, 27];    
