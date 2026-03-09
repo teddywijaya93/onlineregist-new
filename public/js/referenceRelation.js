@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    // Load Master Gender
+    // Load Master Marital
     if (maritalSelect) {
         const selectedValue = maritalSelect.dataset.selected;
         fetch(window.routes.status_perkawinan_relasi)

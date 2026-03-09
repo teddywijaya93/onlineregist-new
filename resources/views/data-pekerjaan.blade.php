@@ -18,13 +18,14 @@
             <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Pekerjaan Nasabah</label>
+                <input type="hidden" id="genderSelect" value="{{ session('personalData.jenisKelamin') }}">
                 <select name="employmentType" id="employmentSelect" data-selected="{{ old('employmentType', $employmentData['employmentType'] ?? '') }}" class="form-control form-global">
                     <option value="">Pilih Pekerjaan Nasabah</option>
                 </select>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Perusahaan/Tempat Bekerja</label>
-                <input type="text" name="employer" id="employer" value="{{ old('employer', $employmentData['employer'] ?? '') }}" class="form-control form-global" placeholder="Tulis Nama Perusahaan">
+                <input type="text" name="employer" id="employer" value="{{ old('employer', $employmentData['employer'] ?? '') }}" class="form-control form-global alphabet-only" placeholder="Tulis Nama Perusahaan">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Jabatan</label>
@@ -42,24 +43,24 @@
                 <label class="form-label text-white text-form-global mb-2">Lama Berkerja</label>
                 <div class="row">
                     <div class="col-6">
-                        <input type="text" name="employmentDurationYear" id="employmentDurationYear" value="{{ old('employmentDurationYear', $employmentData['employmentDurationYear'] ?? '') }}" class="form-control form-global" placeholder="Tahun">
+                        <input type="text" name="employmentDurationYear" id="employmentDurationYear" value="{{ old('employmentDurationYear', $employmentData['employmentDurationYear'] ?? '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Tahun">
                     </div>
                     <div class="col-6">
-                        <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" value="{{ old('employmentDurationMonth', $employmentData['employmentDurationMonth'] ?? '') }}" class="form-control form-global" placeholder="Bulan">
+                        <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" value="{{ old('employmentDurationMonth', $employmentData['employmentDurationMonth'] ?? '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Bulan">
                     </div>
                 </div>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Perusahaan</label>
-                <input type="text" name="officeAddress" id="officeAddress" value="{{ old('officeAddress', $employmentData['officeAddress'] ?? '') }}" class="form-control form-global" placeholder="Tulis Alamat Perusahaan">
+                <input type="text" name="officeAddress" id="officeAddress" value="{{ old('officeAddress', $employmentData['officeAddress'] ?? '') }}" class="form-control form-global alphabet-only" placeholder="Tulis Alamat Perusahaan">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Kode Pos</label>
-                <input type="text" name="officePostalCode" id="officePostalCode" value="{{ old('officePostalCode', $employmentData['officePostalCode'] ?? '') }}" class="form-control form-global" placeholder="Tulis Kode Pos">
+                <input type="text" name="officePostalCode" id="officePostalCode" value="{{ old('officePostalCode', $employmentData['officePostalCode'] ?? '') }}" class="form-control form-global numeric-only" maxlength="5" placeholder="Tulis Kode Pos">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Telepon Kantor</label>
-                <input type="text" name="officeTelephone" id="officeTelephone" value="{{ old('officeTelephone', $employmentData['officeTelephone'] ?? '') }}" class="form-control form-global" placeholder="Tulis Telepon Kantor">
+                <input type="text" name="officeTelephone" id="officeTelephone" value="{{ old('officeTelephone', $employmentData['officeTelephone'] ?? '') }}" class="form-control form-global numeric-only" maxlength="13" placeholder="Tulis Telepon Kantor">
             </div>
             <button type="submit" class="btn btn-primary btn-regist w-100">
                 {{ $isUpdate ? 'Ubah' : 'Lanjutkan' }}

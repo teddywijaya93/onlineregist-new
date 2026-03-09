@@ -6,6 +6,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     initInputFilters();
     showApiMessage();
     initFormValidation();
+
+    restrictMaritalByGender();
+    document.getElementById("genderSelect")?.addEventListener("change", restrictMaritalByGender);
 });
 
 function showApiMessage() {
@@ -246,16 +249,30 @@ function initFormValidation() {
     });
 }
 
-function initInputFilters() {
-    document.querySelectorAll('.alphabet-only').forEach(input => {
-        input.addEventListener('input', () => {
-            input.value = input.value.replace(/[^a-zA-Z\s]/g,'');
-        });
-    });
-    document.querySelectorAll('.numeric-only').forEach(input => {
-        const max = input.maxLength || 16;
-        input.addEventListener('input', () => {
-            input.value = input.value.replace(/\D/g,'').slice(0,max);
-        });
-    });
+function restrictMaritalByGender() {
+    const gender = document.getElementById("genderSelect")?.value;
+    const maritalSelect = document.getElementById("maritalSelect");
+
+    if (!gender || !maritalSelect) return;
+
+    const jandaOption = maritalSelect.querySelector('option[value="3"]');
+    const dudaOption  = maritalSelect.querySelector('option[value="4"]');
+
+    if (gender === "1") { // PRIA
+        if (jandaOption) jandaOption.style.display = "none";
+
+        if (dudaOption)  dudaOption.style.display = "";
+
+        if (maritalSelect.value === "3") {
+            maritalSelect.value = "";
+        }
+    } else if (gender === "2") { // WANITA
+        if (dudaOption)  dudaOption.style.display = "none";
+
+        if (jandaOption) jandaOption.style.display = "";
+
+        if (maritalSelect.value === "4") {
+            maritalSelect.value = "";
+        }
+    }
 }

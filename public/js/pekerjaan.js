@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    initInputFilters();
     loadEmployment();
 
     const employmentSelect = document.getElementById("employmentSelect");
@@ -6,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     employmentSelect.addEventListener('change', function () {
         const value = this.value;
         toggleWorkFields(value);
+        restrictIRTForMale();
         loadPosition(value);
         loadBusinessline(value);
     });
@@ -20,7 +22,8 @@ function toggleWorkFields(employmentId) {
     const officeTelephone         = document.getElementById("officeTelephone");
     const positionSelect          = document.getElementById("positionSelect");
     const businesslineSelect      = document.getElementById("businesslineSelect");
-    const isIRT = parseInt(employmentId) === 4;
+
+    const isIRT                   = parseInt(employmentId) === 4;
     [employer,employmentDurationMonth,employmentDurationYear,officeAddress,officePostalCode,officeTelephone]
     .forEach(field => {
         if (!field) return;
@@ -37,6 +40,42 @@ function toggleWorkFields(employmentId) {
     if (isIRT) {
         if (positionSelect) positionSelect.selectedIndex = 0;
         if (businesslineSelect) businesslineSelect.selectedIndex = 0;
+    }
+}
+
+function restrictIRTForMale() {
+    const gender = document.getElementById("genderSelect")?.value;
+    const employmentSelect = document.getElementById("employmentSelect");
+    const positionSelect = document.getElementById("positionSelect");
+    const businesslineSelect = document.getElementById("businesslineSelect");
+
+    if (!employmentSelect || !gender) return;
+    const irtOption = employmentSelect.querySelector('option[value="4"]');
+
+    if (gender === "1") {
+        // hide option IRT
+        if (irtOption) irtOption.style.display = "none";
+
+        // jika bukan IRT → tampilkan turunan
+        if (employmentSelect.value !== "4") {
+            if (positionSelect) {
+                positionSelect.closest(".form-group").style.display = "";
+            }
+
+            if (businesslineSelect) {
+                businesslineSelect.closest(".form-group").style.display = "";
+            }
+        }
+    } else {
+        if (irtOption) irtOption.style.display = "";
+
+        if (positionSelect) {
+            positionSelect.closest(".form-group").style.display = "";
+        }
+
+        if (businesslineSelect) {
+            businesslineSelect.closest(".form-group").style.display = "";
+        }
     }
 }
 
