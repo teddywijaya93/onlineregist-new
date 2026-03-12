@@ -6,7 +6,7 @@
 <section class="auth-wrapper">
     <div class="container text-start">
         @include('components.step-header', [
-            'step' => 6,
+            'step' => 7,
             'back' => route('data.profil.resiko')
         ])
         <div class="mb-5">

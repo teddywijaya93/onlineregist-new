@@ -6,7 +6,7 @@
 <section class="auth-wrapper">
     <div class="container text-start">
         @include('components.step-header', [
-            'step' => 4,
+            'step' => 6,
             'back' => route('data.penghasilan')
         ])
         <div class="mb-5">

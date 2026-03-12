@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!response.ok) throw data;
 
             if (data.status === true) {
-                if (data.registrationStep === "uploadKTP") {
+                if (data.registrationStep === "uploadKtp") {
                     window.location.replace("{{ route('verifikasi.ktp') }}");
                     return;
                 }

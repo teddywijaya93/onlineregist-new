@@ -6,7 +6,7 @@
 <section class="auth-wrapper">
     <div class="container text-start">
         @include('components.step-header', [
-            'step' => 2,
+            'step' => 4,
             'back' => route('data.personal')
         ])
         <div class="mb-5">
@@ -24,6 +24,24 @@
                 </select>
             </div>
             <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Pendidikan Terakhir</label>
+                <select name="education" id="educationSelect" data-selected="{{ old('employmentType', $employmentData['education'] ?? '') }}" class="form-control form-global">
+                    <option value="">Pilih Pendidikan Terakhir</option>
+                </select>
+            </div>
+            <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Penghasilan Per bulan</label>
+                <select name="mainIncomeRange" id="incomeRangeSelect" data-selected="{{ old('mainIncomeRange', $financialData['mainIncomeRange'] ?? '') }}" class="form-control form-global">
+                    <option value="">Pilih Penghasilan Per bulan</option>
+                </select>
+            </div>
+            <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Sumber Dana</label>
+                <select name="primaryFundSources" id="primaryFundSelect" data-selected="{{ old('primaryFundSources', $financialData['primaryFundSources'] ?? '') }}" class="form-control form-global">
+                    <option value="">Pilih Sumber Dana</option>
+                </select>
+            </div>
+            <!-- <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Perusahaan/Tempat Bekerja</label>
                 <input type="text" name="employer" id="employer" value="{{ old('employer', $employmentData['employer'] ?? '') }}" class="form-control form-global alphabet-only" placeholder="Tulis Nama Perusahaan">
             </div>
@@ -61,7 +79,7 @@
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Telepon Kantor</label>
                 <input type="text" name="officeTelephone" id="officeTelephone" value="{{ old('officeTelephone', $employmentData['officeTelephone'] ?? '') }}" class="form-control form-global numeric-only" maxlength="13" placeholder="Tulis Telepon Kantor">
-            </div>
+            </div> -->
             <button type="submit" class="btn btn-primary btn-regist w-100">
                 {{ $isUpdate ? 'Ubah' : 'Lanjutkan' }}
             </button>
@@ -90,11 +108,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 window.routes = {
-    employment   : "{{ route('master.employment') }}",
-    position     : "{{ route('master.position') }}",
-    businessline : "{{ route('master.businessline') }}"
+    education          : "{{ route('master.education') }}",
+    incomeRange        : "{{ route('master.incomeRange') }}",
+    primaryFundSource  : "{{ route('master.primaryFundSOurce') }}",
+    employment         : "{{ route('master.employment') }}",
+    position           : "{{ route('master.position') }}",
+    businessline       : "{{ route('master.businessline') }}"
 };
 </script>
 <script src="{{ asset('js/pekerjaan.js') }}"></script>
+<script src="{{ asset('js/penghasilan.js') }}"></script>
 
 @endsection

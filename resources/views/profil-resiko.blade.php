@@ -4,10 +4,6 @@
 
 <section class="auth-wrapper">
     <div class="container text-start">
-        @include('components.step-header', [
-            'step' => 5,
-            'back' => route('data.referensi.perseorangan')
-        ])
         <div class="mb-5">
             <h3 class="head-lanjut text-white mb-2">Cari Tau Profil Risiko Kamu, Yuk!</h3>
             <p class="desc-lanjut mb-0">Isi data di bawah ini untuk mengetahui profil risiko kamu</p>

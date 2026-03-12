@@ -3,63 +3,68 @@
 @section('content')
 
 <section class="auth-wrapper">
-    <div class="container">
-        <h3 class="text-white mb-4">Verifikasi Wajah | Test API Verihubs Pasif</h3>
-        <p class="text-white-50">
-            Aktifkan kamera, pastikan wajah terlihat jelas, lalu lanjutkan.
-        </p>
-
-        <!-- LIVE CAMERA -->
-        <video id="video" class="w-100 mb-3 d-none rounded" autoplay playsinline></video>
-        <canvas id="canvas" class="d-none"></canvas>
-
-        <!-- BUTTON -->
-        <button id="btnCamera" class="btn btn-secondary btn-regist w-100 mb-2">Aktifkan Kamera</button>
-        <button id="btnCapture" class="btn btn-primary btn-regist w-100 mb-2 d-none">Capture Foto</button>
-
-        <!-- PREVIEW IMAGE -->
-        <div id="imageBox" class="d-none mb-3">
-            <h6 class="text-white mb-2">Hasil Foto</h6>
-            <img id="resultImage" class="w-100 rounded border">
+    <div class="container text-start">
+        @include('components.step-header', [
+            'step' => 2,
+        ])
+        <div class="mb-5">
+            <h3 class="head-lanjut text-white mb-2">Ambil Foto Selfie</h3>
+            <p class="desc-lanjut mb-0">Perhatian panduan berikut dalam pengambilan foto selfie.</p>
         </div>
-        <button id="btnRetake" class="btn btn-warning btn-regist w-100 mb-2 d-none">Ambil Ulang</button>
-        <button id="btnSubmit" class="btn btn-success btn-regist w-100 mb-3 d-none">Kirim & Lihat Hasil Raw</button>
+        <form id="selfieForm" method="POST" action="{{ route('verifikasi.wajah.process') }}">
+            @csrf
+            <input type="hidden" name="image" id="imageInput">
 
-        <!-- INFO BOX -->
-        <div id="infoBox" class="d-none mb-3">
-            <ul class="list-group">
-                <li class="list-group-item" id="infoStatus"></li>
-                <li class="list-group-item" id="infoDetail"></li>
-            </ul>
-        </div>
+            <!-- LIVE CAMERA -->
+            <video id="video" class="w-100 mb-3 d-none rounded" autoplay playsinline></video>
+            <canvas id="canvas" class="d-none"></canvas>
 
-        <!-- RAW JSON -->
-        <div id="jsonBox" class="d-none">
-            <h6 class="text-white mt-3">Response JSON (Debug)</h6>
-            <pre id="jsonResult" class="text-white" style="font-size:11px;white-space:pre-wrap"></pre>
-        </div>
+            <!-- BUTTON -->
+            <button type="button" id="btnCamera" class="btn btn-secondary btn-regist w-100 mb-2">Aktifkan Kamera</button>
+            <button type="button" id="btnCapture" class="btn btn-primary btn-regist w-100 mb-2 d-none">Capture Foto</button>
+
+            <!-- PREVIEW IMAGE -->
+            <div id="imageBox" class="d-none mb-3">
+                <h6 class="text-white mb-2">Hasil Foto</h6>
+                <img id="resultImage" class="w-100 rounded border">
+            </div>
+            <button type="button" id="btnRetake" class="btn btn-warning btn-regist w-100 mb-2 d-none">Ambil Ulang</button>
+            <button type="submit" id="btnSubmit" class="btn btn-success btn-regist w-100 mb-3 d-none">Lanjutkan</button>
+        </form>
     </div>
 </section>
 
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const message = @json(session('api_message'));
+    const status  = @json(session('api_status'));
+
+    if (message) {
+        let iconType = 'info';
+        if (status === true || status === 'true') {
+            iconType = 'success';
+        } else if (status === false || status === 'false') {
+            iconType = 'warning';
+        }
+        Swal.fire({
+            icon: iconType,
+            title: 'Informasi',
+            text: message,
+            confirmButtonColor: '#3085d6'
+        });
+    }
+});
+
 const video      = document.getElementById('video');
 const canvas     = document.getElementById('canvas');
 const ctx        = canvas.getContext('2d');
-
 const btnCamera  = document.getElementById('btnCamera');
 const btnCapture = document.getElementById('btnCapture');
 const btnRetake  = document.getElementById('btnRetake');
 const btnSubmit  = document.getElementById('btnSubmit');
-
-const imageBox   = document.getElementById('imageBox');
 const resultImg  = document.getElementById('resultImage');
-
-const infoBox    = document.getElementById('infoBox');
-const infoStatus = document.getElementById('infoStatus');
-const infoDetail = document.getElementById('infoDetail');
-
-const jsonBox    = document.getElementById('jsonBox');
-const jsonResult = document.getElementById('jsonResult');
+const imageBox   = document.getElementById('imageBox');
+const imageInput = document.getElementById('imageInput');
 
 let stream = null;
 let imageData = null;
@@ -74,7 +79,7 @@ btnCamera.onclick = async () => {
 
         video.srcObject = stream;
         video.classList.remove('d-none');
-
+    
         btnCamera.classList.add('d-none');
         btnCapture.classList.remove('d-none');
 
@@ -99,10 +104,6 @@ btnCapture.onclick = () => {
     btnSubmit.classList.remove('d-none');
 
     stopCamera();
-
-    infoStatus.innerHTML = '📸 Foto berhasil diambil';
-    // infoDetail.innerHTML = '📦 Ukuran data: <b>${imageData.length}</b> karakter';
-    infoBox.classList.remove('d-none');
 };
 
 /* AMBIL ULANG */
@@ -111,31 +112,15 @@ btnRetake.onclick = async () => {
     await btnCamera.onclick();
 };
 
-/* KIRIM KE API */
-btnSubmit.onclick = () => {
-    fetch("{{ route('verifikasi.wajah.process') }}", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({ image: imageData })
-    })
-    .then(r => r.json())
-    .then(res => {
-        jsonResult.textContent = JSON.stringify(res, null, 2);
-        jsonBox.classList.remove('d-none');
-
-        if (res.liveness?.status) {
-            infoStatus.innerHTML =
-                '✅ Wajah Asli (Liveness ${res.liveness.probability}%)';
-        } else {
-            infoStatus.innerHTML =
-                '❌ Liveness tidak valid';
-        }
-    })
-    .catch(() => alert('Gagal menghubungi server'));
-};
+/* SUBMIT FORM */
+document.getElementById('selfieForm').addEventListener('submit', function (e) {
+    if (!imageData) {
+        e.preventDefault();
+        alert('Foto belum diambil');
+        return;
+    }
+    imageInput.value = imageData;
+});
 
 /* STOP CAMERA */
 function stopCamera() {
@@ -150,8 +135,6 @@ function resetAll() {
     imageData = null;
     resultImg.src = '';
     imageBox.classList.add('d-none');
-    infoBox.classList.add('d-none');
-    jsonBox.classList.add('d-none');
 
     btnRetake.classList.add('d-none');
     btnSubmit.classList.add('d-none');

@@ -6,52 +6,38 @@ use Carbon\Carbon;
 
 class OcrNormalizer
 {
-    public static function normalize(array $ocr)
+    public static function normalize($raw)
     {
+        $ktp = $raw['data']['ktp'] ?? $raw['ktp'] ?? [];
+
+        // $rtRw = $ktp['rtRw']['value'] ?? '';
+        // $rt = '';
+        // $rw = '';
+
+        // if ($rtRw) {
+        //     $split = explode('/', $rtRw);
+        //     $rt = $split[0] ?? '';
+        //     $rw = $split[1] ?? '';
+        // }
+
         return [
-            'nik' => $ocr['nik'] ?? null,
-            'nama' => $ocr['nama'] ?? null,
-            'tanggalLahir' => $ocr['tanggal_lahir'] ?? null,
-            'tempatLahir' => $ocr['tempat_lahir'] ?? null,
-            'agama' => $ocr['agama'] ?? null,
-            'jenisKelamin' => self::mapGender($ocr['jenis_kelamin'] ?? ''),
-            'statusPerkawinan' => self::mapMarital($ocr['status_perkawinan'] ?? ''),
-            'alamat' => $ocr['alamat'] ?? null,
-            'rt_rw' => $ocr['rt_rw'] ?? null,
-            'kota' => $ocr['kota'] ?? null,
-            'kelurahan' => $ocr['kelurahan'] ?? null,
-            'kecamatan' => $ocr['kecamatan'] ?? null,
+            'nama' => $ktp['nama']['value'] ?? '',
+            'nik' => $ktp['nik']['value'] ?? '',
+            'tempatLahir' =>trim(str_replace(',', '', $ktp['tempatLahir']['value'] ?? '')),
+            'tanggalLahir' =>
+                isset($ktp['tanggalLahir']['value'])
+                    ? date('Y-m-d', strtotime($ktp['tanggalLahir']['value']))
+                    : '',
+
+            'jenisKelamin' => $ktp['jenisKelamin']['value'] ?? '',
+            'agama' => $ktp['agama']['value'] ?? '',
+            'statusPerkawinan' => $ktp['statusPerkawinan']['value'] ?? '',
+            'alamat' => $ktp['alamat']['value'] ?? '',
+            'kota' => $ktp['kotaKabupaten']['value'] ?? '',
+            'kecamatan' => $ktp['kecamatan']['value'] ?? '',
+            'kelurahan' => $ktp['kelurahanDesa']['value'] ?? '',
         ];
     }
-
-    // private static function digits($v)
-    // {
-    //     return $v ? preg_replace('/\D/', '', $v) : null;
-    // }
-
-    // private static function cleanText($v)
-    // {
-    //     if (!$v) return null;
-    //     $v = strtoupper($v);
-    //     return trim(preg_replace('/\s+/', ' ', $v));
-    // }
-
-    // private static function cleanAlpha($v)
-    // {
-    //     if (!$v) return null;
-    //     return trim(preg_replace('/[^A-Za-z\s]/', '', strtoupper($v)));
-    // }
-
-    // private static function date($v)
-    // {
-    //     if (!$v) return null;
-
-    //     try {
-    //         return Carbon::parse($v)->format('Y-m-d');
-    //     } catch (\Exception $e) {
-    //         return null;
-    //     }
-    // }
 
     private static function mapGender($v)
     {

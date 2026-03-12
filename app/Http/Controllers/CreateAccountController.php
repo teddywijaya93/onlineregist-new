@@ -224,7 +224,7 @@ class CreateAccountController extends Controller
         try {
             Log::info('Personal Payload', $payload);
             $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . config('services.profits.token'),
+                    // 'Authorization' => 'Bearer ' . config('services.profits.token'),
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                 ])
@@ -328,7 +328,7 @@ class CreateAccountController extends Controller
         try {
             Log::info('Employment Payload', $payload);
             $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . config('services.profits.token'),
+                    // 'Authorization' => 'Bearer ' . config('services.profits.token'),
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                 ])
@@ -425,7 +425,7 @@ class CreateAccountController extends Controller
         try {
             Log::info('Financial Payload', $payload);
             $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . config('services.profits.token'),
+                    // 'Authorization' => 'Bearer ' . config('services.profits.token'),
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                 ])

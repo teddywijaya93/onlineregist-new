@@ -53,6 +53,9 @@ Route::middleware('ensure.login')->group(function () {
 });
 
 Route::middleware(['ensure.login','step.guard'])->group(function () {
+    // OCR + Liveness
+    Route::post('/verifikasi-ktp/process', [Verifikasi_KTPController::class, 'process'])->name('verifikasi.ktp.process');
+    Route::post('/verifikasi-wajah/process',[Verifikasi_WajahController::class, 'process'])->name('verifikasi.wajah.process');
     Route::get('/data-personal',[CreateAccountController::class, 'showPersonal'])->name('data.personal');
     Route::get('/data-pekerjaan', [CreateAccountController::class, 'showEmployment'])->name('data.pekerjaan');
     Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmployment'])->name('data.pekerjaan.submit');
@@ -70,9 +73,6 @@ Route::get('/otp', [AuthController::class, 'showOtp'])->name('otp');
 Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->name('otp.verify');
 Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
 
-// OCR + Liveness
-Route::post('/verifikasi-ktp/process', [Verifikasi_KTPController::class, 'process'])->name('verifikasi.ktp.process');
-Route::post('/verifikasi-wajah/process',[Verifikasi_WajahController::class, 'process'])->name('verifikasi.wajah.process');
 
 // Step 1
 Route::post('/data-personal/submit',[CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');

@@ -6,12 +6,12 @@ class StepRedirectService
 {
     public const STEP_ROUTE = [
         'verificationWA'        => 'otp',
-        'uploadKTP'             => 'verifikasi.ktp',
+        'uploadKtp'             => 'verifikasi.ktp',
+        'uploadSelfie'          => 'verifikasi.wajah',
         'personalInformation'   => 'data.personal',
         'employmentInformation' => 'data.pekerjaan',
         'financialProfile'      => 'data.penghasilan',
         'relation'              => 'data.referensi.perseorangan',
-        // 'riskProfile'           => 'profil.resiko',
         'bankInformation'       => 'data.bank',
     ];
 
