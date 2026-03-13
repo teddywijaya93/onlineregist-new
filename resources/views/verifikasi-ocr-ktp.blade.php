@@ -5,7 +5,8 @@
 <section class="auth-wrapper">
     <div class="container text-start">
         @include('components.step-header', [
-            'step' => 1,
+            'step' => $step,
+            'hideBack' => true
         ])
         <div class="mb-5">
             <h3 class="head-lanjut text-white mb-2">Ambil Foto KTP</h3>

@@ -100,14 +100,14 @@ function initCityKecamatan() {
                 opt.value = item.id;
                 opt.textContent = item.name;
 
-                if (String(item.id) === String(selected)) {
+                if (String(item.id) === String(selected) || item.name.toLowerCase() === selected.toLowerCase()) {
                     opt.selected = true;
                 }
                 kecamatanSelect.appendChild(opt);
             });
 
             // AUTO LOAD KELURAHAN SAAT EDIT
-            if (selected) {
+            if (selected) { 
                 kecamatanSelect.dispatchEvent(new Event('change'));
             }
 
@@ -155,7 +155,7 @@ function initKecamatanKelurahan() {
                 opt.value = item.id;
                 opt.textContent = item.name;
 
-                if (String(item.id) === String(selected)) {
+                if (String(item.id) === String(selected) || item.name.toLowerCase() === selected.toLowerCase()) {
                     opt.selected = true;
                 }
 
@@ -205,23 +205,23 @@ function initFormValidation() {
         ['nama','Nama'],
         ['nik','NIK'],
         ['motherMaidenName','Nama ibu'],
-        ['tempatLahir','Tempat lahir'],
+        // ['tempatLahir','Tempat lahir'],
         ['tanggalLahir','Tanggal lahir'],
         ['genderSelect','Jenis kelamin'],
         ['religionSelect','Agama'],
-        ['educationSelect','Pendidikan'],
+        // ['educationSelect','Pendidikan'],
         ['maritalSelect','Status kawin'],
         ['alamat','Alamat'],
-        ['rt','RT'],
-        ['rw','RW'],
-        ['citySelect','Kota'],
-        ['kecamatanSelect','Kecamatan'],
+        // ['rt','RT'],
+        // ['rw','RW'],
+        // ['citySelect','Kota'],
+        // ['kecamatanSelect','Kecamatan'],
         ['kelurahanSelect','Kelurahan'],
         ['residenceAddress','Alamat domisili'],
-        ['residenceRT','RT domisili'],
-        ['residenceRW','RW domisili'],
-        ['residenceCity','Kota domisili'],
-        ['residenceKelurahan','Kelurahan domisili'],
+        // ['residenceRT','RT domisili'],
+        // ['residenceRW','RW domisili'],
+        // ['residenceCity','Kota domisili'],
+        // ['residenceKelurahan','Kelurahan domisili'],
         ['residenceKecamatan','Kecamatan domisili']
     ];
 

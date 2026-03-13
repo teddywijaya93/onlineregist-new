@@ -5,9 +5,9 @@
 
 <div class="step-header mb-5">
     <div class="step-top">
-        <a href="{{ $back ?? url()->previous() }}" class="step-back">
-            ←
-        </a>
+        @if(empty($hideBack))
+        <a href="{{ $back ?? url()->previous() }}" class="step-back"><i class="fa fa-angle-left"></i></a>
+        @endif
         <div class="step-text">
             Langkah {{ $step }} dari {{ $total }}
         </div>

@@ -10,19 +10,19 @@ use App\Services\StepRedirectService;
 
 class Verifikasi_WajahController extends Controller
 {
-    // public function index()
-    // {
-    //     if ($r = StepRedirectService::guardStep()) {
-    //         return redirect($r);
-    //     }
+    public function index()
+    {
+        if ($r = StepRedirectService::guardStep()) {
+            return redirect($r);
+        }
 
-    //     $step = session('registrationStep');
+        $step = session('registrationStep');
 
-    //     return view('verifikasi-liveness-wajah', [
-    //         'step' => StepRedirectService::stepNumber($step),
-    //         'hideBack' => StepRedirectService::hideBack()
-    //     ]);
-    // }
+        return view('verifikasi-liveness-wajah', [
+            'step' => StepRedirectService::stepNumber($step),
+            'hideBack' => StepRedirectService::hideBack()
+        ]);
+    }
 
     public function process(Request $request)
     {

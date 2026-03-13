@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use App\Services\OcrNormalizer;
+use App\Services\StepRedirectService;
 
 class CreateAccountController extends Controller
 {
@@ -128,11 +129,10 @@ class CreateAccountController extends Controller
 
     public function showPersonal()
     {
-        // if ($r = StepRedirectService::guardStep()) {
-        //     return redirect($r);
-        // }
-
-        // $step = session('registrationStep');
+        if ($r = StepRedirectService::guardStep()) {
+            return redirect($r);
+        }
+        $step = session('registrationStep');
 
         $ocr = session('ocr_result');
         if (!$ocr) {
@@ -151,8 +151,8 @@ class CreateAccountController extends Controller
         return view('data-personal', [
             'data' => $data,
             'isUpdate' => $isUpdate,
-            // 'step' => StepRedirectService::stepNumber($step),
-            // 'hideBack' => StepRedirectService::hideBack()
+            'step' => StepRedirectService::stepNumber($step),
+            'hideBack' => StepRedirectService::hideBack()
         ]);
     }
 

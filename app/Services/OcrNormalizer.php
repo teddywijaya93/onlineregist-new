@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
-
 class OcrNormalizer
 {
     public static function normalize($raw)
@@ -20,23 +18,58 @@ class OcrNormalizer
         //     $rw = $split[1] ?? '';
         // }
 
-        return [
-            'nama' => $ktp['nama']['value'] ?? '',
-            'nik' => $ktp['nik']['value'] ?? '',
-            'tempatLahir' =>trim(str_replace(',', '', $ktp['tempatLahir']['value'] ?? '')),
-            'tanggalLahir' =>
-                isset($ktp['tanggalLahir']['value'])
-                    ? date('Y-m-d', strtotime($ktp['tanggalLahir']['value']))
-                    : '',
+        $nama = self::clean($ktp['nama']['value'] ?? '');
+        $nik  = self::clean($ktp['nik']['value'] ?? '');
+        $tempat = self::clean($ktp['tempatLahir']['value'] ?? '');
+        $alamat = self::clean($ktp['alamat']['value'] ?? '');
+        $kota = self::cleanWilayah($ktp['kotaKabupaten']['value'] ?? '');
+        $kecamatan = self::cleanWilayah($ktp['kecamatan']['value'] ?? '');
+        $kelurahan = self::cleanWilayah($ktp['kelurahanDesa']['value'] ?? '');
+        $agama = self::mapAgama($ktp['agama']['value'] ?? '');
+        $gender = self::mapGender($ktp['jenisKelamin']['value'] ?? '');
+        $marital = self::mapMarital($ktp['statusPerkawinan']['value'] ?? '');
+        $tanggal = '';
+        if (!empty($ktp['tanggalLahir']['value'])) {
+            $tanggal =date('Y-m-d',strtotime($ktp['tanggalLahir']['value']));
+        }
 
-            'jenisKelamin' => $ktp['jenisKelamin']['value'] ?? '',
-            'agama' => $ktp['agama']['value'] ?? '',
-            'statusPerkawinan' => $ktp['statusPerkawinan']['value'] ?? '',
-            'alamat' => $ktp['alamat']['value'] ?? '',
-            'kota' => $ktp['kotaKabupaten']['value'] ?? '',
-            'kecamatan' => $ktp['kecamatan']['value'] ?? '',
-            'kelurahan' => $ktp['kelurahanDesa']['value'] ?? '',
+        return [
+            'nama' => $nama,
+            'nik' => $nik,
+            'tempatLahir' => $tempat,
+            'tanggalLahir' => $tanggal,
+            'jenisKelamin' => $gender,
+            'agama' => $agama,
+            'statusPerkawinan' => $marital,
+            'alamat' => $alamat,
+            'kota' => $kota,
+            'kecamatan' => $kecamatan,
+            'kelurahan' => $kelurahan,
+            // 'rt' => $rt,
+            // 'rw' => $rw,
         ];
+    }
+
+    private static function clean($v)
+    {
+        $v = strtoupper($v);
+        $v = str_replace(',', '', $v);
+        $v = trim($v);
+
+        return $v;
+    }
+
+    private static function mapAgama($v)
+    {
+        $v = strtoupper($v);
+
+        if ($v == 'ISLAM') return 'Islam';
+        if ($v == 'KRISTEN') return 'Kristen';
+        if ($v == 'KATOLIK') return 'Katolik';
+        if ($v == 'HINDU') return 'Hindu';
+        if ($v == 'BUDDHA') return 'Buddha';
+        if ($v == 'KONGHUCU') return 'Konghucu';
+        return $v;
     }
 
     private static function mapGender($v)
@@ -44,14 +77,36 @@ class OcrNormalizer
         $v = strtoupper($v);
         if (str_contains($v,'LAKI')) return 'Pria';
         if (str_contains($v,'PEREMPUAN')) return 'Wanita';
-        return null;
+        return '';
     }
 
     private static function mapMarital($v)
     {
         $v = strtoupper($v);
-        if (str_contains($v,'KAWIN')) return 'Menikah';
-        if (str_contains($v,'BELUM')) return 'Belum Menikah';
-        return null;
+        if (str_contains($v, 'BELUM')) {
+            return 'Belum Menikah';
+        }
+
+        if (str_contains($v, 'KAWIN')) {
+            return 'Menikah';
+        }
+
+        if (str_contains($v, 'CERAI')) {
+            return 'Janda';
+        }
+        return '';
+    }
+
+    private static function cleanWilayah($v)
+    {
+        $v = strtoupper($v);
+
+        $v = str_replace('KOTA ', '', $v);
+        $v = str_replace('KABUPATEN ', '', $v);
+        $v = trim($v);
+        // title case
+        $v = ucwords(strtolower($v));
+
+        return $v;
     }
 }
