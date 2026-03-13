@@ -33,7 +33,7 @@ class AuthController extends Controller
             if (!$response->ok()) {
                 return response()->json([
                     'status'  => false,
-                    'message' => 'Server API bermasalah'
+                    'message' => 'Internal Server Error'
                 ], 500);
             }
 
@@ -61,13 +61,9 @@ class AuthController extends Controller
             ], 400);
 
         } catch (\Throwable $e) {
-            Log::error('LOGIN ERROR', [
-                'message' => $e->getMessage()
-            ]);
-
             return response()->json([
                 'status'  => false,
-                'message' => 'Terjadi kesalahan sistem'
+                'message' => 'Internal Server Error'
             ], 500);
         }
     }
@@ -101,7 +97,7 @@ class AuthController extends Controller
             if (!$response->ok()) {
                 return response()->json([
                     'status'  => false,
-                    'message' => 'Server OTP bermasalah'
+                    'message' => 'Internal Server Error'
                 ], 500);
             }
 
@@ -126,13 +122,9 @@ class AuthController extends Controller
             ], 400);
 
         } catch (\Throwable $e) {
-            Log::error('VERIFY OTP ERROR', [
-                'message' => $e->getMessage()
-            ]);
-
             return response()->json([
                 'status'  => false,
-                'message' => 'Terjadi kesalahan sistem'
+                'message' => 'Internal Server Error'
             ], 500);
         }
     }
@@ -161,19 +153,15 @@ class AuthController extends Controller
             if (!$response->ok()) {
                 return response()->json([
                     'status'  => false,
-                    'message' => 'Server resend OTP bermasalah'
+                    'message' => 'Internal Server Error'
                 ], 500);
             }
             return response()->json($response->json());
 
         } catch (\Throwable $e) {
-            Log::error('RESEND OTP ERROR', [
-                'message' => $e->getMessage()
-            ]);
-
             return response()->json([
                 'status'  => false,
-                'message' => 'Terjadi kesalahan sistem'
+                'message' => 'Internal Server Error'
             ], 500);
         }
     }
@@ -201,10 +189,6 @@ class AuthController extends Controller
                 ]);
             $result = $response->json();
         } catch (\Throwable $e) {
-            \Log::error('LOGOUT ERROR', [
-                'message' => $e->getMessage()
-            ]);
-
             return response()->json([
                 'status' => false,
                 'message' => 'Logout Gagal'

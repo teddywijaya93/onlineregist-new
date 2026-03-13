@@ -20,28 +20,19 @@ class NIK_UsernameCheckController extends Controller
                 ]);
 
             if (!$response->successful()) {
-                Log::error('NIK API Error', [
-                    'status' => $response->status(),
-                    'body'   => $response->body()
-                ]);
-
                 return response()->json([
                     'status'  => false,
-                    'message' => 'Gagal Menghubungi Server'
+                    'message' => 'Internal Server Error'
                 ], 500);
             }
 
             return response()->json($response->json());
 
         } catch (\Throwable $e) {
-            Log::error('NIK Check Exception', [
-                'error' => $e->getMessage()
-            ]);
-
             return response()->json([
                 'status' => false,
                 'messageTitle' => 'Error',
-                'messageBody' => 'Koneksi Server Gagal'
+                'messageBody' => 'Internal Server Error'
             ], 500);
         }
     }
@@ -62,14 +53,10 @@ class NIK_UsernameCheckController extends Controller
             return response()->json($response->json(), $response->status());
 
         } catch (\Throwable $e) {
-            Log::error('Username Check Exception', [
-                'error' => $e->getMessage()
-            ]);
-
             return response()->json([
                 'status' => false,
                 'messageTitle' => 'Error',
-                'messageBody' => 'Koneksi Server Gagal'
+                'messageBody' => 'Internal Server Error'
             ], 500);
         }
     }   

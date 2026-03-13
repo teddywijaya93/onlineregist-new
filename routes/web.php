@@ -42,20 +42,16 @@ Route::view('/customer-type', 'customer-type')->name('customer-type');
 Route::view('/check-nik-name', 'check-nik-name')->name('check-nik-name');
 Route::view('/create-account', 'create-account')->name('create-account');
 
-Route::middleware('ensure.login')->group(function () {
-    Route::get('/verifikasi-ktp', function () {
-        if (!session()->has('accountId')) {
-            return redirect()->route('login');
-        }
-        return view('verifikasi-ocr-ktp');
-    })->name('verifikasi.ktp');
-    Route::view('/verifikasi-wajah', 'verifikasi-liveness-wajah')->name('verifikasi.wajah');
-});
-
 Route::middleware(['ensure.login','step.guard'])->group(function () {
+    Route::view('/verifikasi-ktp', 'verifikasi-ocr-ktp')->name('verifikasi.ktp');
+    Route::view('/verifikasi-wajah', 'verifikasi-liveness-wajah')->name('verifikasi.wajah');
     // OCR + Liveness
+    // Route::get('/verifikasi-ktp',[Verifikasi_KTPController::class,'index'])->name('verifikasi.ktp');
     Route::post('/verifikasi-ktp/process', [Verifikasi_KTPController::class, 'process'])->name('verifikasi.ktp.process');
+
+    // Route::get('/verifikasi-wajah',[Verifikasi_WajahController::class,'index'])->name('verifikasi.wajah');
     Route::post('/verifikasi-wajah/process',[Verifikasi_WajahController::class, 'process'])->name('verifikasi.wajah.process');
+
     Route::get('/data-personal',[CreateAccountController::class, 'showPersonal'])->name('data.personal');
     Route::get('/data-pekerjaan', [CreateAccountController::class, 'showEmployment'])->name('data.pekerjaan');
     Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmployment'])->name('data.pekerjaan.submit');

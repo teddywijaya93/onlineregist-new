@@ -25,12 +25,6 @@ class CreateAccountController extends Controller
             ]);
 
         } catch (\Throwable $e) {
-            Log::error('saveAccountType ERROR', [
-                'message' => $e->getMessage(),
-                'file'    => $e->getFile(),
-                'line'    => $e->getLine()
-            ]);
-
             return response()->json([
                 'status'  => false,
                 'message' => 'Internal Server Error'
@@ -55,12 +49,6 @@ class CreateAccountController extends Controller
             ]);
 
         } catch (\Throwable $e) {
-            Log::error('SaveIdentity ERROR', [
-                'message' => $e->getMessage(),
-                'file'    => $e->getFile(),
-                'line'    => $e->getLine()
-            ]);
-
             return response()->json([
                 'status'  => false,
                 'message' => 'Internal Server Error'
@@ -96,25 +84,23 @@ class CreateAccountController extends Controller
                 'accountType' => $session['account_type']
             ];
 
-            Log::info("CREATE ACCOUNT — PAYLOAD", $payload);
-
+            Log::info("Create Account Payload", $payload);
             $apiResponse = Http::withHeaders([
                 'Accept'       => 'application/json',
                 'Content-Type' => 'application/json',
-            ])->post(
-                'https://dev.profits.co.id:8283/registration/createAccountNewRegistration',
-                $payload
+            ])
+            ->withoutVerifying()
+            ->timeout(15)
+            ->connectTimeout(5)
+            ->retry(1, 200)
+            ->post(
+                'https://dev.profits.co.id:8283/registration/createAccountNewRegistration',$payload
             );
 
             if (!$apiResponse->successful()) {
-                Log::error('API ERROR', [
-                    'status' => $apiResponse->status(),
-                    'body'   => $apiResponse->body()
-                ]);
-
                 return response()->json([
                     'status'  => false,
-                    'message' => 'API gagal memproses pendaftaran'
+                    'message' => 'Gagal Memproses Pendaftaran'
                 ], 500);
             }
             $result = $apiResponse->json();
@@ -133,12 +119,6 @@ class CreateAccountController extends Controller
             ]);
 
         } catch (\Throwable $e) {
-            Log::error('CreateAccount ERROR', [
-                'message' => $e->getMessage(),
-                'file'    => $e->getFile(),
-                'line'    => $e->getLine()
-            ]);
-
             return response()->json([
                 'status'  => false,
                 'message' => 'Internal Server Error'
@@ -148,23 +128,32 @@ class CreateAccountController extends Controller
 
     public function showPersonal()
     {
+        // if ($r = StepRedirectService::guardStep()) {
+        //     return redirect($r);
+        // }
+
+        // $step = session('registrationStep');
+
         $ocr = session('ocr_result');
         if (!$ocr) {
-            return redirect()
-            ->route('verifikasi.ktp')
-            ->with('api_message','Silakan upload KTP terlebih dahulu');
+            return redirect()->route('verifikasi.ktp');
         }
         $raw = isset($ocr['result']) ? $ocr['result'] : $ocr;
         $ocrData = \App\Services\OcrNormalizer::normalize($raw);
         // dd($ocrData);
-        
+
         $personalData = session('personalData', []);    
         $isUpdate = !empty($personalData);
 
         // merge session override OCR
         $data = array_merge($ocrData, $personalData);
 
-        return view('data-personal', compact('data','isUpdate'));
+        return view('data-personal', [
+            'data' => $data,
+            'isUpdate' => $isUpdate,
+            // 'step' => StepRedirectService::stepNumber($step),
+            // 'hideBack' => StepRedirectService::hideBack()
+        ]);
     }
 
     public function savePersonal(Request $request)
@@ -233,13 +222,12 @@ class CreateAccountController extends Controller
                 ->connectTimeout(5)
                 ->retry(1, 200)
                 ->post(
-                    'https://dev.profits.co.id:8283/registration/saveRegistration',
-                    $payload
+                    'https://dev.profits.co.id:8283/registration/saveRegistration',$payload
                 );
 
             if (!$response->ok()) {
                 return back()->withInput()->with([
-                    'api_message' => 'Server API tidak merespon',
+                    'api_message' => 'Internal Server Error',
                     'api_status'  => false
                 ]);
             }
@@ -278,7 +266,7 @@ class CreateAccountController extends Controller
 
         } catch (\Throwable $e) {
             return back()->withInput()->with([
-                'api_message' => 'Server tidak dapat dihubungi',
+                'api_message' => 'Internal Server Error',
                 'api_status'  => false
             ]);
         }
@@ -328,7 +316,6 @@ class CreateAccountController extends Controller
         try {
             Log::info('Employment Payload', $payload);
             $response = Http::withHeaders([
-                    // 'Authorization' => 'Bearer ' . config('services.profits.token'),
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                 ])
@@ -337,13 +324,12 @@ class CreateAccountController extends Controller
                 ->connectTimeout(5)
                 ->retry(1, 200)
                 ->post(
-                    'https://dev.profits.co.id:8283/registration/saveRegistration',
-                    $payload
+                    'https://dev.profits.co.id:8283/registration/saveRegistration',$payload
                 );
 
             if (!$response->ok()) {
                 return back()->withInput()->with([
-                    'api_message' => 'Server API tidak merespon',
+                    'api_message' => 'Internal Server Error',
                     'api_status'  => false
                 ]);
             }
@@ -381,7 +367,7 @@ class CreateAccountController extends Controller
             ]);
         } catch (\Throwable $e) {
             return back()->withInput()->with([
-                'api_message' => 'Server tidak dapat dihubungi',
+                'api_message' => 'Internal Server Error',
                 'api_status'  => false
             ]);
         }
@@ -425,7 +411,6 @@ class CreateAccountController extends Controller
         try {
             Log::info('Financial Payload', $payload);
             $response = Http::withHeaders([
-                    // 'Authorization' => 'Bearer ' . config('services.profits.token'),
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                 ])
@@ -434,13 +419,12 @@ class CreateAccountController extends Controller
                 ->connectTimeout(5)
                 ->retry(1, 200)
                 ->post(
-                    'https://dev.profits.co.id:8283/registration/saveRegistration',
-                    $payload
+                    'https://dev.profits.co.id:8283/registration/saveRegistration',$payload
                 );
 
             if (!$response->ok()) {
                 return back()->withInput()->with([
-                    'api_message' => 'Server API tidak merespon',
+                    'api_message' => 'Internal Server Error',
                     'api_status'  => false
                 ]);
             }
@@ -478,7 +462,7 @@ class CreateAccountController extends Controller
             ]);
         } catch (\Throwable $e) {
             return back()->withInput()->with([
-                'api_message' => 'Server tidak dapat dihubungi',
+                'api_message' => 'Internal Server Error',
                 'api_status'  => false
             ]);
         }
@@ -566,7 +550,7 @@ class CreateAccountController extends Controller
 
             if (!$response->ok()) {
                 return back()->withInput()->with([
-                    'api_message' => 'Server API tidak merespon',
+                    'api_message' => 'Internal Server Error',
                     'api_status'  => false
                 ]);
             }
@@ -600,7 +584,7 @@ class CreateAccountController extends Controller
             ]);
         } catch (\Throwable $e) {
             return back()->withInput()->with([
-                'api_message' => 'Server tidak dapat dihubungi',
+                'api_message' => 'Internal Server Error',
                 'api_status'  => false
             ]);
         }

@@ -8,9 +8,24 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Services\StepRedirectService;
 
 class Verifikasi_KTPController extends Controller
 {
+    // public function index()
+    // {
+    //     if ($r = StepRedirectService::guardStep()) {
+    //         return redirect($r);
+    //     }
+
+    //     $step = session('registrationStep');
+        
+    //     return view('verifikasi-ktp', [
+    //         'step' => StepRedirectService::stepNumber($step),
+    //         'hideBack' => StepRedirectService::hideBack()
+    //     ]);
+    // }
+
     public function process(Request $request)
     {
         try
@@ -61,6 +76,19 @@ class Verifikasi_KTPController extends Controller
             }
             $ocrResult = $ocr->json();
 
+            $isKtp =
+                $ocrResult['data']['qualities']['is_ktp']
+                ?? $ocrResult['qualities']['is_ktp']
+                ?? false;
+
+            Log::info('IS KTP', [$isKtp]);
+            if (!$isKtp) {
+                return back()->with([
+                    'api_message' => 'Foto bukan KTP, silakan upload ulang',
+                    'api_status' => false
+                ]);
+            }
+
             session([
                 'ocr_result' => $ocrResult
             ]);
@@ -93,24 +121,28 @@ class Verifikasi_KTPController extends Controller
                     ]
                 ]
             );
-            Log::info('Upload response', [$response->json()]);
+            $data = $response->json();
 
-            if ($response->failed()) { 
-                return response()->json([ 
-                    'status' => false, 
-                    'message' => 'Upload Attachment Gagal',
-                ]); 
+            Log::info('Upload Selfie', [$data]);
+            if ($response->failed()) {
+                return back()->with([
+                    'api_message' => $data['message'] ?? 'Upload Selfie Gagal',
+                    'api_status'  => false
+                ]);
             }
-            return redirect()->route('verifikasi.wajah');
 
-        } catch (\Throwable $e) {
-            Log::error('Proses OCR Error', [
-                'message' => $e->getMessage(),
-                'line' => $e->getLine(),
-                'file' => $e->getFile(),
+            session([
+                'registrationStep' => 'uploadSelfie'
             ]);
 
-            return back()->with('api_message','Terjadi error server');
+            return redirect()->route('verifikasi.wajah')
+                ->with([
+                    'api_message' => $data['message'],
+                    'api_status'  => $data['status'] ?? true
+                ]);
+
+        } catch (\Throwable $e) {
+            return back()->with('api_message','Internal Server Error');
         }
     }
 }

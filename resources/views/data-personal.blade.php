@@ -134,6 +134,5 @@ window.routes = {
 window.apiMessage = @json(session('api_message'));
 </script>
 <script src="{{ asset('js/personal.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @endsection

@@ -252,7 +252,7 @@ function submitAccount() {
             });
         })
         .catch(() => {
-            Swal.fire("Error", "Terjadi kesalahan jaringan", "error");
+            Swal.fire("Error", "Internal Server Error", "error");
         });
     });
 }

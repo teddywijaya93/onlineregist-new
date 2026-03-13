@@ -6,9 +6,24 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use App\Services\StepRedirectService;
 
 class Verifikasi_WajahController extends Controller
 {
+    // public function index()
+    // {
+    //     if ($r = StepRedirectService::guardStep()) {
+    //         return redirect($r);
+    //     }
+
+    //     $step = session('registrationStep');
+
+    //     return view('verifikasi-liveness-wajah', [
+    //         'step' => StepRedirectService::stepNumber($step),
+    //         'hideBack' => StepRedirectService::hideBack()
+    //     ]);
+    // }
+
     public function process(Request $request)
     {
         try {
@@ -32,7 +47,6 @@ class Verifikasi_WajahController extends Controller
                 'selfie/' . $namaFile,
                 base64_decode($imageBase64)
             );
-            Log::info('Selfie saved', [$namaFile]);
 
             $response = Http::withHeaders([
                 'Accept'        => 'application/json',
@@ -52,27 +66,28 @@ class Verifikasi_WajahController extends Controller
                     ]
                 ]
             );
-            Log::info('Upload selfie', [$response->json()]);
+            $data = $response->json();
 
+            Log::info('Upload Selfie', [$data]);
             if ($response->failed()) {
-                return back()->with('api_message','Upload selfie gagal');
+                return back()->with([
+                    'api_message' => $data['message'] ?? 'Upload Selfie Gagal',
+                    'api_status'  => false
+                ]);
             }
 
             session([
-                'currentStep' => 'personalInformation'
+                'registrationStep' => 'personalInformation'
             ]);
-            return redirect()->route('data.personal');
+
+            return redirect()->route('data.personal')
+                ->with([
+                    'api_message' => $data['message'],
+                    'api_status'  => $data['status'] ?? true
+                ]);
 
         } catch (\Throwable $e) {
-            Log::error('Proses Selfie Error', [
-                'message' => $e->getMessage(),
-                'line' => $e->getLine(),
-            ]);
-
-            return back()->with(
-                'api_message',
-                'Terjadi error selfie'
-            );
+            return back()->with('api_message','Internal Server Error');
         }
     }
 }

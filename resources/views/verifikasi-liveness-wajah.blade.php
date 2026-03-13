@@ -73,7 +73,9 @@ let imageData = null;
 btnCamera.onclick = async () => {
     try {
         stream = await navigator.mediaDevices.getUserMedia({
-            video: true,
+            video: {
+                facingMode: "user"
+            },
             audio: false
         });
 
@@ -83,8 +85,9 @@ btnCamera.onclick = async () => {
         btnCamera.classList.add('d-none');
         btnCapture.classList.remove('d-none');
 
-    } catch {
-        alert('Izin kamera ditolak');
+    } catch (err) {
+        console.log(err);
+        alert('Izin kamera ditolak: ' + err.message);
     }
 };
 

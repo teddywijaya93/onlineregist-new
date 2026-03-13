@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch(error => {
             console.error(error);
-            alert("Terjadi kesalahan sistem");
+            alert("Internal Server Error");
         });
     });
 });
