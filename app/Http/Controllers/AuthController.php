@@ -68,153 +68,112 @@ class AuthController extends Controller
         }
     }
 
-    public function verifyOtp(Request $request)
+    public function checkEmail(Request $request)
     {
-        $request->validate([
-            'otp' => 'required'
-        ]);
-
-        $accountId = session('accountId');
-        if (!$accountId) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Session expired, silakan login kembali'
-            ], 401);
-        }
-
         try {
-            $response = Http::timeout(15)
-                ->retry(2, 300)
-                ->withHeaders([
-                    'Content-Type' => 'application/json',
-                    'Accept'       => 'application/json',
-                ])
-                ->post('https://dev.profits.co.id:8283/registration/verificationOTPRegistration', [
-                    'accountId' => (string) $accountId,
-                    'otp'       => $request->otp,
-                ]);
+            $request->validate([
+                'email' => 'required|email'
+            ]);
+
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])
+            ->withoutVerifying()
+            ->timeout(15)
+            ->connectTimeout(5)
+            ->retry(1, 200)
+            ->post(
+                'https://dev.profits.co.id:8283/registration/checkEmail',
+                [
+                    "email" => $request->email
+                ]
+            );
 
             if (!$response->ok()) {
                 return response()->json([
-                    'status'  => false,
-                    'message' => 'Internal Server Error'
-                ], 500);
-            }
-
-            $result = $response->json();
-            $isSuccess = filter_var($result['status'] ?? false, FILTER_VALIDATE_BOOLEAN);
-            if ($isSuccess) {
-                session([
-                    'registrationStep' => $result['registrationStep']
-                ]);
-
-                return response()->json([
-                    'status'   => true,
-                    'redirect' => StepRedirectService::routeByStep(
-                        $result['registrationStep']
-                    )
+                    'status' => false,
+                    'message' => 'Gagal Kirim Email'
                 ]);
             }
+            $data = $response->json();
+            
+            return response()->json($data);
 
-            return response()->json([
-                'status'  => false,
-                'message' => $result['message'] ?? 'OTP tidak valid'
-            ], 400);
-
-        } catch (\Throwable $e) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Internal Server Error'
-            ], 500);
-        }
-    }
-
-    public function resendOtp(Request $request)
-    {
-        $accountId = session('accountId');
-        if (!$accountId) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Session expired, silakan login kembali'
-            ], 401);
-        }
-
-        try {
-            $response = Http::timeout(15)
-                ->retry(2, 300)
-                ->withHeaders([
-                    'Content-Type' => 'application/json',
-                    'Accept'       => 'application/json',
-                ])
-                ->post('https://dev.profits.co.id:8283/registration/resendOtp', [
-                    'accountId' => (string) $accountId,
-                ]);
-
-            if (!$response->ok()) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'Internal Server Error'
-                ], 500);
-            }
-            return response()->json($response->json());
-
-        } catch (\Throwable $e) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Internal Server Error'
-            ], 500);
-        }
-    }
-
-    public function logout(Request $request)
-    {
-        if (!session()->has('accountId')) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Anda belum login'
-            ], 401);
-        }
-
-        $accountId = session('accountId');
-
-        try {
-            $response = Http::timeout(10)
-                ->withHeaders([
-                    'Authorization' => 'Bearer ' . config('services.profits.token'),
-                    'Content-Type'  => 'application/json',
-                    'Accept'        => 'application/json',
-                ])
-                ->post('https://dev.profits.co.id:8283/registration/logoutNewRegistration', [
-                    'accountId' => (string) $accountId
-                ]);
-            $result = $response->json();
         } catch (\Throwable $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Logout Gagal'
+                'message' => 'Internal Server Error'
             ]);
         }
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return response()->json([
-            'status'  => true,
-            'message' => $result['message'],
-        ]);
     }
 
-    public function showLogin()
+    public function sendOtpMail(Request $request)
     {
-        return view('login');
-    }
+        try {
+            $request->validate([
+                'email' => 'required|email'
+            ]);
 
-    public function showOtp()
-    {
-        if (!session()->has('accountId')) {
-            return redirect()->route('login');
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])
+            ->withoutVerifying()
+            ->timeout(15)
+            ->connectTimeout(5)
+            ->retry(1, 200)
+            ->post(
+                'https://dev.profits.co.id:8283/registration/sendOtpMail',
+                [
+                    "email" => $request->email
+                ]
+            );
+
+            $data = $response->json();
+            if (!$data['status']) {
+                return response()->json($data);
+            }
+
+            // simpan email ke session
+            session(['reg_email' => $request->email]);
+
+            return response()->json($data);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Internal Server Error'
+            ]);
         }
+    }
 
-        return view('otp');
+    public function verifyOtp(Request $request)
+    {
+        try {
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])
+            ->withoutVerifying()
+            ->timeout(15)
+            ->connectTimeout(5)
+            ->retry(1, 200)
+            ->post(
+                'https://dev.profits.co.id:8283/registration/verificationOtp',
+                [
+                    "type"  => "EMAIL",
+                    "value" => $request->email,
+                    "otp"   => $request->otp
+                ]
+            );
+
+            return response()->json(
+                $response->json()
+            );
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                "status" => false,
+                "message" => "Internal Server error"
+            ]);
+        }
     }
 }

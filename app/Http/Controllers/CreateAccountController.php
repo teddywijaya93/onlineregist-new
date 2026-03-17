@@ -11,121 +11,75 @@ use App\Services\StepRedirectService;
 
 class CreateAccountController extends Controller
 {
-    public function saveAccountType(Request $request) 
-    {
-        try {
-            $request->validate([
-                'accountType' => 'required|in:REGULAR,SYARIAH'
-            ]);
+    // public function createAccount(Request $request) 
+    // {
+    //     try {
+    //         $request->validate([
+    //             'username'    => 'required|string|min:7|max:15',
+    //             'email'       => 'required|email',
+    //             'mobilePhone' => 'required|string|min:10',
+    //         ]);
 
-            session()->put('register.account_type', $request->accountType);
+    //         // Pull session saved in steps 1 & 2
+    //         $session = session()->get('register');
 
-            return response()->json([
-                'status'  => true,
-                'message' => 'Account type saved'
-            ]);
+    //         if (!$session) {
+    //             return response()->json([
+    //                 'status'  => false,
+    //                 'message' => 'Session expired'
+    //             ], 422);
+    //         }
 
-        } catch (\Throwable $e) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Internal Server Error'
-            ], 500);
-        }
-    }
+    //         $payload = [
+    //             'nik'         => $session['nik'],
+    //             'name'        => $session['name'],
+    //             'username'    => $request->username,
+    //             'email'       => $request->email,
+    //             'mobilePhone' => $request->mobilePhone,
+    //             'accountType' => $session['account_type']
+    //         ];
 
-    public function saveIdentity(Request $request) 
-    {
-        try {
-            $request->validate([
-                'name' => 'required|string|min:3',
-                'nik'  => 'required|digits:16'
-            ]);
+    //         Log::info("Create Account Payload", $payload);
+    //         $apiResponse = Http::withHeaders([
+    //             'Accept'       => 'application/json',
+    //             'Content-Type' => 'application/json',
+    //         ])
+    //         ->withoutVerifying()
+    //         ->timeout(15)
+    //         ->connectTimeout(5)
+    //         ->retry(1, 200)
+    //         ->post(
+    //             'https://dev.profits.co.id:8283/registration/createAccountNewRegistration',$payload
+    //         );
 
-            session()->put('register.name', $request->name);
-            session()->put('register.nik', $request->nik);
+    //         if (!$apiResponse->successful()) {
+    //             return response()->json([
+    //                 'status'  => false,
+    //                 'message' => 'Gagal Memproses Pendaftaran'
+    //             ], 500);
+    //         }
+    //         $result = $apiResponse->json();
 
-            return response()->json([
-                'status'  => true,
-                'message' => 'Identity saved'
-            ]);
-
-        } catch (\Throwable $e) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Internal Server Error'
-            ], 500);
-        }
-    }
-
-    public function createAccount(Request $request) 
-    {
-        try {
-            $request->validate([
-                'username'    => 'required|string|min:7|max:15',
-                'email'       => 'required|email',
-                'mobilePhone' => 'required|string|min:10',
-            ]);
-
-            // Pull session saved in steps 1 & 2
-            $session = session()->get('register');
-
-            if (!$session) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'Session expired'
-                ], 422);
-            }
-
-            $payload = [
-                'nik'         => $session['nik'],
-                'name'        => $session['name'],
-                'username'    => $request->username,
-                'email'       => $request->email,
-                'mobilePhone' => $request->mobilePhone,
-                'accountType' => $session['account_type']
-            ];
-
-            Log::info("Create Account Payload", $payload);
-            $apiResponse = Http::withHeaders([
-                'Accept'       => 'application/json',
-                'Content-Type' => 'application/json',
-            ])
-            ->withoutVerifying()
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/createAccountNewRegistration',$payload
-            );
-
-            if (!$apiResponse->successful()) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'Gagal Memproses Pendaftaran'
-                ], 500);
-            }
-            $result = $apiResponse->json();
-
-            // simpan email utk halaman login
-            session()->put('register_email', $request->email);
-            session()->put('register_phone', $request->mobilePhone);
+    //         // simpan email utk halaman login
+    //         session()->put('register_email', $request->email);
+    //         session()->put('register_phone', $request->mobilePhone);
             
-            // hapus data step
-            session()->forget('register');
+    //         // hapus data step
+    //         session()->forget('register');
 
-            return response()->json([
-                'status'  => true,
-                'message' => 'Account created successfully',
-                'data'    => $result
-            ]);
+    //         return response()->json([
+    //             'status'  => true,
+    //             'message' => 'Account created successfully',
+    //             'data'    => $result
+    //         ]);
 
-        } catch (\Throwable $e) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Internal Server Error'
-            ], 500);
-        }
-    }
+    //     } catch (\Throwable $e) {
+    //         return response()->json([
+    //             'status'  => false,
+    //             'message' => 'Internal Server Error'
+    //         ], 500);
+    //     }
+    // }
 
     public function showPersonal()
     {
@@ -194,7 +148,7 @@ class CreateAccountController extends Controller
             'residenceKecamatan' => 'required',
             'process_type' => 'required|in:CREATE,UPDATE'
         ]);
-        // dd($personalData);
+        dd($personalData);
         $processType = $personalData['process_type'];
         unset($personalData['process_type']);
 
@@ -227,7 +181,7 @@ class CreateAccountController extends Controller
 
             if (!$response->ok()) {
                 return back()->withInput()->with([
-                    'api_message' => 'Internal Server Error',
+                    'api_message' => 'Failed Save Personal Information',
                     'api_status'  => false
                 ]);
             }
@@ -329,7 +283,7 @@ class CreateAccountController extends Controller
 
             if (!$response->ok()) {
                 return back()->withInput()->with([
-                    'api_message' => 'Internal Server Error',
+                    'api_message' => 'Failed Save Employment Information',
                     'api_status'  => false
                 ]);
             }
@@ -424,7 +378,7 @@ class CreateAccountController extends Controller
 
             if (!$response->ok()) {
                 return back()->withInput()->with([
-                    'api_message' => 'Internal Server Error',
+                    'api_message' => 'Failed Save Financal Profile',
                     'api_status'  => false
                 ]);
             }
@@ -550,7 +504,7 @@ class CreateAccountController extends Controller
 
             if (!$response->ok()) {
                 return back()->withInput()->with([
-                    'api_message' => 'Internal Server Error',
+                    'api_message' => 'Failed Save Reference Information',
                     'api_status'  => false
                 ]);
             }

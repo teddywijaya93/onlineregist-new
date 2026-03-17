@@ -68,9 +68,9 @@ body{
     font-size: 14px;
     font-weight: 500;
 }
-.password-toggle {position: relative;}
-.password-toggle input {padding-right: 45px;}
-.password-toggle button {
+.password-toggle{position: relative;}
+.password-toggle input{padding-right: 45px;}
+.password-toggle button{
     position: absolute;
     top: 50%;
     right: 12px;
@@ -82,17 +82,22 @@ body{
     display: flex;
     align-items: center;
 }
-.password-toggle button svg {
+.password-toggle button svg{
     width: 20px;
     height: 20px;
     stroke: #adb5bd;
     transition: stroke 0.2s ease;
 }
-.password-toggle button:hover svg {
-    stroke: #ffffff;
+.password-toggle button:hover svg{stroke: #ffffff;}
+.icon-regist{
+    width: 72px;
+    height: 72px;
+    background: #192234;
+    padding: 16px;
+    border-radius: 40px;
 }
 /* OTP */
-.otp-wrapper {
+.otp-wrapper{
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -101,7 +106,7 @@ body{
     text-align: center;
     padding: 20px;
 }
-.otp-icon {
+.otp-icon{
     width: 70px;
     height: 70px;
     border-radius: 50%;
@@ -111,11 +116,11 @@ body{
     justify-content: center;
     margin-bottom: 20px;
 }
-.otp-icon i {
+.otp-icon i{
     font-size: 28px;
     color: #00ff9c;
 }
-.otp-title {
+.otp-title{
     font-size: 24px;
     font-weight: 600;
     margin-bottom: 10px;
@@ -124,16 +129,16 @@ body{
     font-size: 14px;
     opacity: 0.8;
 }
-.otp-number {
+.otp-number{
     color: #3da5ff;
     font-weight: 600;
 }
-.otp-inputs {
+.otp-inputs{
     display: flex;
     gap: 12px;
     margin: 30px 0;
 }
-.otp-inputs input {
+.otp-inputs input{
     width: 50px;
     height: 60px;
     text-align: center;
@@ -144,19 +149,17 @@ body{
     color: #fff;
     outline: none;
 }
-.otp-inputs input:focus {
-    border-color: #3da5ff;
-}
-.resend {
+.otp-inputs input:focus{border-color: #3da5ff;}
+.resend{
     font-size: 14px;
     margin-bottom: 30px;
 }
-.resend a {
+.resend a{
     color: #3da5ff;
     text-decoration: none;
     font-weight: 600;
 }
-.btn-continue {
+.btn-continue{
     width: 100%;
     max-width: 400px;
     padding: 14px;
@@ -167,7 +170,7 @@ body{
     color: #666;
     cursor: not-allowed;
 }
-.btn-continue.active {
+.btn-continue.active{
     background: #3da5ff;
     color: #fff;
     cursor: pointer;
@@ -231,15 +234,15 @@ body{
     font-size: 14px;
     font-weight: 400;
 }
-.username-rule {margin-top: 10px;}
-.rule-item {
+.username-rule{margin-top: 10px;}
+.rule-item{
     display: flex;
     align-items: center;
     gap: 10px;
     color: #9ca3af;
     font-size: 14px;
 }
-.rule-icon {
+.rule-icon{
     width: 18px;
     height: 18px;
     border-radius: 50%;
@@ -250,8 +253,8 @@ body{
     font-size: 11px;
     color: transparent;
 }
-.rule-item.active {color: #22C55E;}
-.rule-item.active .rule-icon {
+.rule-item.active{color: #22C55E;}
+.rule-item.active .rule-icon{
     background: #22C55E;
     border-color: #22C55E;
     color: #0F172A;
@@ -282,35 +285,35 @@ body{
     font-weight: 600;
 }
 /* Progress Bar */
-.step-top {
+.step-top{
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
 }
-.step-back {
+.step-back{
     color: #ffffff;
     font-size: 22px;
     text-decoration: none;
 }
-.step-text {
+.step-text{
     color:#3898FF;
     font-size: 14px;
     font-weight: 500;
 }
-.step-progress {
+.step-progress{
     width: 100%;
     height: 4px;
     background: rgba(255,255,255,0.15);
 }
-.step-progress-fill {
+.step-progress-fill{
     height: 4px;
     background:#3898FF;
     transition: width 0.3s ease;
 }
 
 /*  */
-.readonly-field {
+.readonly-field{
     background-color:#2B2F45;
     opacity: 0.7;
     pointer-events: none;

@@ -37,15 +37,17 @@ Route::post('/check-username',[NIK_UsernameCheckController::class, 'usernameChec
 
 // Views
 Route::view('/', 'auth.home');
-Route::view('/referral-code', 'referral-code')->name('referral-form');
-Route::view('/customer-type', 'customer-type')->name('customer-type');
-Route::view('/check-nik-name', 'check-nik-name')->name('check-nik-name');
-Route::view('/create-account', 'create-account')->name('create-account');
+// Route::view('/referral-code', 'referral-code')->name('referral-form');
+// Route::view('/customer-type', 'customer-type')->name('customer-type');
+// Route::view('/check-nik-name', 'check-nik-name')->name('check-nik-name');
+// Route::view('/create-account', 'create-account')->name('create-account');
+Route::view('/email', 'email')->name('email');
+Route::post('/check-email',[AuthController::class,'checkEmail'])->name('check.email');
+Route::post('/send-otp',[AuthController::class,'sendOtpMail'])->name('send.otp');
+Route::post('/verify-otp',[AuthController::class,'verifyOtp']);
+Route::get('/otp', function () {return view('otp');})->name('otp');
 
 Route::middleware(['ensure.login','step.guard'])->group(function () {
-    // Route::view('/verifikasi-ktp', 'verifikasi-ocr-ktp')->name('verifikasi.ktp');
-    // Route::view('/verifikasi-wajah', 'verifikasi-liveness-wajah')->name('verifikasi.wajah');
-
     // OCR + Liveness
     Route::get('/verifikasi-ktp',[Verifikasi_KTPController::class,'index'])->name('verifikasi.ktp');
     Route::post('/verifikasi-ktp/process', [Verifikasi_KTPController::class, 'process'])->name('verifikasi.ktp.process');
@@ -65,11 +67,6 @@ Route::middleware(['ensure.login','step.guard'])->group(function () {
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login/process', [AuthController::class, 'loginNewRegistration'])->name('login.process');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::get('/otp', [AuthController::class, 'showOtp'])->name('otp');
-Route::post('/otp/verify', [AuthController::class, 'verifyOtp'])->name('otp.verify');
-Route::post('/otp/resend', [AuthController::class, 'resendOtp'])->name('otp.resend');
-
 
 // Step 1
 Route::post('/data-personal/submit',[CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
@@ -89,8 +86,3 @@ Route::post('/profil-resiko/submit',[CreateAccountController::class, 'saveProfil
 Route::get('/profil-resiko-result',[CreateAccountController::class, 'resultProfilResiko'])->name('profil.resiko.result');
 
 // Step 6
-
-// TEST API ADVANCED AI
-Route::get('/verifikasi-ktp-advanced', [Verifikasi_KTPController::class, 'viewOcrRaw'])->name('verifikasi.ktp.advanced');
-Route::post('/verifikasi-ktp-advance-raw', [Verifikasi_KTPController::class, 'processAdvanceOcrRaw'])->name('verifikasi.ktp.advance.raw');
-Route::post('/bank-account-check', [Verifikasi_KTPController::class, 'checkBankAccount'])->name('bank.account.check');
