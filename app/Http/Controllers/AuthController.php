@@ -161,7 +161,7 @@ class AuthController extends Controller
                 [
                     "type"  => "EMAIL",
                     "value" => $request->email,
-                    "otp"   => $request->otp
+                    "otp"   => (int)$request->otp
                 ]
             );
 

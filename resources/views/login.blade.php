@@ -37,6 +37,6 @@
     </div>
 </section>
 
-<script src="{{ asset('js/auth.js') }}"></script>
+<script src="{{ asset('js/registerCreateAccount.js') }}"></script>
 
 @endsection

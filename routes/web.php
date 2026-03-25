@@ -26,63 +26,50 @@ Route::get('/master/city',[MasterDataController::class, 'getCityMaster'])->name(
 Route::get('/master/kecamatan',[MasterDataController::class, 'getKecamatanMaster'])->name('master.kecamatan');
 Route::get('/master/kelurahan',[MasterDataController::class, 'getKelurahanMaster'])->name('master.kelurahan');
 
-// Step API
-Route::post('/step/account-type',[CreateAccountController::class, 'saveAccountType'])->name('step.account-type');
-Route::post('/step/identity',[CreateAccountController::class, 'saveIdentity'])->name('step.identity');
-Route::post('/create-account-submit',[CreateAccountController::class, 'createAccount'])->name('create.account.submit');
-
 // Check 
 Route::post('/check-nik',[NIK_UsernameCheckController::class, 'nikCheck'])->name('check.nik');
 Route::post('/check-username',[NIK_UsernameCheckController::class, 'usernameCheck'])->name('check.username');
 
-// Views
+// Home
 Route::view('/', 'auth.home');
-// Route::view('/referral-code', 'referral-code')->name('referral-form');
-// Route::view('/customer-type', 'customer-type')->name('customer-type');
-// Route::view('/check-nik-name', 'check-nik-name')->name('check-nik-name');
-// Route::view('/create-account', 'create-account')->name('create-account');
+
+// Verifikasi Email
 Route::view('/email', 'email')->name('email');
 Route::post('/check-email',[AuthController::class,'checkEmail'])->name('check.email');
 Route::post('/send-otp',[AuthController::class,'sendOtpMail'])->name('send.otp');
 Route::post('/verify-otp',[AuthController::class,'verifyOtp']);
 Route::get('/otp', function () {return view('otp');})->name('otp');
 
+// Verifikasi Whatsapp
+Route::view('/mobile', 'mobile')->name('mobile');
+Route::view('/otp-mobile', 'otp-mobile')->name('otp-mobile');
+
 Route::middleware(['ensure.login','step.guard'])->group(function () {
-    // OCR + Liveness
+    // OCR
     Route::get('/verifikasi-ktp',[Verifikasi_KTPController::class,'index'])->name('verifikasi.ktp');
     Route::post('/verifikasi-ktp/process', [Verifikasi_KTPController::class, 'process'])->name('verifikasi.ktp.process');
 
+    // Liveness
     Route::get('/verifikasi-wajah',[Verifikasi_WajahController::class,'index'])->name('verifikasi.wajah');
     Route::post('/verifikasi-wajah/process',[Verifikasi_WajahController::class, 'process'])->name('verifikasi.wajah.process');
 
+    // Step 1
     Route::get('/data-personal',[CreateAccountController::class, 'showPersonal'])->name('data.personal');
+    Route::post('/data-personal/submit',[CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
+    // Step 2
     Route::get('/data-pekerjaan', [CreateAccountController::class, 'showEmployment'])->name('data.pekerjaan');
     Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmployment'])->name('data.pekerjaan.submit');
+    // Step 3
     Route::get('/data-penghasilan', [CreateAccountController::class, 'showFinancial'])->name('data.penghasilan');
     Route::post('/data-penghasilan/submit',[CreateAccountController::class, 'saveFinancial'])->name('data.penghasilan.submit');
+    // Step 4
     Route::view('/data-referensi-perseorangan', 'data-referensi-perseorangan')->name('data.referensi.perseorangan');
-    Route::view('/profil-resiko', 'profil-resiko')->name('data.profil.resiko');
+    // Step 5
     Route::view('/data-bank', 'data-bank')->name('data.bank');
 });
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login/process', [AuthController::class, 'loginNewRegistration'])->name('login.process');
 
-// Step 1
-Route::post('/data-personal/submit',[CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
-
-// Step 2
-Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmployment'])->name('data.pekerjaan.submit');
-
-// Step 3
-Route::post('/data-penghasilan/submit',[CreateAccountController::class, 'saveFinancial'])->name('data.penghasilan.submit');
-
-// Step 4
 Route::get('/data-referensi-perseorangan', function () {return view('data-referensi-perseorangan');})->middleware('step.guard')->name('data.referensi.perseorangan');
 Route::post('/data-referensi-perseorangan/submit',[CreateAccountController::class, 'saveReferensiPerseorangan'])->name('data.referensi.perseorangan.submit');
-
-// Step 5
-Route::post('/profil-resiko/submit',[CreateAccountController::class, 'saveProfilResiko'])->name('profil.resiko.submit');
-Route::get('/profil-resiko-result',[CreateAccountController::class, 'resultProfilResiko'])->name('profil.resiko.result');
-
-// Step 6
