@@ -52,6 +52,7 @@ Route::post('/create-account', [AuthController::class, 'createAccount'])->name('
 
 // Create PIN
 Route::view('/create-pin', 'create-pin')->name('create-pin');
+Route::post('/create-pin', [CreateAccountController::class,'createPin']);
 
 Route::middleware(['ensure.login','step.guard'])->group(function () {
     // OCR

@@ -11,75 +11,29 @@ use App\Services\StepRedirectService;
 
 class CreateAccountController extends Controller
 {
-    // public function createAccount(Request $request) 
-    // {
-    //     try {
-    //         $request->validate([
-    //             'username'    => 'required|string|min:7|max:15',
-    //             'email'       => 'required|email',
-    //             'mobilePhone' => 'required|string|min:10',
-    //         ]);
+    public function createPin(Request $request)
+    {
+        $accountId = session('accountId');
+        if (!$accountId) {
+            return response()->json([
+                "status"=>false,
+                "message"=>"AccountId kosong"
+            ]);
+        }
 
-    //         // Pull session saved in steps 1 & 2
-    //         $session = session()->get('register');
-
-    //         if (!$session) {
-    //             return response()->json([
-    //                 'status'  => false,
-    //                 'message' => 'Session expired'
-    //             ], 422);
-    //         }
-
-    //         $payload = [
-    //             'nik'         => $session['nik'],
-    //             'name'        => $session['name'],
-    //             'username'    => $request->username,
-    //             'email'       => $request->email,
-    //             'mobilePhone' => $request->mobilePhone,
-    //             'accountType' => $session['account_type']
-    //         ];
-
-    //         Log::info("Create Account Payload", $payload);
-    //         $apiResponse = Http::withHeaders([
-    //             'Accept'       => 'application/json',
-    //             'Content-Type' => 'application/json',
-    //         ])
-    //         ->withoutVerifying()
-    //         ->timeout(15)
-    //         ->connectTimeout(5)
-    //         ->retry(1, 200)
-    //         ->post(
-    //             'https://dev.profits.co.id:8283/registration/createAccountNewRegistration',$payload
-    //         );
-
-    //         if (!$apiResponse->successful()) {
-    //             return response()->json([
-    //                 'status'  => false,
-    //                 'message' => 'Gagal Memproses Pendaftaran'
-    //             ], 500);
-    //         }
-    //         $result = $apiResponse->json();
-
-    //         // simpan email utk halaman login
-    //         session()->put('register_email', $request->email);
-    //         session()->put('register_phone', $request->mobilePhone);
-            
-    //         // hapus data step
-    //         session()->forget('register');
-
-    //         return response()->json([
-    //             'status'  => true,
-    //             'message' => 'Account created successfully',
-    //             'data'    => $result
-    //         ]);
-
-    //     } catch (\Throwable $e) {
-    //         return response()->json([
-    //             'status'  => false,
-    //             'message' => 'Internal Server Error'
-    //         ], 500);
-    //     }
-    // }
+        $response = Http::WithoutVerifying()
+            ->timeout(15)
+            ->connectTimeout(5)
+            ->retry(1, 200)
+            ->post(
+            'https://dev.profits.co.id:8283/registration/createPin',
+            [
+                "accountId" => $accountId,
+                "pin" => $request->pin
+            ]
+        );
+        return $response->json();
+    }
 
     public function showPersonal()
     {
