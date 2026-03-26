@@ -5,6 +5,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <section class="auth-wrapper">
     <div class="container">
+        <input type="hidden" id="email" value="{{ session('reg_phone') }}">
         <div class="text-start mb-4"><img class="icon-regist" src="{{ asset('storage/mobile.svg') }}"></div>
         <h3 class="text-white congrats-text text-start mb-2">Verifikasi Nomor Ponsel</h3>
         <p class="silahkan-cek-text text-start mb-5">Masukkan 6 digit OTP yang dikirimkan melalui Whatsapp. {{ Str::mask(session('reg_phone'), '*', 3, 6) }}</p>

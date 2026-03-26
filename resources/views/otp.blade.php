@@ -5,6 +5,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <section class="auth-wrapper">
     <div class="container">
+        <input type="hidden" id="email" value="{{ session('reg_email') }}">
         <div class="text-start mb-4"><img class="icon-regist" src="{{ asset('storage/email.svg') }}"></div>
         <h3 class="text-white congrats-text text-start mb-2">Verifikasi Email</h3>
         <p class="silahkan-cek-text text-start mb-5">Masukkan 6 digit OTP yang dikirimkan ke email. {{ Str::mask(session('reg_email'), '*', 3, 6) }}</p>

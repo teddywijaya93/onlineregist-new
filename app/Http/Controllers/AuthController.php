@@ -176,4 +176,85 @@ class AuthController extends Controller
             ]);
         }
     }
+
+    public function savePhone(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required'
+        ]);
+
+        session([
+            'reg_phone' => $request->phone
+        ]);
+
+        return response()->json([
+            "status" => true
+        ]);
+    }
+
+    public function verifyOtpMobile(Request $request)
+    {
+        if (!session()->has('reg_phone')) {
+            return response()->json([
+                "status" => false,
+                "message" => "Phone tidak ada"
+            ]);
+        }
+
+        return response()->json([
+            "status" => true
+        ]);
+    }
+
+    public function createAccount(Request $request)
+    {
+        try {
+            $request->validate([
+                'username' => 'required',
+                'password' => 'required'
+            ]);
+            $email = session('reg_email');
+            $phone = session('reg_phone');
+
+            if (!$email || !$phone) {
+                return response()->json([
+                    "status" => false,
+                    "message" => "Session tidak lengkap"
+                ]);
+            }
+
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])
+            ->withoutVerifying()
+            ->timeout(15)
+            ->connectTimeout(5)
+            ->retry(1, 200)
+            ->post(
+                'https://dev.profits.co.id:8283/registration/createAccount',
+                [
+                    "username" => $request->username,
+                    "password" => $request->password,
+                    "email" => $email,
+                    "phone" => $phone
+                ]
+            );
+
+            $data = $response->json();
+            if ($data['status']) {
+                session([
+                    'accountId' => $data['accountId'],
+                    'registrationId' => $data['registrationId'],
+                    'registrationStep' => $data['registrationStep']
+                ]);
+            }
+            return response()->json($data);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                "status" => false,
+                "message" => $e->getMessage()
+            ]);
+        }
+    }
 }

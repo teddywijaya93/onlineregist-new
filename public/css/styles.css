@@ -5,7 +5,6 @@ body{
     line-height: 150%;
 }
 .auth-wrapper{
-    /* min-height: 100vh; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -16,7 +15,7 @@ body{
     margin: 0 6px;
 }
 .btn-primary{
-    background: #3b82f6;
+    background:#3B82F6;
     border: none;
 }
 .head-lanjut{
@@ -88,14 +87,15 @@ body{
     stroke: #adb5bd;
     transition: stroke 0.2s ease;
 }
-.password-toggle button:hover svg{stroke: #ffffff;}
+.password-toggle button:hover svg{stroke:#FFF;}
 .icon-regist{
     width: 72px;
     height: 72px;
-    background: #192234;
+    background:#192234;
     padding: 16px;
     border-radius: 40px;
 }
+
 /* Mobile */
 .phone-input{
     display: flex;
@@ -107,19 +107,20 @@ body{
 .phone-prefix{
     padding: 12px 14px;
     background: transparent;
-    color: white;
+    color:#FFF;
     border-right: 1px solid #2f4f73;
     font-size: 14px;
 }
 .phone-number{
     border: none;
     background: transparent;
-    color: white;
+    color:#FFF;
 }
 .phone-number:focus{
     box-shadow: none;
     outline: none;
 }
+
 /* OTP */
 .otp-wrapper{
     min-height: 100vh;
@@ -142,7 +143,7 @@ body{
 }
 .otp-icon i{
     font-size: 28px;
-    color: #00ff9c;
+    color:#00FF9C;
 }
 .otp-title{
     font-size: 24px;
@@ -154,7 +155,7 @@ body{
     opacity: 0.8;
 }
 .otp-number{
-    color: #3da5ff;
+    color:#3DA5FF;
     font-weight: 600;
 }
 .otp-inputs{
@@ -170,16 +171,16 @@ body{
     border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.3);
     background: transparent;
-    color: #fff;
+    color:#FFF;
     outline: none;
 }
-.otp-inputs input:focus{border-color: #3da5ff;}
+.otp-inputs input:focus{border-color:#3DA5FF;}
 .resend{
     font-size: 14px;
     margin-bottom: 30px;
 }
 .resend a{
-    color: #3da5ff;
+    color:#3DA5FF;
     text-decoration: none;
     font-weight: 600;
 }
@@ -191,13 +192,74 @@ body{
     border: none;
     font-weight: 600;
     background: #ccc;
-    color: #666;
+    color:#666;
     cursor: not-allowed;
 }
 .btn-continue.active{
-    background: #3da5ff;
-    color: #fff;
+    background:#3DA5FF;
+    color:#FFF;
     cursor: pointer;
+}
+
+/* Username Box */
+.username-suggest{
+    border: 1px solid #2b4f7a;
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 10px;
+    background: rgba(5,20,40,0.9);
+}
+.suggest-header{
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 2%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    color:#FFF;
+}
+.suggest-item{
+    font-size: 14px;
+    color:#FFF;
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #1C3556;
+}
+.use-btn{
+    color:#4DA3FF;
+    cursor: pointer;
+}
+/* .d-none{display: none;} */
+.input-error {border: 1px solid#FF4D4F !important;}
+
+.input-eye {
+
+    position: relative;
+
+}
+
+.eye-btn {
+
+    position: absolute;
+
+    right: 14px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    cursor: pointer;
+
+    color: #aaa;
+
+    font-size: 16px;
+
+}
+
+.pr-eye {
+
+    padding-right: 40px;
+
 }
 
 /* Referral Blade */
@@ -235,6 +297,7 @@ body{
     font-size: 14px;
     font-weight: 500;
 }
+
 /* Customer Type */
 .customer-type-card{
     border: 1px solid #3898FF;
@@ -263,26 +326,27 @@ body{
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #9ca3af;
+    color:#9CA3AF;
     font-size: 14px;
 }
 .rule-icon{
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    border: 1.5px solid #9ca3af;
+    border: 1.5px solid#9CA3AF;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 11px;
     color: transparent;
 }
-.rule-item.active{color: #22C55E;}
+.rule-item.active{color:#22C55E;}
 .rule-item.active .rule-icon{
-    background: #22C55E;
-    border-color: #22C55E;
-    color: #0F172A;
+    background:#22C55E;
+    border-color:#22C55E;
+    color:#0F172A;
 }
+
 /* Login */
 .congrats-text{
     font-size: 24px;
@@ -308,6 +372,7 @@ body{
     color:#3898FF;
     font-weight: 600;
 }
+
 /* Progress Bar */
 .step-top{
     display: flex;
@@ -316,7 +381,7 @@ body{
     margin-bottom: 16px;
 }
 .step-back{
-    color: #ffffff;
+    color:#FFF;
     font-size: 22px;
     text-decoration: none;
 }

@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const token = document
         .querySelector('meta[name="csrf-token"]')
         ?.getAttribute("content");
+    const path = window.location.pathname;
 
     // Phone Validation
     const phone = document.getElementById("phone");
@@ -106,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const timerText = document.getElementById("timerText");
     const emailHidden = document.getElementById("email");
 
-    if (otpInputs.length > 0) {
+   if (otpInputs.length > 0 && path.includes("/otp")) {
         const email = emailHidden?.value || "";
 
         // AUTO MOVE
@@ -242,4 +243,329 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
     }
+
+    // Username Check
+    const usernameInput = document.getElementById("username");
+    const counter = document.getElementById("charCounter");
+    const ruleAlpha = document.getElementById("rule-alphanumeric");
+    const ruleNoSymbol = document.getElementById("rule-nosymbol");
+    const errorText = document.getElementById("username-error");
+
+    if (usernameInput) {
+        usernameInput.addEventListener("input", async function () {
+            let val = this.value;
+
+            // max 15
+            if (val.length > 15) {
+                val = val.slice(0, 15);
+                this.value = val;
+            }
+
+            // counter
+            if (counter) {
+                counter.innerText = val.length + "/15";
+            }
+
+            // rule huruf + angka
+            const hasLetter = /[a-zA-Z]/.test(val);
+            const hasNumber = /[0-9]/.test(val);
+
+            if (hasLetter && hasNumber) {
+                ruleAlpha.style.color = "#00ff9c";
+            } else {
+                ruleAlpha.style.color = "#999";
+            }
+
+            // no symbol
+            const noSymbol = /^[a-zA-Z0-9]*$/.test(val);
+            if (noSymbol) {
+                ruleNoSymbol.style.color = "#00ff9c";
+            } else {
+                ruleNoSymbol.style.color = "#999";
+            }
+
+            if (val.length < 5) {
+                errorText.innerText = "";
+                return;
+            }
+
+            try {
+                const res = await fetch(window.routes.checkUsername, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": token
+                    },
+                    body: JSON.stringify({
+                        username: val
+                    })
+                });
+
+                const data = await res.json();
+                if (data.status) {
+                    errorText.innerText = "";
+                } else {
+                    errorText.innerText = data.messageBody || "Username Tidak Tersedia";
+                }
+
+            } catch {
+                errorText.innerText = "Error Cek Username";
+            }
+        });
+    }
+
+    // Username Recommendation
+    const suggestBox = document.getElementById("username-suggest-box");
+    const suggestList = document.getElementById("suggestList");
+    const closeSuggest = document.getElementById("closeSuggest");
+
+    if (closeSuggest) {
+        closeSuggest.onclick = () => {
+            suggestBox.classList.add("d-none");
+        };
+    }
+
+    if (usernameInput) {
+        usernameInput.addEventListener("input",async function () {
+            let val = this.value;
+
+            if (val.length > 15) {
+                val = val.slice(0, 15);
+                this.value = val;
+            }
+            counter.innerText = val.length + "/15";
+
+            if (val.length < 7) {
+                errorText.innerText = "";
+                this.classList.remove("input-error");
+                suggestBox.classList.add("d-none");
+
+                return;
+            }
+
+            try {
+                const res = await fetch(window.routes.checkUsername,{
+                    method: "POST",
+                    headers: {
+                        "Content-Type":  "application/json",
+                        "X-CSRF-TOKEN": token
+                    },
+                    body: JSON.stringify({
+                        username: val
+                    })
+                });
+                const data = await res.json();
+
+                if (data.status) {
+                    errorText.innerText = "";
+                    this.classList.remove("input-error");
+                    suggestBox.classList.add("d-none");
+                } else {
+                    errorText.innerText ="Username sudah digunakan";
+                    this.classList.add("input-error");
+
+                    const r1 = val + Math.floor(Math.random() *9999);
+                    const r2 = val + Math.floor(Math.random() *999);
+                    const r3 = val + "123";
+                    const arr = [r1, r2, r3];
+
+                    suggestList.innerHTML = "";
+
+                    arr.forEach( name => {
+                        const div = document.createElement("div");
+                        div.className = "suggest-item";
+                        div.innerHTML =`<span>${name}</span>
+                        <span class="use-btn">Gunakan</span>`;
+
+                        div.querySelector(".use-btn").onclick =() => {
+                            usernameInput.value = name;
+                            suggestBox.classList.add("d-none");
+                            usernameInput.classList.remove("input-error");
+                            errorText.innerText ="";
+                        };
+                        suggestList.appendChild(div);
+                    });
+                    suggestBox.classList.remove("d-none");
+                }
+            } catch {}
+        });
+    }
+
+    // Password Validation
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirmPassword");
+    const rulePassLength = document.getElementById("rule-pass-length");
+    const rulePassNumber = document.getElementById("rule-pass-number");
+    const rulePassSymbol = document.getElementById("rule-pass-symbol");
+    const rulePassMatch = document.getElementById("rule-pass-match");
+    const rulePassText = document.getElementById("rule-pass-text");
+
+    if (password) {
+        password.addEventListener("input", function () {
+            const val = this.value;
+
+            const hasLength = val.length >= 8;
+            const hasNumber = /[0-9]/.test(val);
+            const hasSymbol = /[!@#$%^&*]/.test(val);
+
+            rulePassLength.style.color = hasLength ? "#00ff9c" : "#999";
+            rulePassNumber.style.color = hasNumber ? "#00ff9c" : "#999";
+            rulePassSymbol.style.color = hasSymbol ? "#00ff9c" : "#999";
+        });
+    }
+
+    if (confirmPassword) {
+        confirmPassword.addEventListener("input",function () {
+            if ( password.value === confirmPassword.value && password.value.length > 0) {
+                rulePassMatch.style.color = "#00ff9c";
+                rulePassText.innerText = "Password Sudah Sama";
+            } else {
+                rulePassMatch.style.color = "#999";
+                rulePassText.innerText = "Password Tidak Sama";
+            }
+        });
+    }
+
+    // See Password
+    document.querySelectorAll(".eye-btn").forEach(btn => {
+        btn.addEventListener("click",function () {
+            const id = this.dataset.target;
+            const input = document.getElementById(id);
+
+            if (input.type === "password") {
+                input.type = "text";
+                this.classList.remove("fa-eye");
+                this.classList.add("fa-eye-slash");
+            } else {
+                input.type ="password";
+                this.classList.remove("fa-eye-slash");
+                this.classList.add("fa-eye");
+            }
+        });
+    });
+
+    // SAVE PHONE → OTP MOBILE
+    if (phone && btnNext && !emailInput) {
+        btnNext.addEventListener("click",async function (){
+
+            const val = phone.value;
+            if (!val) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Nomor wajib diisi"
+                });
+                return;
+            }
+            const full = "08" + val;
+
+            try {
+                await fetch( "/save-phone",{
+                    method: "POST",
+                    headers: {
+                        "Content-Type" : "application/json",
+                        "X-CSRF-TOKEN" : token
+                    },
+                    body: JSON.stringify({
+                        phone: full
+                    })
+                });
+                window.location.href ="/otp-mobile";
+
+            } catch {
+                Swal.fire({
+                    icon: "error",
+                    title: "Gagal simpan phone"
+                });
+
+            }}
+        );
+    }
+
+    // OTP MOBILE → CREATE ACCOUNT
+    if (otpInputs.length > 0 && window.location.pathname.includes( "otp-mobile")) {
+        btnNext.addEventListener("click",async function () {
+            try {
+                await fetch("/verify-otp-mobile",{
+                    method: "POST",
+                    headers: {
+                        "Content-Type" : "application/json",
+                        "X-CSRF-TOKEN" : token
+                    }
+                });
+
+                window.location.href = "/create-account";
+
+            } catch {
+                Swal.fire({
+                    icon: "error",
+                    title: "OTP gagal"
+                });
+            }
+        });
+    }
+
+    
 });
+
+async function submitAccount() {
+    const token = document
+        .querySelector('meta[name="csrf-token"]')
+        ?.getAttribute("content");
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const confirm = document.getElementById("confirmPassword").value;
+
+    if (!username || !password) {
+        Swal.fire({
+            icon: "warning",
+            title: "Username & Password wajib diisi"
+        });
+        return;
+    }
+
+    if (password !== confirm) {
+        Swal.fire({
+            icon: "warning",
+            title: "Password tidak sama"
+        });
+        return;
+    }
+
+    try {
+        const res = await fetch(window.routes.createAccount, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": token
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        });
+
+        const data = await res.json();
+        if (data.status) {
+            await Swal.fire({
+                icon: "success",
+                title: "Account berhasil dibuat"
+            });
+
+            // lanjut step berikut
+            window.location.href = "/next-step";
+
+        } else {
+            Swal.fire({
+                icon: "error",
+                title: data.message || "Gagal create account"
+            });
+        }
+
+    } catch (e) {
+        Swal.fire({
+            icon: "error",
+            title: "Server error"
+        });
+    }
+}

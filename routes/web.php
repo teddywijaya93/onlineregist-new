@@ -43,6 +43,15 @@ Route::get('/otp', function () {return view('otp');})->name('otp');
 // Verifikasi Whatsapp
 Route::view('/mobile', 'mobile')->name('mobile');
 Route::view('/otp-mobile', 'otp-mobile')->name('otp-mobile');
+Route::post('/save-phone',[AuthController::class,'savePhone']);
+Route::post('/verify-otp-mobile',[AuthController::class,'verifyOtpMobile']);
+
+// Create Account
+Route::view('/create-account', 'create-account')->name('create-account');
+Route::post('/create-account', [AuthController::class, 'createAccount'])->name('create.account');
+
+// Create PIN
+Route::view('/create-pin', 'create-pin')->name('create-pin');
 
 Route::middleware(['ensure.login','step.guard'])->group(function () {
     // OCR
