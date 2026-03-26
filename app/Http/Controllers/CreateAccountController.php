@@ -17,7 +17,7 @@ class CreateAccountController extends Controller
         if (!$accountId) {
             return response()->json([
                 "status"=>false,
-                "message"=>"AccountId kosong"
+                "message"=>"AccountId Kosong"
             ]);
         }
 
@@ -30,6 +30,30 @@ class CreateAccountController extends Controller
             [
                 "accountId" => $accountId,
                 "pin" => $request->pin
+            ]
+        );
+        return $response->json();
+    }
+
+    public function createAccountType(Request $request)
+    {
+        $registrationId = session('registrationId');
+        if (!$registrationId) {
+            return response()->json([
+                "status" => false,
+                "message" => "registrationId Kosong"
+            ]);
+        }
+
+        $response = Http::WithoutVerifying()
+            ->timeout(15)
+            ->connectTimeout(5)
+            ->retry(1, 200)
+            ->post(
+            'https://dev.profits.co.id:8283/registration/createAccountType',
+            [
+                "registrationId" => $registrationId,
+                "accountType" => $request->accountType
             ]
         );
         return $response->json();

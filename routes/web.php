@@ -54,6 +54,10 @@ Route::post('/create-account', [AuthController::class, 'createAccount'])->name('
 Route::view('/create-pin', 'create-pin')->name('create-pin');
 Route::post('/create-pin', [CreateAccountController::class,'createPin']);
 
+// Account Type
+Route::view('/account-type', 'account-type')->name('account-type');
+Route::post('/account-type',[CreateAccountController::class,'createAccountType']);
+
 Route::middleware(['ensure.login','step.guard'])->group(function () {
     // OCR
     Route::get('/verifikasi-ktp',[Verifikasi_KTPController::class,'index'])->name('verifikasi.ktp');
