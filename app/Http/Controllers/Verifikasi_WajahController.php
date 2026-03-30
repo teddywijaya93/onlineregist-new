@@ -28,7 +28,7 @@ class Verifikasi_WajahController extends Controller
     {
         try {
             if (!session()->has('registrationId')) {
-                return redirect()->route('login');
+                return redirect()->route('email');
             }
 
             $request->validate([

@@ -61,30 +61,53 @@ class CreateAccountController extends Controller
 
     public function showPersonal()
     {
-        if ($r = StepRedirectService::guardStep()) {
-            return redirect($r);
-        }
-        $step = session('registrationStep');
+        // if ($r = StepRedirectService::guardStep()) {
+        //     return redirect($r);
+        // }
+        // $step = session('registrationStep');
 
+        // $ocr = session('ocr_result');
+        // if (!$ocr) {
+        //     return redirect()->route('verifikasi.ktp');
+        // }
+        // $raw = isset($ocr['result']) ? $ocr['result'] : $ocr;
+        // $ocrData = \App\Services\OcrNormalizer::normalize($raw);
+        // // dd($ocrData);
+
+        // $personalData = session('personalData', []);    
+        // $isUpdate = !empty($personalData);
+
+        // // merge session override OCR
+        // $data = array_merge($ocrData, $personalData);
+
+        // return view('data-personal', [
+        //     'data' => $data,
+        //     'isUpdate' => $isUpdate,
+        //     'step' => StepRedirectService::stepNumber($step),
+        //     'hideBack' => StepRedirectService::hideBack()
+        // ]);
+
+
+        $step = session('registrationStep');
         $ocr = session('ocr_result');
-        if (!$ocr) {
-            return redirect()->route('verifikasi.ktp');
+
+        if ($ocr) {
+            $raw = isset($ocr['result']) ? $ocr['result'] : $ocr;
+            $ocrData = \App\Services\OcrNormalizer::normalize($raw);
+        } else {
+            $ocrData = []; // bypass sementara
         }
-        $raw = isset($ocr['result']) ? $ocr['result'] : $ocr;
-        $ocrData = \App\Services\OcrNormalizer::normalize($raw);
-        // dd($ocrData);
 
         $personalData = session('personalData', []);    
         $isUpdate = !empty($personalData);
 
-        // merge session override OCR
         $data = array_merge($ocrData, $personalData);
 
         return view('data-personal', [
             'data' => $data,
             'isUpdate' => $isUpdate,
-            'step' => StepRedirectService::stepNumber($step),
-            'hideBack' => StepRedirectService::hideBack()
+            'step' => $step ? StepRedirectService::stepNumber($step) : 1,
+            'hideBack' => true
         ]);
     }
 
@@ -207,7 +230,7 @@ class CreateAccountController extends Controller
     public function showEmployment()
     {
         if (!session()->has('registrationId')) {
-            return redirect()->route('login');
+            return redirect()->route('email');
         }
 
         $employmentData = session('employmentData', []);
@@ -219,7 +242,7 @@ class CreateAccountController extends Controller
     public function saveEmployment(Request $request)
     {
         if (!session()->has('registrationId')) {
-            return redirect()->route('login');
+            return redirect()->route('email');
         }
 
         $employmentData = $request->validate([
@@ -308,7 +331,7 @@ class CreateAccountController extends Controller
     public function showFinancial()
     {
         if (!session()->has('registrationId')) {
-            return redirect()->route('login');
+            return redirect()->route('email');
         }
 
         $financialData = session('financialData', []);
@@ -320,7 +343,7 @@ class CreateAccountController extends Controller
     public function saveFinancial(Request $request)
     {
         if (!session()->has('registrationId')) {
-            return redirect()->route('login');
+            return redirect()->route('email');
         }
 
         $financialData = $request->validate([
@@ -403,7 +426,7 @@ class CreateAccountController extends Controller
     public function saveReferensiPerseorangan(Request $request)
     {
         if (!session()->has('registrationId')) {
-            return redirect()->route('login');
+            return redirect()->route('email');
         }
 
         $formType = session('reference_form_type');

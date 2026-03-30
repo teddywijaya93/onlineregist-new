@@ -194,7 +194,18 @@ document.addEventListener("DOMContentLoaded", function () {
                         btnNext.disabled = false;
                         return;
                     }
-                    window.location.href = "/mobile";
+
+                    // cek status dari session backend
+                    const resStatus = await fetch("/get-registration-status");
+                    const statusData = await resStatus.json();
+
+                    // kalau NEW → langsung ke step terakhir
+                    if (statusData.registrationStatus === "NEW") {
+                        window.location.href = statusData.redirect;
+                    } else {
+                        // flow normal
+                        window.location.href = "/mobile";
+                    }
 
                 } catch {
                     Swal.fire({

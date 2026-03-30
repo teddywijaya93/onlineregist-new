@@ -12,7 +12,7 @@ class StepGuard
         $sessionStep = session('registrationStep');
 
         if (!$sessionStep) {
-            return redirect()->route('login');
+            return redirect()->route('email');
         }
 
         $currentStep = array_search(

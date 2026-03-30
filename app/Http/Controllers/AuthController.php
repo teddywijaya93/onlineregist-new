@@ -10,63 +10,63 @@ use App\Services\StepRedirectService;
 
 class AuthController extends Controller
 {
-    public function loginNewRegistration(Request $request)
-    {
-        $request->validate([
-            'username' => 'required',
-            'password' => 'required'
-        ]);
+    // public function loginNewRegistration(Request $request)
+    // {
+    //     $request->validate([
+    //         'username' => 'required',
+    //         'password' => 'required'
+    //     ]);
 
-        try {
-            $response = Http::timeout(15)
-                ->retry(2, 300)
-                ->withHeaders([
-                    'Authorization' => 'Bearer ' . config('services.profits.token'),
-                    'Accept'        => 'application/json',
-                    'Content-Type'  => 'application/json',
-                ])
-                ->post('https://dev.profits.co.id:8283/registration/loginNewRegistration', [
-                    'username' => trim($request->username),
-                    'password' => trim($request->password),
-                ]);
+    //     try {
+    //         $response = Http::timeout(15)
+    //             ->retry(2, 300)
+    //             ->withHeaders([
+    //                 'Authorization' => 'Bearer ' . config('services.profits.token'),
+    //                 'Accept'        => 'application/json',
+    //                 'Content-Type'  => 'application/json',
+    //             ])
+    //             ->post('https://dev.profits.co.id:8283/registration/loginNewRegistration', [
+    //                 'username' => trim($request->username),
+    //                 'password' => trim($request->password),
+    //             ]);
 
-            if (!$response->ok()) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'Internal Server Error'
-                ], 500);
-            }
+    //         if (!$response->ok()) {
+    //             return response()->json([
+    //                 'status'  => false,
+    //                 'message' => 'Internal Server Error'
+    //             ], 500);
+    //         }
 
-            $result = $response->json();
-            $isSuccess = filter_var($result['status'] ?? false, FILTER_VALIDATE_BOOLEAN);
-            if ($isSuccess) {
-                $request->session()->regenerate();
-                session([
-                    'accountId'        => $result['accountId'],
-                    'registrationId'   => $result['registrationId'],
-                    'registrationStep' => $result['registrationStep'],
-                ]);
+    //         $result = $response->json();
+    //         $isSuccess = filter_var($result['status'] ?? false, FILTER_VALIDATE_BOOLEAN);
+    //         if ($isSuccess) {
+    //             $request->session()->regenerate();
+    //             session([
+    //                 'accountId'        => $result['accountId'],
+    //                 'registrationId'   => $result['registrationId'],
+    //                 'registrationStep' => $result['registrationStep'],
+    //             ]);
 
-                return response()->json([
-                    'status'   => true,
-                    'redirect' => StepRedirectService::routeByStep(
-                        $result['registrationStep']
-                    )
-                ]);
-            }
+    //             return response()->json([
+    //                 'status'   => true,
+    //                 'redirect' => StepRedirectService::routeByStep(
+    //                     $result['registrationStep']
+    //                 )
+    //             ]);
+    //         }
 
-            return response()->json([
-                'status'  => false,
-                'message' => $result['message'] ?? 'Login gagal'
-            ], 400);
+    //         return response()->json([
+    //             'status'  => false,
+    //             'message' => $result['message'] ?? 'Login gagal'
+    //         ], 400);
 
-        } catch (\Throwable $e) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Internal Server Error'
-            ], 500);
-        }
-    }
+    //     } catch (\Throwable $e) {
+    //         return response()->json([
+    //             'status'  => false,
+    //             'message' => 'Internal Server Error'
+    //         ], 500);
+    //     }
+    // }
 
     public function checkEmail(Request $request)
     {
@@ -96,7 +96,18 @@ class AuthController extends Controller
                 ]);
             }
             $data = $response->json();
-            
+
+            session([
+                'registrationStatus' => $data['registrationStatus'] ?? null,
+                'registrationStep'   => $data['registrationStep'] ?? null,
+            ]);
+
+            if (($data['registrationStatus'] ?? null) === 'NEW') {
+                $data['message'] = 'Silahkan lanjutkan pendaftaran<br/> Ke step anda yang terakhir';
+            } else {
+                $data['message'] = 'Email belum terdaftar<br/>Silahkan lanjutkan pendaftaran';
+            }
+
             return response()->json($data);
 
         } catch (\Throwable $e) {

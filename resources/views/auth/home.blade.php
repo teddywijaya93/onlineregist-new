@@ -10,7 +10,7 @@
 
         <a href="{{ route('email') }}" class="btn btn-primary btn-regist w-100 mb-3">Daftar dengan Email</a>
         <div class="atau-text mb-0">Sudah punya akun ?</div>
-        <a href="{{ route('login') }}" class="btn btn-outline-light btn-login w-100 mt-3">Login</a>
+        <a href="{{ route('email') }}" class="btn btn-outline-light btn-login w-100 mt-3">Login</a>
     </div>
 </section>
 

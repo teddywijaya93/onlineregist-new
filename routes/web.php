@@ -25,6 +25,7 @@ Route::get('/master/reference-relation',[MasterDataController::class, 'getRefere
 Route::get('/master/city',[MasterDataController::class, 'getCityMaster'])->name('master.city');
 Route::get('/master/kecamatan',[MasterDataController::class, 'getKecamatanMaster'])->name('master.kecamatan');
 Route::get('/master/kelurahan',[MasterDataController::class, 'getKelurahanMaster'])->name('master.kelurahan');
+Route::get('/master/all-kelurahan',[MasterDataController::class, 'getallKelurahanMaster'])->name('master.all.kelurahan');
 
 // Check 
 Route::post('/check-nik',[NIK_UsernameCheckController::class, 'nikCheck'])->name('check.nik');
@@ -50,15 +51,23 @@ Route::post('/verify-otp-mobile',[AuthController::class,'verifyOtpMobile']);
 Route::view('/create-account', 'create-account')->name('create-account');
 Route::post('/create-account', [AuthController::class, 'createAccount'])->name('create.account');
 
-// Create PIN
-Route::view('/create-pin', 'create-pin')->name('create-pin');
-Route::post('/create-pin', [CreateAccountController::class,'createPin']);
+Route::get('/get-registration-status', function () {
+    return response()->json([
+        'registrationStatus' => session('registrationStatus'),
+        'registrationStep'   => session('registrationStep'),
+        'redirect' => \App\Services\StepRedirectService::routeByStep(session('registrationStep'))
+    ]);
+});
 
-// Account Type
-Route::view('/account-type', 'account-type')->name('account-type');
-Route::post('/account-type',[CreateAccountController::class,'createAccountType']);
+Route::middleware(['step.guard'])->group(function () {
+    // Create PIN
+    Route::view('/create-pin', 'create-pin')->name('create-pin');
+    Route::post('/create-pin', [CreateAccountController::class,'createPin']);
 
-Route::middleware(['ensure.login','step.guard'])->group(function () {
+    // Account Type
+    Route::view('/account-type', 'account-type')->name('account-type');
+    Route::post('/account-type',[CreateAccountController::class,'createAccountType']);
+
     // OCR
     Route::get('/verifikasi-ktp',[Verifikasi_KTPController::class,'index'])->name('verifikasi.ktp');
     Route::post('/verifikasi-ktp/process', [Verifikasi_KTPController::class, 'process'])->name('verifikasi.ktp.process');
@@ -82,8 +91,8 @@ Route::middleware(['ensure.login','step.guard'])->group(function () {
     Route::view('/data-bank', 'data-bank')->name('data.bank');
 });
 
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login/process', [AuthController::class, 'loginNewRegistration'])->name('login.process');
+// Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+// Route::post('/login/process', [AuthController::class, 'loginNewRegistration'])->name('login.process');
 
 Route::get('/data-referensi-perseorangan', function () {return view('data-referensi-perseorangan');})->middleware('step.guard')->name('data.referensi.perseorangan');
 Route::post('/data-referensi-perseorangan/submit',[CreateAccountController::class, 'saveReferensiPerseorangan'])->name('data.referensi.perseorangan.submit');

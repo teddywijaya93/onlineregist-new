@@ -27,7 +27,7 @@ class StepRedirectService
     public static function routeByStep(?string $step): string
     {
         if (!$step || !isset(self::STEP_ROUTE[$step])) {
-            return route('login');
+            return route('email');
         }
 
         // kalau user sudah di route itu, jangan redirect lagi
@@ -36,7 +36,7 @@ class StepRedirectService
         }
 
         // if (!isset(self::STEP_ROUTE[$step])) {
-        //     return route('login');
+        //     return route('email');
         // }
 
         return route(self::STEP_ROUTE[$step]);
@@ -59,10 +59,10 @@ class StepRedirectService
     public static function guardStep(): ?string
     {
         $step = session('registrationStep');
-        if (!$step) return route('login');
+        if (!$step) return route('email');
 
         $allowed = self::STEP_ROUTE[$step] ?? null;
-        if (!$allowed) return route('login');
+        if (!$allowed) return route('email');
 
         if (!request()->routeIs($allowed)) {
             return route($allowed);

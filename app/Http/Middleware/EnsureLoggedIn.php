@@ -16,7 +16,7 @@ class EnsureLoggedIn
     public function handle($request, Closure $next)
     {
         if (!session()->has('accountId')) {
-            return redirect()->route('login');
+            return redirect()->route('email');
         }
 
         return $next($request);
