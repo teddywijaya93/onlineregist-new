@@ -59,6 +59,9 @@ Route::get('/get-registration-status', function () {
     ]);
 });
 
+Route::get('/data-personal',[CreateAccountController::class, 'showPersonal'])->name('data.personal');
+Route::post('/data-personal/submit',[CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
+
 Route::middleware(['step.guard'])->group(function () {
     // Create PIN
     Route::view('/create-pin', 'create-pin')->name('create-pin');
@@ -77,8 +80,8 @@ Route::middleware(['step.guard'])->group(function () {
     Route::post('/verifikasi-wajah/process',[Verifikasi_WajahController::class, 'process'])->name('verifikasi.wajah.process');
 
     // Step 1
-    Route::get('/data-personal',[CreateAccountController::class, 'showPersonal'])->name('data.personal');
-    Route::post('/data-personal/submit',[CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
+    // Route::get('/data-personal',[CreateAccountController::class, 'showPersonal'])->name('data.personal');
+    // Route::post('/data-personal/submit',[CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
     // Step 2
     Route::get('/data-pekerjaan', [CreateAccountController::class, 'showEmployment'])->name('data.pekerjaan');
     Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmployment'])->name('data.pekerjaan.submit');

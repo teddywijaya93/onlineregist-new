@@ -3,14 +3,6 @@
 @section('content')
 
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<!-- @php
-    $rt = '';
-    $rw = '';
-    if (!empty($data['rt_rw'])) {
-        [$rt, $rw] = array_pad(explode('/', $data['rt_rw']), 2, '');
-    }
-@endphp -->
-
 <section class="auth-wrapper">
     <div class="container text-start">
         @include('components.step-header', [
@@ -18,8 +10,8 @@
             'hideBack' => true
         ])
         <div class="mb-5">
-            <h3 class="head-lanjut text-white mb-2">Cek dan Pastikan Data Sudah Benar Sebelum Melanjutkan</h3>
-            <p class="desc-lanjut mb-0">Data dibawah ini diwajibkan oleh OJK dan akan kami lindungi kerahasiaannya.</p>
+            <h3 class="head-lanjut text-white mb-2">Identitas Diri</h3>
+            <p class="desc-lanjut mb-0">Data identitas diri diwajibkan oleh Otoritas Jasa Keuangan (OJK) dan dilindungi kerahasiaannya.</p>
         </div>
         <form method="POST" action="{{ route('data.personal.submit') }}">
             @csrf
@@ -32,11 +24,7 @@
                 <label class="form-label text-white text-form-global mb-2">Nomor e-KTP</label>
                 <input type="text" name="nik" id="nik" value="{{ old('nik', $data['nik'] ?? '') }}" class="form-control form-global numeric-only" inputmode="numeric" maxlength="16" placeholder="Nomor e-KTP">
             </div>
-            <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Nama Gadis Ibu Kandung</label>
-                <input type="text" name="motherMaidenName" id="motherMaidenName" value="{{ old('motherMaidenName', $data['motherMaidenName'] ?? '') }}" class="form-control form-global alphabet-only"  placeholder="Nama Gadis Ibu Kandung">
-            </div>
-            <div class="form-group mb-4">
+            <div class="form-group mb-4 d-none">
                 <label class="form-label text-white text-form-global mb-2">Tempat Lahir</label>
                 <input type="text" name="tempatLahir" id="tempatLahir" value="{{ old('tempatLahir', $data['tempatLahir'] ?? '') }}" class="form-control form-global alphabet-only" placeholder="Tempat Lahir">
             </div>
@@ -44,24 +32,18 @@
                 <label class="form-label text-white text-form-global mb-2">Tanggal Lahir</label>
                 <input type="date" name="tanggalLahir" id="tanggalLahir" value="{{ old('tanggalLahir', $data['tanggalLahir'] ?? '') }}"  class="form-control form-global" placeholder="Tanggal Lahir">
             </div>
-            <div class="form-group mb-4">
+            <div class="form-group mb-4 d-none">
                 <label class="form-label text-white text-form-global mb-2">Jenis Kelamin</label>
                 <select name="jenisKelamin" id="genderSelect" class="form-control" data-selected="{{ old('jenisKelamin', $data['jenisKelamin'] ?? '') }}">
                     <option value="">Pilih Jenis Kelamin</option>
                 </select>
             </div>
-            <div class="form-group mb-4">
+            <div class="form-group mb-4 d-none">
                 <label class="form-label text-white text-form-global mb-2">Agama</label>
                 <select name="agama" id="religionSelect" class="form-control" data-selected="{{ old('agama', $data['agama'] ?? '') }}">
                     <option value="">Pilih Agama</option>
                 </select>
             </div>
-            <!-- <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Pendidikan Terakhir</label>
-                <select name="education" id="educationSelect" data-selected="{{ old('education', $data['education'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Pendidikan Terakhir</option>
-                </select>
-            </div> -->
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Status Perkawinan</label>
                 <select name="statusPerkawinan" id="maritalSelect" class="form-control" data-selected="{{ old('statusPerkawinan', $data['statusPerkawinan'] ?? '') }}">
@@ -69,38 +51,24 @@
                 </select>
             </div>
             <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Nama Gadis Ibu Kandung</label>
+                <input type="text" name="motherMaidenName" id="motherMaidenName" value="{{ old('motherMaidenName', $data['motherMaidenName'] ?? '') }}" class="form-control form-global alphabet-only"  placeholder="Nama Gadis Ibu Kandung">
+            </div>
+            <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Sesuai e-KTP</label>
                 <input type="text" name="alamat" id="alamat" value="{{ old('alamat', $data['alamat'] ?? '') }}" class="form-control form-global" placeholder="Alamat Sesuai e-KTP">
             </div>
-            <!-- <div class="form-group mb-4">
-                <div class="row">
-                    <div class="col-6">
-                        <label class="form-label text-white text-form-global mb-2">RT</label>
-                        <input type="text" name="rt" id="rt" class="form-control form-global numeric-only" maxlength="3" value="{{ old('rt', $data['rt'] ?? '') }}">
-                    </div>
-                    <div class="col-6">
-                        <label class="form-label text-white text-form-global mb-2">RW</label>
-                        <input type="text" name="rw" id="rw" class="form-control form-global numeric-only" maxlength="3" value="{{ old('rw', $data['rw'] ?? '') }}">
-                    </div>
-                </div>
-            </div> -->
-            <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Kota</label>
-                <select name="kota" id="citySelect" class="form-control" data-selected="{{ old('kota', $data['kota'] ?? '') }}">
-                    <option value="">Pilih Kota</option>
-                </select>
-            </div>
-            <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Kecamatan</label>
-                <select name="kecamatan" id="kecamatanSelect" class="form-control" data-selected="{{ old('kecamatan', $data['kecamatan'] ?? '') }}">
-                    <option value="">Pilih Kecamatan</option>
-                </select>
-            </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Kelurahan</label>
+                <input type="hidden" name="city" id="citySelect" class="form-control form-global" readonly>
+                <input type="hidden" name="kecamatan" id="kecamatanSelect" class="form-control form-global" readonly>
                 <select name="kelurahan" id="kelurahanSelect" class="form-control" data-selected="{{ old('kelurahan', $data['kelurahan'] ?? '') }}">
                     <option value="">Pilih Kelurahan</option>
                 </select>
+            </div>
+             <div class="form-group mb-4">  
+                <label class="form-label text-white text-form-global mb-2">Kode Pos</label>
+                <input type="text" name="postalCode" id="postalCode" class="form-control form-global" readonly>
             </div>
             <div class="form-group mb-4">
                 <input class="form-check-input me-2" type="checkbox" id="sameAddress">
@@ -123,13 +91,8 @@
 
 <script>
 window.routes = {
-    gender        : "{{ route('master.gender') }}",
-    religion      : "{{ route('master.religion') }}",
-    marital       : "{{ route('master.marital') }}",
-    education     : "{{ route('master.education') }}",
-    city          : "{{ route('master.city') }}",
-    kecamatan     : "{{ route('master.kecamatan') }}",
-    kelurahan     : "{{ route('master.kelurahan') }}",
+    marital     : "{{ route('master.marital') }}",
+    kelurahan   : "{{ route('master.all.kelurahan') }}"
 };
 window.apiMessage = @json(session('api_message'));
 </script>
