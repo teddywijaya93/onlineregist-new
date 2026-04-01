@@ -43,32 +43,40 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Sesuai e-KTP</label>
-                <input type="text" name="alamat" id="alamat" value="{{ old('alamat', $data['alamat'] ?? '') }}" class="form-control form-global" placeholder="Alamat Sesuai e-KTP">
+                <textarea rows="3" name="alamat" id="alamat" class="form-control form-global" placeholder="Alamat Sesuai e-KTP">{{ old('alamat', $data['alamat'] ?? '') }}</textarea>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Kelurahan</label>
                 <input type="hidden" name="city" id="citySelect" class="form-control form-global" readonly>
                 <input type="hidden" name="kecamatan" id="kecamatanSelect" class="form-control form-global" readonly>
                 <div class="custom-select-wrapper">
-                    <input type="text" name="kelurahan" id="kelurahanSearch" placeholder="Cari Kelurahan" class="form-control form-global">
+                    <input type="text" name="kelurahan" id="kelurahanSearch" value="{{ old('kelurahan', $data['kelurahan'] ?? '') }}" class="form-control form-global" placeholder="Cari Kelurahan">
                     <div id="kelurahanDropdown" class="dropdown-list"></div>
                 </div>
             </div>
-             <div class="form-group mb-4">  
+            <div class="form-group mb-4">  
                 <label class="form-label text-white text-form-global mb-2">Kode Pos</label>
-                <input type="text" name="postalCode" id="postalCode" class="form-control form-global" readonly>
+                <input type="text" name="postalCode" id="postalCode" value="{{ old('postalCode', $data['postalCode'] ?? '') }}" class="form-control form-global"  readonly>
             </div>
+            <!-- Checklist -->
             <div class="form-group mb-4">
                 <input class="form-check-input me-2" type="checkbox" id="sameAddress">
                 <label class="form-label text-white text-form-global mb-0" for="sameAddress">Alamat tinggal sesuai e-KTP</label>
             </div>
+            <!-- Checklist -->
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Domisili Sesuai e-KTP</label>
-                <input type="text" name="residenceAddress" id="residenceAddress" value="{{ old('residenceAddress', $data['residenceAddress'] ?? '') }}" class="form-control form-global" placeholder="Alamat Sesuai e-KTP">
+                <textarea rows="3" name="residenceAddress" id="residenceAddress" class="form-control form-global" placeholder="Alamat Sesuai e-KTP Domisili">{{ old('residenceAddress', $data['residenceAddress'] ?? '') }}</textarea>
             </div>
             <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Kecamatan Domisili</label>
-                <input type="text" name="residenceKecamatan" id="residenceKecamatan" value="{{ old('residenceKecamatan', $data['residenceKecamatan'] ?? '') }}" class="form-control form-global" placeholder="Kecamatan">
+                <label class="form-label text-white text-form-global mb-2">Kelurahan Domisili</label>
+                <input type="hidden" name="residenceCity" id="residenceCity" class="form-control form-global" readonly>
+                <input type="hidden" name="residenceKecamatan" id="residenceKecamatan" class="form-control form-global" readonly>
+                <input type="text" name="residenceKelurahan" id="residenceKelurahan" value="{{ old('residenceKelurahan', $data['residenceKelurahan'] ?? '') }}" class="form-control form-global" placeholder="Kelurahan Domisili">
+            </div>
+            <div class="form-group mb-4">  
+                <label class="form-label text-white text-form-global mb-2">Kode Pos Domisili</label>
+                <input type="text" name="residencePostalCode" id="residencePostalCode" value="{{ old('residencePostalCode', $data['residencePostalCode'] ?? '') }}" class="form-control form-global" placeholder="Kode Pos Domisili" readonly>
             </div>
             <button type="submit" class="btn btn-primary btn-regist w-100">
                 {{ $isUpdate ? 'Ubah' : 'Lanjutkan' }}

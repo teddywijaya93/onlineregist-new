@@ -12,9 +12,38 @@ function initKelurahanSearch() {
 
     if (!input || !dropdown) return;
 
-    // =========================
-    // DEBOUNCE FUNCTION
-    // =========================
+    // AUTO FILL FROM OCR
+    function normalize(text) {
+        return (text || '').toLowerCase().replace(/[^a-z]/g, '');
+    }
+
+    async function autoFillFromOCR() {
+        const kelurahanValue = input.value.trim();
+        if (!kelurahanValue) return;
+
+        try {
+            const res = await fetch(`${window.routes.kelurahan}?q=${kelurahanValue}`);
+            const json = await res.json();
+            const list = json.data || [];
+
+            if (!list.length) return;
+
+            const match = list.find(item =>
+                normalize(item.kelurahan) === normalize(kelurahanValue)
+            );
+
+            const selected = match || list[0];
+
+            city.value = selected.city || "";
+            kecamatan.value = selected.kecamatan || "";
+            postal.value = selected.postalCode || "";
+
+        } catch (err) {
+            console.error("AutoFill OCR error:", err);
+        }
+    }
+
+    // DEBOUNCE
     function debounce(func, delay = 400) {
         let timeout;
         return (...args) => {
@@ -23,9 +52,7 @@ function initKelurahanSearch() {
         };
     }
 
-    // =========================
     // FETCH DATA
-    // =========================
     async function fetchKelurahan(keyword) {
         try {
             dropdown.style.display = "block";
@@ -42,9 +69,7 @@ function initKelurahanSearch() {
         }
     }
 
-    // =========================
     // RENDER LIST
-    // =========================
     function renderDropdown(list) {
         dropdown.innerHTML = "";
 
@@ -77,9 +102,7 @@ function initKelurahanSearch() {
         });
     }
 
-    // =========================
     // SEARCH HANDLER
-    // =========================
     const handleSearch = debounce(async (e) => {
         const keyword = e.target.value.trim();
 
@@ -95,21 +118,21 @@ function initKelurahanSearch() {
 
     input.addEventListener("input", handleSearch);
 
-    // =========================
     // CLICK OUTSIDE
-    // =========================
     document.addEventListener("click", (e) => {
         if (!e.target.closest(".custom-select-wrapper")) {
             dropdown.style.display = "none";
         }
     });
 
-    // =========================
-    // FOCUS → SHOW AGAIN
-    // =========================
+    // FOCUS
     input.addEventListener("focus", () => {
         if (dropdown.innerHTML !== "") {
             dropdown.style.display = "block";
         }
     });
+
+    setTimeout(() => {
+        autoFillFromOCR();
+    }, 300);
 }

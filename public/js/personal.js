@@ -53,15 +53,16 @@ function initSameAddress() {
     const checkbox = document.getElementById('sameAddress');
     if (!checkbox) return;
     const cache = {};
+
+    const map = [
+        ['alamat','residenceAddress'],
+        ['kelurahanSearch','residenceKelurahan'],
+        ['postalCode','residencePostalCode'],
+        ['citySelect','residenceCity'],
+        ['kecamatanSelect','residenceKecamatan']
+    ];
+
     checkbox.addEventListener('change', function () {
-        const map = [
-            ['alamat','residenceAddress'],
-            ['rt','residenceRT'],
-            ['rw','residenceRW'],
-            ['citySelect','residenceCity'],
-            ['kelurahan','residenceKelurahan'],
-            ['kecamatan','residenceKecamatan']
-        ];
         map.forEach(([src, dest]) => {
             const source = document.getElementById(src);
             const target = document.getElementById(dest);
@@ -76,6 +77,19 @@ function initSameAddress() {
             }
         });
     });
+
+    // AUTO SYNC (REAL TIME)
+    map.forEach(([src, dest]) => {
+        const source = document.getElementById(src);
+        const target = document.getElementById(dest);
+        if (!source || !target) return;
+
+        source.addEventListener('input', () => {
+            if (checkbox.checked) {
+                target.value = source.value;
+            }
+        });
+    });
 }
 
 function initFormValidation() {
@@ -84,16 +98,13 @@ function initFormValidation() {
     const fields = [
         ['nama','Nama'],
         ['nik','NIK'],
-        ['motherMaidenName','Nama ibu'],
-        // ['tempatLahir','Tempat lahir'],
         ['tanggalLahir','Tanggal lahir'],
-        ['genderSelect','Jenis kelamin'],
-        ['religionSelect','Agama'],
-        ['maritalSelect','Status kawin'],
+        ['maritalSelect','Status Perkawinan'],
+        ['motherMaidenName','Nama ibu Kandung'],
         ['alamat','Alamat'],
-        ['kelurahanSelect','Kelurahan'],
-        ['residenceAddress','Alamat domisili'],
-        ['residenceKecamatan','Kecamatan domisili']
+        ['kelurahanSearch','Kelurahan'],
+        ['residenceAddress','Alamat Domisili'],
+        ['residenceKelurahan','Kelurahan Domisili']
     ];
 
     form.addEventListener('submit', function(e) {
