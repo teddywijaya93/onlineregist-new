@@ -21,8 +21,7 @@ class CreateAccountController extends Controller
             ]);
         }
 
-        $response = Http::WithoutVerifying()
-            ->timeout(15)
+        $response = Http::timeout(15)
             ->connectTimeout(5)
             ->retry(1, 200)
             ->post(
@@ -45,8 +44,7 @@ class CreateAccountController extends Controller
             ]);
         }
 
-        $response = Http::WithoutVerifying()
-            ->timeout(15)
+        $response = Http::timeout(15)
             ->connectTimeout(5)
             ->retry(1, 200)
             ->post(
@@ -61,53 +59,30 @@ class CreateAccountController extends Controller
 
     public function showPersonal()
     {
-        // if ($r = StepRedirectService::guardStep()) {
-        //     return redirect($r);
-        // }
-        // $step = session('registrationStep');
-
-        // $ocr = session('ocr_result');
-        // if (!$ocr) {
-        //     return redirect()->route('verifikasi.ktp');
-        // }
-        // $raw = isset($ocr['result']) ? $ocr['result'] : $ocr;
-        // $ocrData = \App\Services\OcrNormalizer::normalize($raw);
-        // // dd($ocrData);
-
-        // $personalData = session('personalData', []);    
-        // $isUpdate = !empty($personalData);
-
-        // // merge session override OCR
-        // $data = array_merge($ocrData, $personalData);
-
-        // return view('data-personal', [
-        //     'data' => $data,
-        //     'isUpdate' => $isUpdate,
-        //     'step' => StepRedirectService::stepNumber($step),
-        //     'hideBack' => StepRedirectService::hideBack()
-        // ]);
-
-
-        $step = session('registrationStep');
-        $ocr = session('ocr_result');
-
-        if ($ocr) {
-            $raw = isset($ocr['result']) ? $ocr['result'] : $ocr;
-            $ocrData = \App\Services\OcrNormalizer::normalize($raw);
-        } else {
-            $ocrData = []; // bypass sementara
+        if ($r = StepRedirectService::guardStep()) {
+            return redirect($r);
         }
+        $step = session('registrationStep');
+
+        $ocr = session('ocr_result');
+        if (!$ocr) {
+            return redirect()->route('verifikasi.ktp');
+        }
+        $raw = isset($ocr['result']) ? $ocr['result'] : $ocr;
+        $ocrData = \App\Services\OcrNormalizer::normalize($raw);
+        // dd($ocrData);
 
         $personalData = session('personalData', []);    
         $isUpdate = !empty($personalData);
 
+        // merge session override OCR
         $data = array_merge($ocrData, $personalData);
 
         return view('data-personal', [
             'data' => $data,
             'isUpdate' => $isUpdate,
-            'step' => $step ? StepRedirectService::stepNumber($step) : 1,
-            'hideBack' => true
+            'step' => StepRedirectService::stepNumber($step),
+            'hideBack' => StepRedirectService::hideBack()
         ]);
     }
 
@@ -168,11 +143,9 @@ class CreateAccountController extends Controller
         try {
             Log::info('Personal Payload', $payload);
             $response = Http::withHeaders([
-                    // 'Authorization' => 'Bearer ' . config('services.profits.token'),
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                 ])
-                ->withoutVerifying()
                 ->timeout(15)
                 ->connectTimeout(5)
                 ->retry(1, 200)
@@ -274,7 +247,6 @@ class CreateAccountController extends Controller
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                 ])
-                ->withoutVerifying()
                 ->timeout(15)
                 ->connectTimeout(5)
                 ->retry(1, 200)
@@ -369,7 +341,6 @@ class CreateAccountController extends Controller
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                 ])
-                ->withoutVerifying()
                 ->timeout(15)
                 ->connectTimeout(5)
                 ->retry(1, 200)
@@ -494,7 +465,6 @@ class CreateAccountController extends Controller
                     'Accept'        => 'application/json',
                     'Content-Type'  => 'application/json',
                 ])
-                ->withoutVerifying()
                 ->timeout(15)
                 ->connectTimeout(5)
                 ->retry(1, 200)

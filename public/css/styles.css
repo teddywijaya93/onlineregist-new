@@ -44,6 +44,7 @@ body{
 }
 .btn-regist{
     background:#3898FF;
+    border-color: transparent;
     color:#FFFFFF;
     border-radius: 4px;
     min-height: 24px;
@@ -51,6 +52,7 @@ body{
     font-size: 14px;
     font-weight: 500;
 }
+#btnRetake{background:#22C55E;}
 .atau-text{
     color:#7A8699;
     font-size: 12px;
@@ -414,4 +416,43 @@ body{
     opacity: 0.7;
     pointer-events: none;
     cursor: not-allowed;
+}
+.swal2-title{
+    font-size: 22px;
+    line-height: 32px;
+}
+
+/* Dropdown Ajax */
+.custom-select-wrapper{position: relative;}
+.dropdown-list{
+    position: absolute;
+    width: 100%;
+    background:#0F172A;
+    border: 1px solid#1E293B;
+    border-radius: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 999;
+    display: none;
+}
+.dropdown-item{
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid#1E293B;
+}
+.dropdown-item:hover{background:#1E293B;}
+.item-main{
+    color: #FFF;
+    font-size: 14px;
+    font-weight: 500;
+}
+.item-sub{
+    font-size: 13px;
+    color:#94A3B8;
+}
+.dropdown-loading, .dropdown-empty, .dropdown-error {
+    font-size: 14px;
+    padding: 12px;
+    text-align: center;
+    color:#94A3B8;
 }

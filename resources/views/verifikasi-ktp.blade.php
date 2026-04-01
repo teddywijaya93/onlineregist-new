@@ -12,6 +12,7 @@
             <h3 class="head-lanjut text-white mb-2">Ambil Foto KTP</h3>
             <p class="desc-lanjut mb-0">Perhatikan panduan berikut dalam pengambilan  foto KTP.</p>
         </div>
+        <div class="icons mb-4"><img src="{{ asset('storage/ktp_images.png') }}" class="w-100"></div>
         <form method="POST" action="{{ route('verifikasi.ktp.process') }}" enctype="multipart/form-data">
             @csrf
             <input type="file" name="ktp_image" accept="image/*" class="form-control mb-3" required>

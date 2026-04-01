@@ -52,7 +52,6 @@ class Verifikasi_WajahController extends Controller
                 'Accept'        => 'application/json',
                 'Content-Type'  => 'application/json',
             ])
-                ->withoutVerifying()
                 ->timeout(15)
                 ->connectTimeout(5)
                 ->retry(1, 200)

@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         "Content-Type": "application/json",
                         "X-CSRF-TOKEN": token
                     },
+                    credentials: "same-origin",
                     body: JSON.stringify({
                         email: email
                     })
@@ -71,6 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         "Content-Type": "application/json",
                         "X-CSRF-TOKEN": token
                     },
+                    credentials: "same-origin",
                     body: JSON.stringify({
                         email: email
                     })
@@ -178,6 +180,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             "Content-Type": "application/json",
                             "X-CSRF-TOKEN": token
                         },
+                        credentials: "same-origin",
                         body: JSON.stringify({
                             email: email,
                             otp: otp
@@ -307,6 +310,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         "Content-Type": "application/json",
                         "X-CSRF-TOKEN": token
                     },
+                    credentials: "same-origin",
                     body: JSON.stringify({
                         username: val
                     })
@@ -476,6 +480,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         "Content-Type" : "application/json",
                         "X-CSRF-TOKEN" : token
                     },
+                    credentials: "same-origin",
                     body: JSON.stringify({
                         phone: full
                     })
@@ -501,7 +506,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     headers: {
                         "Content-Type" : "application/json",
                         "X-CSRF-TOKEN" : token
-                    }
+                    },
+                    credentials: "same-origin",
                 });
 
                 window.location.href = "/create-account";
@@ -550,6 +556,7 @@ async function submitAccount() {
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": token
             },
+            credentials: "same-origin",
             body: JSON.stringify({
                 username: username,
                 password: password

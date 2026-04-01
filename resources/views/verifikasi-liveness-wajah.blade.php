@@ -12,6 +12,7 @@
             <h3 class="head-lanjut text-white mb-2">Ambil Foto Selfie</h3>
             <p class="desc-lanjut mb-0">Perhatian panduan berikut dalam pengambilan foto selfie.</p>
         </div>
+        <div class="icons mb-4"><img src="{{ asset('storage/selfie_images.png') }}" class="w-100"></div>
         <form id="selfieForm" method="POST" action="{{ route('verifikasi.wajah.process') }}">
             @csrf
             <input type="hidden" name="image" id="imageInput">

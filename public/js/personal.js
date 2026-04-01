@@ -1,24 +1,11 @@
 document.addEventListener("DOMContentLoaded", async () => {
     await initSelects();
-    await initKelurahanAutoFill();
     initSameAddress();
-    initInputFilters();
-    showApiMessage();
     initFormValidation();
-
+    showApiMessage();
     restrictMaritalByGender();
     document.getElementById("genderSelect")?.addEventListener("change", restrictMaritalByGender);
 });
-
-function showApiMessage() {
-    if (window.apiMessage) {
-        Swal.fire({
-            icon: 'info',
-            title: 'Informasi',
-            text: window.apiMessage
-        });
-    }
-}
 
 async function loadSelect(id, url, placeholder = "Pilih") {
     const select = document.getElementById(id);
@@ -60,71 +47,6 @@ async function initSelects() {
     await loadSelect("genderSelect", window.routes.gender, "Pilih Jenis Kelamin");
     await loadSelect("religionSelect", window.routes.religion, "Pilih Agama");
     await loadSelect("maritalSelect", window.routes.marital, "Pilih Status Perkawinan");
-}
-
-async function initKelurahanAutoFill() {
-    const kelurahanSelect = document.getElementById("kelurahanSelect");
-    const citySelect = document.getElementById("citySelect");
-    const kecamatanSelect = document.getElementById("kecamatanSelect");
-    const postalInput = document.getElementById("postalCode");
-
-    if (!kelurahanSelect) return;
-
-    try {
-        const res = await fetch(window.routes.kelurahan);
-        const json = await res.json();
-        const list = json.data || [];
-
-        kelurahanSelect.innerHTML = '<option value="">Pilih Kelurahan</option>';
-
-        list.forEach(item => {
-            const opt = document.createElement("option");
-
-            opt.value = item.kelurahan;
-            opt.textContent = item.label;
-            opt.dataset.full = item.label;
-            opt.dataset.city = item.city;
-            opt.dataset.kecamatan = item.kecamatan;
-            opt.dataset.postal = item.postalCode;
-
-            kelurahanSelect.appendChild(opt);
-        });
-
-        // FUNCTION RESTORE FULL LABEL
-        function restoreFullOptions(select) {
-            Array.from(select.options).forEach(opt => {
-                if (opt.dataset.full) {
-                    opt.textContent = opt.dataset.full;
-                }
-            });
-        }
-
-        // SAAT PILIH → JADI PENDEK
-        kelurahanSelect.addEventListener("change", function () {
-            const selected = this.options[this.selectedIndex];
-            if (!selected) return;
-
-            // tampil pendek
-            selected.textContent = selected.value;
-
-            // isi field lain
-            if (citySelect) citySelect.value = selected.dataset.city || '';
-            if (kecamatanSelect) kecamatanSelect.value = selected.dataset.kecamatan || '';
-            if (postalInput) postalInput.value = selected.dataset.postal || '';
-        });
-
-        // SAAT MAU BUKA DROPDOWN → BALIK FULL
-        kelurahanSelect.addEventListener("mousedown", function () {
-            restoreFullOptions(this);
-        });
-
-        kelurahanSelect.addEventListener("keydown", function () {
-            restoreFullOptions(this);
-        });
-
-    } catch (err) {
-        console.error("Kelurahan load error", err);
-    }
 }
 
 function initSameAddress() {
@@ -196,6 +118,16 @@ function initFormValidation() {
             });
         }
     });
+}
+
+function showApiMessage() {
+    if (window.apiMessage) {
+        Swal.fire({
+            icon: 'info',
+            title: 'Informasi',
+            text: window.apiMessage
+        });
+    }
 }
 
 function restrictMaritalByGender() {

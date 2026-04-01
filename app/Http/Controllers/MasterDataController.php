@@ -304,8 +304,10 @@ class MasterDataController extends Controller
         ]);
     }
 
-    public function getallKelurahanMaster()
+    public function getallKelurahanMaster(Request $request)
     {
+        $search = strtolower($request->input('q', ''));
+
         $response = Http::timeout(10)
             ->withHeaders(['Content-Type' => 'application/json'])
             ->post(
@@ -325,15 +327,21 @@ class MasterDataController extends Controller
                 'kelurahan'=> $parts[1] ?? null,
                 'kecamatan'=> $parts[2] ?? null,
                 'city'     => $parts[3] ?? null,
-                'provence' => $parts[4] ?? null,
                 'label'    => $alamat,
                 'value'    => $parts[1] ?? null
             ];
-        })->values();
+        });
+
+        // FILTER (server side)
+        if ($search) {
+            $data = $data->filter(function ($item) use ($search) {
+                return str_contains(strtolower($item['label']), $search);
+            });
+        }
 
         return response()->json([
             'status' => true,
-            'data'   => $data
+            'data'   => $data->take(50)->values()
         ]);
     }
 

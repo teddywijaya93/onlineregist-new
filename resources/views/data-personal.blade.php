@@ -16,6 +16,9 @@
         <form method="POST" action="{{ route('data.personal.submit') }}">
             @csrf
             <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
+            <input type="hidden" name="tempatLahir" value="{{ old('tempatLahir', $data['tempatLahir'] ?? '') }}">
+            <input type="hidden" name="genderSelect" value="{{ old('jenisKelamin', $data['jenisKelamin'] ?? '') }}">
+            <input type="hidden" name="religionSelect" value="{{ old('agama', $data['agama'] ?? '') }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Sesuai e-KTP</label>
                 <input type="text" name="nama" id="nama" value="{{ old('nama', $data['nama'] ?? '') }}" class="form-control form-global" placeholder="Nama Sesuai e-KTP">
@@ -24,25 +27,9 @@
                 <label class="form-label text-white text-form-global mb-2">Nomor e-KTP</label>
                 <input type="text" name="nik" id="nik" value="{{ old('nik', $data['nik'] ?? '') }}" class="form-control form-global numeric-only" inputmode="numeric" maxlength="16" placeholder="Nomor e-KTP">
             </div>
-            <div class="form-group mb-4 d-none">
-                <label class="form-label text-white text-form-global mb-2">Tempat Lahir</label>
-                <input type="text" name="tempatLahir" id="tempatLahir" value="{{ old('tempatLahir', $data['tempatLahir'] ?? '') }}" class="form-control form-global alphabet-only" placeholder="Tempat Lahir">
-            </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Tanggal Lahir</label>
                 <input type="date" name="tanggalLahir" id="tanggalLahir" value="{{ old('tanggalLahir', $data['tanggalLahir'] ?? '') }}"  class="form-control form-global" placeholder="Tanggal Lahir">
-            </div>
-            <div class="form-group mb-4 d-none">
-                <label class="form-label text-white text-form-global mb-2">Jenis Kelamin</label>
-                <select name="jenisKelamin" id="genderSelect" class="form-control" data-selected="{{ old('jenisKelamin', $data['jenisKelamin'] ?? '') }}">
-                    <option value="">Pilih Jenis Kelamin</option>
-                </select>
-            </div>
-            <div class="form-group mb-4 d-none">
-                <label class="form-label text-white text-form-global mb-2">Agama</label>
-                <select name="agama" id="religionSelect" class="form-control" data-selected="{{ old('agama', $data['agama'] ?? '') }}">
-                    <option value="">Pilih Agama</option>
-                </select>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Status Perkawinan</label>
@@ -62,9 +49,10 @@
                 <label class="form-label text-white text-form-global mb-2">Kelurahan</label>
                 <input type="hidden" name="city" id="citySelect" class="form-control form-global" readonly>
                 <input type="hidden" name="kecamatan" id="kecamatanSelect" class="form-control form-global" readonly>
-                <select name="kelurahan" id="kelurahanSelect" class="form-control" data-selected="{{ old('kelurahan', $data['kelurahan'] ?? '') }}">
-                    <option value="">Pilih Kelurahan</option>
-                </select>
+                <div class="custom-select-wrapper">
+                    <input type="text" name="kelurahan" id="kelurahanSearch" placeholder="Cari Kelurahan" class="form-control form-global">
+                    <div id="kelurahanDropdown" class="dropdown-list"></div>
+                </div>
             </div>
              <div class="form-group mb-4">  
                 <label class="form-label text-white text-form-global mb-2">Kode Pos</label>
@@ -97,5 +85,6 @@ window.routes = {
 window.apiMessage = @json(session('api_message'));
 </script>
 <script src="{{ asset('js/personal.js') }}"></script>
+<script src="{{ asset('js/kelurahanAjax.js') }}"></script>
 
 @endsection
