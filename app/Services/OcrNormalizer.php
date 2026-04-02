@@ -6,36 +6,44 @@ class OcrNormalizer
 {
     public static function normalize($raw)
     {
-        $ktp        = $raw['data']['ktp'] ?? $raw['ktp'] ?? [];
+        $data       = $raw['data'] ?? [];
 
-        $name       = self::clean($ktp['nama']['value'] ?? '');
-        $nik        = self::clean($ktp['nik']['value'] ?? '');
-        $birthPlace = self::clean($ktp['tempatLahir']['value'] ?? '');
-        $address    = self::clean($ktp['alamat']['value'] ?? '');
-        $city       = self::cleanWilayah($ktp['kotaKabupaten']['value'] ?? '');
-        $kecamatan  = self::cleanWilayah($ktp['kecamatan']['value'] ?? '');
-        $kelurahan  = self::cleanWilayah($ktp['kelurahanDesa']['value'] ?? '');
-        $religion   = self::mapAgama($ktp['agama']['value'] ?? '');
-        $gender     = self::mapGender($ktp['jenisKelamin']['value'] ?? '');
-        $marital    = self::mapMarital($ktp['statusPerkawinan']['value'] ?? '');
-        $dob        = null;
-        if (!empty($ktp['tanggalLahir']['value'])) {
-            $dob = date('Y-m-d', strtotime($ktp['tanggalLahir']['value']));
+        $nik            = self::clean($data['nik'] ?? '');
+        $name           = self::clean($data['full_name'] ?? '');
+        $birthPlace     = self::clean($data['place_of_birth'] ?? '');
+        $address        = self::clean($data['address'] ?? '');
+        $state          = self::cleanWilayah($data['state'] ?? '');
+        $city           = self::cleanWilayah($data['city'] ?? '');
+        $kecamatan      = self::cleanWilayah($data['district'] ?? '');
+        $kelurahan      = self::cleanWilayah($data['administrative_village'] ?? '');
+        $religion       = self::mapAgama($data['religion'] ?? '');
+        $gender         = self::mapGender($data['gender'] ?? '');
+        $marital        = self::mapMarital($data['marital_status'] ?? '');
+        $nationality    = self::cleanWilayah($data['nationality'] ?? '');
+        $occupation     = self::cleanWilayah($data['occupation'] ?? '');
+        $blood_type     = self::cleanWilayah($data['blood_type'] ?? '');
+        $dob            = null;
+        if (!empty($data['date_of_birth'])) {
+            $dob = date('Y-m-d', strtotime(str_replace('-', '/', $data['date_of_birth'])));
         }
 
         return [
-            'identificationNumber'  => $nik,
-            'name'                  => $name,
-            'dateOfBirth'           => $dob,
-            'birthLocation'         => $birthPlace,
-            'religion'              => $religion,
-            'gender'                => $gender,
-            'maritalStatus'         => $marital,
-            'address'               => $address,
-            'kelurahan'             => $kelurahan,
-            'kecamatan'             => $kecamatan,
-            'city'                  => $city,
-            'postalCode'            => '',
+            'identificationNumber' => $nik,
+            'name'                 => $name,
+            'dateOfBirth'          => $dob,
+            'birthLocation'        => $birthPlace,
+            'religion'             => $religion,
+            'gender'               => $gender,
+            'maritalStatus'        => $marital,
+            'address'              => $address,
+            'kelurahan'            => $kelurahan,
+            'kecamatan'            => $kecamatan,
+            'city'                 => $city,
+            'state'                => $state,
+            'nationality'          => $nationality,
+            'occupation'           => $occupation,
+            'blood_type'           => $blood_type,
+            'postalCode'           => '',
         ];
     }
 
@@ -76,6 +84,7 @@ class OcrNormalizer
     private static function mapMarital($v)
     {
         $v = strtoupper($v);
+
         if (str_contains($v, 'BELUM')) {
             return 'Belum Menikah';
         }

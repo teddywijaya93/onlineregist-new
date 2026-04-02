@@ -123,7 +123,7 @@ class CreateAccountController extends Controller
             'residencePostalCode'   => 'required',
             'motherMaidenName'      => 'required',
         ]);
-       $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('personalInformation')
+        $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('personalInformation')
             ? 'UPDATE'
             : 'CREATE';
 
@@ -133,7 +133,7 @@ class CreateAccountController extends Controller
             "process" => $processType,
             "datas" => $personalData
         ];
-        \Log::info('STEP 3 - PAYLOAD', $payload);
+        // \Log::info('STEP 3 - PAYLOAD', $payload);
 
         try {
             $response = \Http::withHeaders([
@@ -167,7 +167,7 @@ class CreateAccountController extends Controller
             return back()->with('error', $result['message'] ?? 'Gagal');
 
         } catch (\Throwable $e) {
-            return back()->with('error', 'Terjadi kesalahan sistem');
+            return back()->with('error', 'Terjadi Kesalahan Sistem');
         }
     }
 
