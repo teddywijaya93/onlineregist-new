@@ -16,6 +16,18 @@ document.addEventListener("DOMContentLoaded", function () {
         window.routes.investmentObjective,
         "Pilih Tujuan Investasi"
     );
+
+    loadMasterDropdown(
+        "educationSelect",
+        window.routes.education,
+        "Pilih Pendidikan Terakhir"
+    );
+
+    loadMasterDropdown(
+        "employmentSelect",
+        window.routes.employment,
+        "Pilih Pekerjaan"
+    );
 });
 
 function loadMasterDropdown(selectId, url, placeholder) {

@@ -5,40 +5,63 @@ namespace App\Services;
 class StepRedirectService
 {
     public const STEP_ROUTE = [
+        'createPin'             => 'create.pin',
+        'accountType'           => 'account.type',
         'uploadKtp'             => 'verifikasi.ktp',
         'uploadSelfie'          => 'verifikasi.wajah',
         'personalInformation'   => 'data.personal',
-        'employmentInformation' => 'data.pekerjaan',
         'financialProfile'      => 'data.penghasilan',
+        'employmentInformation' => 'data.pekerjaan',
         'relation'              => 'data.referensi.perseorangan',
         'bankInformation'       => 'data.bank',
     ];
 
-     public const STEP_NUMBER = [
-        'uploadKtp'             => 1,
-        'uploadSelfie'          => 1,
-        'personalInformation'   => 2,
-        'employmentInformation' => 3,
+    public const STEP_NUMBER = [
+        'createPin'             => 1,
+        'accountType'           => 1,
+        'uploadKtp'             => 2,
+        'uploadSelfie'          => 2,
+        'personalInformation'   => 3,
         'financialProfile'      => 4,
-        'relation'              => 5,
-        'bankInformation'       => 6,
+        'employmentInformation' => 5,
+        'relation'              => 6,
+        'bankInformation'       => 7,
     ];
+
+    public static function guardStep(): ?string
+    {
+        $sessionStep = session('registrationStep');
+
+        // kalau belum ada step → balik ke awal
+        if (!$sessionStep) {
+            return route('verifikasi.ktp');
+        }
+        $currentRouteName = request()->route()->getName();
+
+        // cari step dari route sekarang
+        $currentStep = array_search($currentRouteName, self::STEP_ROUTE);
+
+        if (!$currentStep) {
+            return null;
+        }
+
+        $sessionIndex = self::STEP_NUMBER[$sessionStep] ?? 0;
+        $currentIndex = self::STEP_NUMBER[$currentStep] ?? 0;
+
+        // kalau user di step LEBIH DEPAN → jangan tarik mundur
+        if ($currentIndex <= $sessionIndex) {
+            return null;
+        }
+
+        // kalau user lompat step → redirect ke step seharusnya
+        return route(self::STEP_ROUTE[$sessionStep]);
+    }
 
     public static function routeByStep(?string $step): string
     {
         if (!$step || !isset(self::STEP_ROUTE[$step])) {
-            return route('email');
+            return route('verifikasi.ktp');
         }
-
-        // kalau user sudah di route itu, jangan redirect lagi
-        if (request()->routeIs(self::STEP_ROUTE[$step])) {
-            return url()->current();
-        }
-
-        // if (!isset(self::STEP_ROUTE[$step])) {
-        //     return route('email');
-        // }
-
         return route(self::STEP_ROUTE[$step]);
     }
 
@@ -52,23 +75,7 @@ class StepRedirectService
 
     public static function stepNumber(?string $step): int
     {
-        if (!$step) return 1;
         return self::STEP_NUMBER[$step] ?? 1;
-    }
-
-    public static function guardStep(): ?string
-    {
-        $step = session('registrationStep');
-        if (!$step) return route('email');
-
-        $allowed = self::STEP_ROUTE[$step] ?? null;
-        if (!$allowed) return route('email');
-
-        if (!request()->routeIs($allowed)) {
-            return route($allowed);
-        }
-
-        return null;
     }
 
     public static function hideBack(): bool

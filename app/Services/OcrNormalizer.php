@@ -6,47 +6,36 @@ class OcrNormalizer
 {
     public static function normalize($raw)
     {
-        $ktp = $raw['data']['ktp'] ?? $raw['ktp'] ?? [];
+        $ktp        = $raw['data']['ktp'] ?? $raw['ktp'] ?? [];
 
-        // $rtRw = $ktp['rtRw']['value'] ?? '';
-        // $rt = '';
-        // $rw = '';
-
-        // if ($rtRw) {
-        //     $split = explode('/', $rtRw);
-        //     $rt = $split[0] ?? '';
-        //     $rw = $split[1] ?? '';
-        // }
-
-        $nama = self::clean($ktp['nama']['value'] ?? '');
-        $nik  = self::clean($ktp['nik']['value'] ?? '');
-        $tempat = self::clean($ktp['tempatLahir']['value'] ?? '');
-        $alamat = self::clean($ktp['alamat']['value'] ?? '');
-        $kota = self::cleanWilayah($ktp['kotaKabupaten']['value'] ?? '');
-        $kecamatan = self::cleanWilayah($ktp['kecamatan']['value'] ?? '');
-        $kelurahan = self::cleanWilayah($ktp['kelurahanDesa']['value'] ?? '');
-        $agama = self::mapAgama($ktp['agama']['value'] ?? '');
-        $gender = self::mapGender($ktp['jenisKelamin']['value'] ?? '');
-        $marital = self::mapMarital($ktp['statusPerkawinan']['value'] ?? '');
-        $tanggal = '';
+        $name       = self::clean($ktp['nama']['value'] ?? '');
+        $nik        = self::clean($ktp['nik']['value'] ?? '');
+        $birthPlace = self::clean($ktp['tempatLahir']['value'] ?? '');
+        $address    = self::clean($ktp['alamat']['value'] ?? '');
+        $city       = self::cleanWilayah($ktp['kotaKabupaten']['value'] ?? '');
+        $kecamatan  = self::cleanWilayah($ktp['kecamatan']['value'] ?? '');
+        $kelurahan  = self::cleanWilayah($ktp['kelurahanDesa']['value'] ?? '');
+        $religion   = self::mapAgama($ktp['agama']['value'] ?? '');
+        $gender     = self::mapGender($ktp['jenisKelamin']['value'] ?? '');
+        $marital    = self::mapMarital($ktp['statusPerkawinan']['value'] ?? '');
+        $dob        = null;
         if (!empty($ktp['tanggalLahir']['value'])) {
-            $tanggal =date('Y-m-d',strtotime($ktp['tanggalLahir']['value']));
+            $dob = date('Y-m-d', strtotime($ktp['tanggalLahir']['value']));
         }
 
         return [
-            'nama' => $nama,
-            'nik' => $nik,
-            'tempatLahir' => $tempat,
-            'tanggalLahir' => $tanggal,
-            'jenisKelamin' => $gender,
-            'agama' => $agama,
-            'statusPerkawinan' => $marital,
-            'alamat' => $alamat,
-            'kota' => $kota,
-            'kecamatan' => $kecamatan,
-            'kelurahan' => $kelurahan,
-            // 'rt' => $rt,
-            // 'rw' => $rw,
+            'identificationNumber'  => $nik,
+            'name'                  => $name,
+            'dateOfBirth'           => $dob,
+            'birthLocation'         => $birthPlace,
+            'religion'              => $religion,
+            'gender'                => $gender,
+            'maritalStatus'         => $marital,
+            'address'               => $address,
+            'kelurahan'             => $kelurahan,
+            'kecamatan'             => $kecamatan,
+            'city'                  => $city,
+            'postalCode'            => '',
         ];
     }
 
@@ -63,21 +52,25 @@ class OcrNormalizer
     {
         $v = strtoupper($v);
 
-        if ($v == 'ISLAM') return 'Islam';
-        if ($v == 'KRISTEN') return 'Kristen';
-        if ($v == 'KATOLIK') return 'Katolik';
-        if ($v == 'HINDU') return 'Hindu';
-        if ($v == 'BUDDHA') return 'Buddha';
-        if ($v == 'KONGHUCU') return 'Konghucu';
-        return $v;
+        return match ($v) {
+            'ISLAM' => '1',
+            'KRISTEN' => '2',
+            'BUDDHA' => '3',
+            'KATOLIK' => '4',
+            'KONGHUCU' => '5',
+            'HINDU' => '6',
+            default => null
+        };
     }
 
     private static function mapGender($v)
     {
         $v = strtoupper($v);
-        if (str_contains($v,'LAKI')) return 'Pria';
-        if (str_contains($v,'PEREMPUAN')) return 'Wanita';
-        return '';
+
+        if (str_contains($v, 'LAKI')) return '1';
+        if (str_contains($v, 'PEREMPUAN')) return '2';
+
+        return null;
     }
 
     private static function mapMarital($v)

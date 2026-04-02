@@ -3,47 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initKelurahanSearch() {
-    const input = document.getElementById("kelurahanSearch");
-    const dropdown = document.getElementById("kelurahanDropdown");
 
-    const city = document.getElementById("citySelect");
-    const kecamatan = document.getElementById("kecamatanSelect");
-    const postal = document.getElementById("postalCode");
-
-    if (!input || !dropdown) return;
-
-    // AUTO FILL FROM OCR
-    function normalize(text) {
-        return (text || '').toLowerCase().replace(/[^a-z]/g, '');
-    }
-
-    async function autoFillFromOCR() {
-        const kelurahanValue = input.value.trim();
-        if (!kelurahanValue) return;
-
-        try {
-            const res = await fetch(`${window.routes.kelurahan}?q=${kelurahanValue}`);
-            const json = await res.json();
-            const list = json.data || [];
-
-            if (!list.length) return;
-
-            const match = list.find(item =>
-                normalize(item.kelurahan) === normalize(kelurahanValue)
-            );
-
-            const selected = match || list[0];
-
-            city.value = selected.city || "";
-            kecamatan.value = selected.kecamatan || "";
-            postal.value = selected.postalCode || "";
-
-        } catch (err) {
-            console.error("AutoFill OCR error:", err);
-        }
-    }
-
-    // DEBOUNCE
     function debounce(func, delay = 400) {
         let timeout;
         return (...args) => {
@@ -52,8 +12,11 @@ function initKelurahanSearch() {
         };
     }
 
-    // FETCH DATA
-    async function fetchKelurahan(keyword) {
+    function normalize(text) {
+        return (text || '').toLowerCase().replace(/[^a-z]/g, '');
+    }
+
+    async function fetchKelurahan(keyword, dropdown) {
         try {
             dropdown.style.display = "block";
             dropdown.innerHTML = `<div class="dropdown-loading">Mencari Data Kelurahan</div>`;
@@ -63,76 +26,123 @@ function initKelurahanSearch() {
 
             return json.data || [];
         } catch (err) {
-            console.error("Fetch error:", err);
             dropdown.innerHTML = `<div class="dropdown-error">Gagal Load Data</div>`;
             return [];
         }
     }
 
-    // RENDER LIST
-    function renderDropdown(list) {
-        dropdown.innerHTML = "";
+    // GENERIC DROPDOWN ENGINE
+    function bindDropdown(config) {
+        const {
+            inputId,
+            dropdownId,
+            cityId,
+            kecamatanId,
+            postalId
+        } = config;
 
-        if (!list.length) {
-            dropdown.innerHTML = `<div class="dropdown-empty">Tidak ditemukan</div>`;
-            return;
+        const input = document.getElementById(inputId);
+        const dropdown = document.getElementById(dropdownId);
+        const city = document.getElementById(cityId);
+        const kecamatan = document.getElementById(kecamatanId);
+        const postal = document.getElementById(postalId);
+
+        if (!input || !dropdown) return;
+
+        function render(list) {
+            dropdown.innerHTML = "";
+
+            if (!list.length) {
+                dropdown.innerHTML = `<div class="dropdown-empty">Tidak ditemukan</div>`;
+                return;
+            }
+
+            list.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "dropdown-item";
+
+                div.innerHTML = `
+                    <div class="item-main">${item.kelurahan}</div>
+                    <div class="item-sub">${item.kecamatan}, ${item.city}</div>
+                `;
+
+                div.addEventListener("click", () => {
+                    input.value = item.kelurahan;
+
+                    city.value = item.city || "";
+                    kecamatan.value = item.kecamatan || "";
+                    postal.value = item.postalCode || "";
+
+                    dropdown.innerHTML = "";
+                    dropdown.style.display = "none";
+                });
+
+                dropdown.appendChild(div);
+            });
         }
 
-        list.forEach(item => {
-            const div = document.createElement("div");
-            div.className = "dropdown-item";
+        const handleSearch = debounce(async (e) => {
+            const keyword = e.target.value.trim();
 
-            div.innerHTML = `
-                <div class="item-main">${item.kelurahan}</div>
-                <div class="item-sub">${item.kecamatan}, ${item.city}</div>
-            `;
-
-            div.addEventListener("click", () => {
-                input.value = item.kelurahan;
-
-                city.value = item.city || "";
-                kecamatan.value = item.kecamatan || "";
-                postal.value = item.postalCode || "";
-
+            if (keyword.length < 2) {
                 dropdown.innerHTML = "";
                 dropdown.style.display = "none";
-            });
+                return;
+            }
 
-            dropdown.appendChild(div);
+            const data = await fetchKelurahan(keyword, dropdown);
+            render(data);
+        }, 400);
+
+        input.addEventListener("input", handleSearch);
+
+        input.addEventListener("focus", () => {
+            if (dropdown.innerHTML !== "") {
+                dropdown.style.display = "block";
+            }
         });
+
+        document.addEventListener("click", (e) => {
+            if (!e.target.closest(".custom-select-wrapper")) {
+                dropdown.style.display = "none";
+            }
+        });
+
+        // AUTO FILL OCR SUPPORT
+        setTimeout(async () => {
+            const val = input.value.trim();
+            if (!val) return;
+
+            const list = await fetchKelurahan(val, dropdown);
+            if (!list.length) return;
+
+            const match = list.find(i =>
+                normalize(i.kelurahan) === normalize(val)
+            ) || list[0];
+
+            city.value = match.city || "";
+            kecamatan.value = match.kecamatan || "";
+            postal.value = match.postalCode || "";
+        }, 300);
     }
 
-    // SEARCH HANDLER
-    const handleSearch = debounce(async (e) => {
-        const keyword = e.target.value.trim();
+    // INIT 2 FIELD
 
-        if (keyword.length < 2) {
-            dropdown.innerHTML = "";
-            dropdown.style.display = "none";
-            return;
-        }
-
-        const data = await fetchKelurahan(keyword);
-        renderDropdown(data);
-    }, 400);
-
-    input.addEventListener("input", handleSearch);
-
-    // CLICK OUTSIDE
-    document.addEventListener("click", (e) => {
-        if (!e.target.closest(".custom-select-wrapper")) {
-            dropdown.style.display = "none";
-        }
+    // Main
+    bindDropdown({
+        inputId: "kelurahanSearch",
+        dropdownId: "kelurahanDropdown",
+        cityId: "citySelect",
+        kecamatanId: "kecamatanSelect",
+        postalId: "postalCode"
     });
 
-    // FOCUS
-    input.addEventListener("focus", () => {
-        if (dropdown.innerHTML !== "") {
-            dropdown.style.display = "block";
-        }
+    // Domisili
+    bindDropdown({
+        inputId: "residenceKelurahan",
+        dropdownId: "residenceKelurahanDropdown",
+        cityId: "residenceCity",
+        kecamatanId: "residenceKecamatan",
+        postalId: "residencePostalCode"
     });
-
-    setTimeout(() => {
-        autoFillFromOCR();
-    }, 300);
 }

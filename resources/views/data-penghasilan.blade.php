@@ -6,16 +6,29 @@
 <section class="auth-wrapper">
     <div class="container text-start">
         @include('components.step-header', [
-            'step' => 5,
-            'back' => route('data.pekerjaan')
+            'step' => 4,
+            'back' => route('data.personal')
         ])
         <div class="mb-5">
-            <h3 class="head-lanjut text-white mb-2">Financial Profile</h3>
-            <p class="desc-lanjut mb-0">Data dibawah ini diwajibkan oleh OJK dan akan kami lindungi kerahasiaannya.</p>
+            <h3 class="head-lanjut text-white mb-2">Profil Keuangan</h3>
+            <p class="desc-lanjut mb-0"></p>
         </div>
         <form method="POST" action="{{ route('data.penghasilan.submit') }}">
             @csrf
             <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
+            <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Pekerjaan Nasabah</label>
+                <input type="hidden" id="genderSelect" value="{{ session('personalData.jenisKelamin') }}">
+                <select name="employmentType" id="employmentSelect" data-selected="{{ old('employmentType', $employmentData['employmentType'] ?? '') }}" class="form-control form-global">
+                    <option value="">Pilih Pekerjaan Nasabah</option>
+                </select>
+            </div>
+            <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Pendidikan Terakhir</label>
+                <select name="education" id="educationSelect" data-selected="{{ old('employmentType', $employmentData['education'] ?? '') }}" class="form-control form-global">
+                    <option value="">Pilih Pendidikan Terakhir</option>
+                </select>
+            </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Penghasilan Per bulan</label>
                 <select name="mainIncomeRange" id="incomeRangeSelect" data-selected="{{ old('mainIncomeRange', $financialData['mainIncomeRange'] ?? '') }}" class="form-control form-global">
@@ -42,26 +55,9 @@
 </section>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const message = @json(session('api_message'));
-    const status  = @json(session('api_status'));
-
-    if (message) {
-        let iconType = 'info';
-        if (status === true || status === 'true') {
-            iconType = 'success';
-        } else if (status === false || status === 'false') {
-            iconType = 'warning';
-        }
-        Swal.fire({
-            icon: iconType,
-            title: 'Informasi',
-            text: message,
-            confirmButtonColor: '#3085d6'
-        });
-    }
-});
 window.routes = {
+    employment         : "{{ route('master.employment') }}",
+    education          : "{{ route('master.education') }}",
     incomeRange        : "{{ route('master.incomeRange') }}",
     primaryFundSource  : "{{ route('master.primaryFundSOurce') }}",
     investmentObjective: "{{ route('master.investmentObjective') }}"

@@ -63,24 +63,27 @@ class CreateAccountController extends Controller
             return redirect($r);
         }
         $step = session('registrationStep');
-
         $ocr = session('ocr_result');
-        if (!$ocr) {
-            return redirect()->route('verifikasi.ktp');
+
+        if (!$ocr && $step === 'personalInformation') {
+            session(['registrationStep' => 'uploadKtp']);
+            return redirect()->route('verifikasi.ktp')->with('error', 'Silakan upload ulang KTP');
         }
         $raw = isset($ocr['result']) ? $ocr['result'] : $ocr;
-        $ocrData = \App\Services\OcrNormalizer::normalize($raw);
+        $ocrData = $ocr
+            ? \App\Services\OcrNormalizer::normalize($raw)
+            : [];
         // dd($ocrData);
 
         $personalData = session('personalData', []);    
-        $isUpdate = !empty($personalData);
+        $data = array_merge($ocrData, $personalData);
 
         // merge session override OCR
         $data = array_merge($ocrData, $personalData);
 
         return view('data-personal', [
             'data' => $data,
-            'isUpdate' => $isUpdate,
+            'isUpdate' => !empty($personalData),
             'step' => StepRedirectService::stepNumber($step),
             'hideBack' => StepRedirectService::hideBack()
         ]);
@@ -89,114 +92,82 @@ class CreateAccountController extends Controller
     public function savePersonal(Request $request)
     {
         if (!session()->has('registrationId')) {
-            return back()->with('error', 'Session registrasi tidak ada');
+            return redirect()->route('verifikasi.ktp');
         }
 
         if ($request->tanggalLahir) {
             try {
                 $request->merge([
-                    'tanggalLahir' => Carbon::parse($request->tanggalLahir)->format('Y-m-d')
+                    'tanggalLahir' => \Carbon\Carbon::parse($request->tanggalLahir)->format('Y-m-d')
                 ]);
             } catch (\Exception $e) {}
         }
 
         $personalData = $request->validate([
-            'nama' => 'required',
-            'nik' => 'required|digits:16',
-            'tanggalLahir' => 'required|date|after:1900-01-01',
-            'tempatLahir' => 'required',
-            'agama' => 'required',
-            'jenisKelamin' => 'required',
-            'statusPerkawinan' => 'required',
-            'alamat' => 'required',
-            'rt' => 'required',
-            'rw' => 'required',
-            'kota' => 'required',
-            'kelurahan' => 'required',
-            'kecamatan' => 'required',
-            'education' => 'required',
-            'motherMaidenName' => 'required',
-            'residenceAddress' => 'required',
-            'residenceRT' => 'required',
-            'residenceRW' => 'required',
-            'residenceCity' => 'required',
-            'residenceKelurahan' => 'required',
-            'residenceKecamatan' => 'required',
-            'process_type' => 'required|in:CREATE,UPDATE'
+            'identificationNumber'  => 'required|digits:16',
+            'name'                  => 'required',
+            'dateOfBirth'           => 'required|date',
+            'birthLocation'         => 'required',
+            'religion'              => 'required',
+            'gender'                => 'required',
+            'maritalStatus'         => 'required',
+            'address'               => 'required',
+            'city'                  => 'required',
+            'kelurahan'             => 'required',
+            'kecamatan'             => 'required',
+            'postalCode'            => 'required',
+            'residenceAddress'      => 'required',
+            'residenceCity'         => 'required',
+            'residenceKelurahan'    => 'required',
+            'residenceKecamatan'    => 'required',
+            'residencePostalCode'   => 'required',
+            'motherMaidenName'      => 'required',
         ]);
-        dd($personalData);
-        $processType = $personalData['process_type'];
-        unset($personalData['process_type']);
+       $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('personalInformation')
+            ? 'UPDATE'
+            : 'CREATE';
 
-        $rt = str_pad($personalData['rt'], 3, '0', STR_PAD_LEFT);
-        $rw = str_pad($personalData['rw'], 3, '0', STR_PAD_LEFT);
-
-        $datas = collect($personalData)->except(['rt','rw'])->toArray();
-        $datas['rt_rw'] = "$rt/$rw";
         $payload = [
             "registrationId" => session('registrationId'),
             "step" => "personalInformation",
             "process" => $processType,
-            "datas" => $datas
+            "datas" => $personalData
         ];
+        \Log::info('STEP 3 - PAYLOAD', $payload);
 
         try {
-            Log::info('Personal Payload', $payload);
-            $response = Http::withHeaders([
-                    'Accept'        => 'application/json',
-                    'Content-Type'  => 'application/json',
-                ])
-                ->timeout(15)
-                ->connectTimeout(5)
-                ->retry(1, 200)
-                ->post(
-                    'https://dev.profits.co.id:8283/registration/saveRegistration',$payload
-                );
+            $response = \Http::withHeaders([
+                'Accept'        => 'application/json',
+                'Content-Type'  => 'application/json',
+            ])
+            ->timeout(15)
+            ->connectTimeout(5)
+            ->retry(1, 200)
+            ->post(
+                'https://dev.profits.co.id:8283/registration/saveRegistration',
+                $payload
+            );
+            $result = $response->json();
 
-            if (!$response->ok()) {
-                return back()->withInput()->with([
-                    'api_message' => 'Failed Save Personal Information',
-                    'api_status'  => false
+            \Log::info('STEP 4 - API RESPONSE', $result);
+            if (!empty($result['status']) && $result['status'] === true) {
+
+                \Log::info('STEP 5 - SUCCESS', [
+                    'registrationId' => session('registrationId'),
+                    'nextStep' => $result['registrationStep'] ?? null
                 ]);
-            }
 
-            $result   = $response->json();
-            $status   = $result['status'] ?? false;
-            $message  = $result['message'] ?? '';
-            $nextStep = $result['registrationStep'] ?? null;
-            Log::info('Personal API Response', $result);
-
-            if ($status) {
                 session([
                     'personalData' => $personalData,
-                    'registrationStep' => $nextStep,
+                    'registrationStep' => $result['registrationStep']
                 ]);
-
-                if ($nextStep === 'employmentInformation') {
-                    return redirect()->route('data.pekerjaan')
-                        ->with([
-                            'api_message' => $message,
-                            'api_status'  => true
-                        ]);
-                }
-
-                return redirect()->route('data.personal')
-                    ->with([
-                        'api_message' => $message,
-                        'api_status'  => true
-                    ]);
+                return redirect()->route('data.penghasilan')->with('success', $result['message'] ?? 'Berhasil');
             }
 
-            return back()->withInput()->with([
-                'api_message' => $message,
-                'api_status'  => false
-            ]);
+            return back()->with('error', $result['message'] ?? 'Gagal');
 
         } catch (\Throwable $e) {
-            return back()->withInput()->with([
-                'api_message' => 'Internal Server Error',
-                'api_status'  => false
-            ]);
+            return back()->with('error', 'Terjadi kesalahan sistem');
         }
     }
 

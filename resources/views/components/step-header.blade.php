@@ -1,5 +1,5 @@
 @php
-    $total = 6;
+    $total = 7;
     $percent = ($step / $total) * 100;
 @endphp
 

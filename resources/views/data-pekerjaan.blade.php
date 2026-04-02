@@ -108,15 +108,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 window.routes = {
-    education          : "{{ route('master.education') }}",
-    incomeRange        : "{{ route('master.incomeRange') }}",
-    primaryFundSource  : "{{ route('master.primaryFundSOurce') }}",
-    employment         : "{{ route('master.employment') }}",
     position           : "{{ route('master.position') }}",
     businessline       : "{{ route('master.businessline') }}"
 };
 </script>
 <script src="{{ asset('js/pekerjaan.js') }}"></script>
-<script src="{{ asset('js/penghasilan.js') }}"></script>
 
 @endsection

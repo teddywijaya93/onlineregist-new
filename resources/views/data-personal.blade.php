@@ -16,24 +16,24 @@
         <form method="POST" action="{{ route('data.personal.submit') }}">
             @csrf
             <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
-            <input type="hidden" name="tempatLahir" value="{{ old('tempatLahir', $data['tempatLahir'] ?? '') }}">
-            <input type="hidden" name="genderSelect" value="{{ old('jenisKelamin', $data['jenisKelamin'] ?? '') }}">
-            <input type="hidden" name="religionSelect" value="{{ old('agama', $data['agama'] ?? '') }}">
+            <input type="hidden" name="birthLocation" value="{{ old('birthLocation', $data['birthLocation'] ?? '') }}">
+            <input type="hidden" name="gender" value="{{ old('gender', $data['gender'] ?? '') }}">
+            <input type="hidden" name="religion" value="{{ old('religion', $data['religion'] ?? '') }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Sesuai e-KTP</label>
-                <input type="text" name="nama" id="nama" value="{{ old('nama', $data['nama'] ?? '') }}" class="form-control form-global" placeholder="Nama Sesuai e-KTP">
+                <input type="text" name="name" id="name" value="{{ old('name', $data['name'] ?? '') }}" class="form-control form-global" placeholder="Nama Sesuai e-KTP">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nomor e-KTP</label>
-                <input type="text" name="nik" id="nik" value="{{ old('nik', $data['nik'] ?? '') }}" class="form-control form-global numeric-only" inputmode="numeric" maxlength="16" placeholder="Nomor e-KTP">
+                <input type="text" name="identificationNumber" id="identificationNumber" value="{{ old('identificationNumber', $data['identificationNumber'] ?? '') }}" class="form-control form-global numeric-only" inputmode="numeric" maxlength="16" placeholder="Nomor e-KTP">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Tanggal Lahir</label>
-                <input type="date" name="tanggalLahir" id="tanggalLahir" value="{{ old('tanggalLahir', $data['tanggalLahir'] ?? '') }}"  class="form-control form-global" placeholder="Tanggal Lahir">
+                <input type="date" name="dateOfBirth" id="dateOfBirth" value="{{ old('dateOfBirth', $data['dateOfBirth'] ?? '') }}"  class="form-control form-global" placeholder="Tanggal Lahir">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Status Perkawinan</label>
-                <select name="statusPerkawinan" id="maritalSelect" class="form-control" data-selected="{{ old('statusPerkawinan', $data['statusPerkawinan'] ?? '') }}">
+                <select name="maritalStatus" id="maritalSelect" class="form-control" data-selected="{{ old('maritalStatus', $data['maritalStatus'] ?? '') }}">
                     <option value="">Pilih Status Perkawinan</option>
                 </select>
             </div>
@@ -43,7 +43,7 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Sesuai e-KTP</label>
-                <textarea rows="3" name="alamat" id="alamat" class="form-control form-global" placeholder="Alamat Sesuai e-KTP">{{ old('alamat', $data['alamat'] ?? '') }}</textarea>
+                <textarea rows="3" name="address" id="address" class="form-control form-global" placeholder="Alamat Sesuai e-KTP">{{ old('address', $data['address'] ?? '') }}</textarea>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Kelurahan</label>
@@ -72,7 +72,10 @@
                 <label class="form-label text-white text-form-global mb-2">Kelurahan Domisili</label>
                 <input type="hidden" name="residenceCity" id="residenceCity" class="form-control form-global" readonly>
                 <input type="hidden" name="residenceKecamatan" id="residenceKecamatan" class="form-control form-global" readonly>
-                <input type="text" name="residenceKelurahan" id="residenceKelurahan" value="{{ old('residenceKelurahan', $data['residenceKelurahan'] ?? '') }}" class="form-control form-global" placeholder="Kelurahan Domisili">
+                <div class="custom-select-wrapper">
+                    <input type="text" name="residenceKelurahan" id="residenceKelurahan" value="{{ old('residenceKelurahan', $data['residenceKelurahan'] ?? '') }}" class="form-control form-global"  placeholder="Kelurahan Domisili">
+                    <div id="residenceKelurahanDropdown" class="dropdown-list"></div>
+                </div>
             </div>
             <div class="form-group mb-4">  
                 <label class="form-label text-white text-form-global mb-2">Kode Pos Domisili</label>
@@ -90,7 +93,6 @@ window.routes = {
     marital     : "{{ route('master.marital') }}",
     kelurahan   : "{{ route('master.all.kelurahan') }}"
 };
-window.apiMessage = @json(session('api_message'));
 </script>
 <script src="{{ asset('js/personal.js') }}"></script>
 <script src="{{ asset('js/kelurahanAjax.js') }}"></script>
