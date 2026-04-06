@@ -6,8 +6,8 @@
 <section class="auth-wrapper">
     <div class="container text-start">
         @include('components.step-header', [
-            'step' => 4,
-            'back' => route('data.personal')
+            'step' => $step,
+            'hideBack' => true
         ])
         <div class="mb-5">
             <h3 class="head-lanjut text-white mb-2">Profil Keuangan</h3>
@@ -19,20 +19,20 @@
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Pekerjaan Nasabah</label>
                 <input type="hidden" id="genderSelect" value="{{ session('personalData.jenisKelamin') }}">
-                <select name="employmentType" id="employmentSelect" data-selected="{{ old('employmentType', $employmentData['employmentType'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Pekerjaan Nasabah</option>
+                <select name="employmentType" id="employmentSelect" data-selected="{{ old('employmentType', $financialData['employmentType'] ?? '') }}" class="form-control form-global">
+                    <option value="">Pilih Pekerjaan</option>
                 </select>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Pendidikan Terakhir</label>
-                <select name="education" id="educationSelect" data-selected="{{ old('employmentType', $employmentData['education'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Pendidikan Terakhir</option>
+                <select name="education" id="educationSelect" data-selected="{{ old('education', $financialData['education'] ?? '') }}" class="form-control form-global">
+                    <option value="">Pilih Pendidikan</option>
                 </select>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Penghasilan Per bulan</label>
                 <select name="mainIncomeRange" id="incomeRangeSelect" data-selected="{{ old('mainIncomeRange', $financialData['mainIncomeRange'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Penghasilan Per bulan</option>
+                    <option value="">Pilih Penghasilan Per Bulan</option>
                 </select>
             </div>
             <div class="form-group mb-4">
