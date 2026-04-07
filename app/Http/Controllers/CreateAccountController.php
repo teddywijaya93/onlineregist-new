@@ -85,6 +85,7 @@ class CreateAccountController extends Controller
                 'personalData'     => $result['personalInformation'] ?? [],
                 'financialData'    => $result['financialProfile'] ?? [],
                 'employmentData'   => $result['employmentInformation'] ?? [],
+                'bankData'         => $result['financialInformation'] ?? [],
             ]);
 
         } catch (\Throwable $e) {
@@ -388,6 +389,85 @@ class CreateAccountController extends Controller
 
                 session([
                     'employmentData' => $employmentData,
+                    'registrationStep' => $result['registrationStep']
+                ]);
+                return redirect()->route('data.bank')->with('success', $result['message'] ?? 'Berhasil');
+            }
+
+            return back()->with('error', $result['message'] ?? 'Gagal');
+
+        } catch (\Throwable $e) {
+            return back()->with('error', 'Terjadi Kesalahan Sistem');
+        }
+    }
+
+    public function showbank()
+    {
+        if (!session()->has('registrationId')) {
+            return redirect()->route('email');
+        }
+
+        $this->getRegistration();
+
+        $step = session('registrationStep');
+        $bankData = session('bankData', []);
+
+        return view('data-bank', [
+            'bankData' => $bankData,
+            'isUpdate' => !empty($bankData),
+            'step' => StepRedirectService::stepNumber($step),
+            'hideBack' => StepRedirectService::hideBack()
+        ]);
+    }
+
+    public function saveBank(Request $request)
+    {
+        if (!session()->has('registrationId')) {
+            return redirect()->route('email');
+        }
+
+        $bankData = $request->validate([
+            'bankName'          => 'required',
+            'bankAccountOwner'  => 'required',
+            'bankAccountNumber' => 'required',
+        ]);
+        // dd($bankData);
+        $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('financialInformation')
+            ? 'UPDATE'
+            : 'CREATE';
+
+        $payload = [
+            "registrationId" => session('registrationId'),
+            "step"           => "financialInformation",
+            "process"        => $processType,
+            "datas"          => $bankData
+        ];
+        \Log::info('Step Financial Information - Payload', $payload);
+
+        try {
+            $response = \Http::withHeaders([
+                'Accept'        => 'application/json',
+                'Content-Type'  => 'application/json',
+            ])
+            ->timeout(15)
+            ->connectTimeout(5)
+            ->retry(1, 200)
+            ->post(
+                'https://dev.profits.co.id:8283/registration/saveRegistration',
+                $payload
+            );
+            $result = $response->json();
+
+            \Log::info('Step Financial Information - API Response', $result);
+            if (!empty($result['status']) && $result['status'] === true) {
+
+                \Log::info('Step Financial Information - Success', [
+                    'registrationId' => session('registrationId'),
+                    'nextStep' => $result['registrationStep'] ?? null
+                ]);
+
+                session([
+                    'bankData' => $bankData,
                     'registrationStep' => $result['registrationStep']
                 ]);
                 return redirect()->route('data.bank')->with('success', $result['message'] ?? 'Berhasil');

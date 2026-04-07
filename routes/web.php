@@ -79,22 +79,18 @@ Route::middleware(['step.guard'])->group(function () {
     // Step 1
     Route::get('/data-personal',[CreateAccountController::class, 'showPersonal'])->name('data.personal');
     Route::post('/data-personal/submit',[CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
+
     // Step 2
     Route::get('/data-pekerjaan', [CreateAccountController::class, 'showEmployment'])->name('data.pekerjaan');
     Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmployment'])->name('data.pekerjaan.submit');
+
     // Step 3
     Route::get('/data-penghasilan', [CreateAccountController::class, 'showFinancial'])->name('data.penghasilan');
     Route::post('/data-penghasilan/submit',[CreateAccountController::class, 'saveFinancial'])->name('data.penghasilan.submit');
-    // Step 4
-    Route::view('/data-referensi-perseorangan', 'data-referensi-perseorangan')->name('data.referensi.perseorangan');
+
     // Step 5
-    Route::view('/data-bank', 'data-bank')->name('data.bank');
+    Route::get('/data-bank', [CreateAccountController::class, 'showBank'])->name('data.bank');
+    Route::post('/data-bank/submit',[CreateAccountController::class, 'saveBank'])->name('data.bank.submit');
 
     Route::view('/data-universitas', 'data-universitas')->name('data.universitas');
 });
-
-// Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-// Route::post('/login/process', [AuthController::class, 'loginNewRegistration'])->name('login.process');
-
-Route::get('/data-referensi-perseorangan', function () {return view('data-referensi-perseorangan');})->middleware('step.guard')->name('data.referensi.perseorangan');
-Route::post('/data-referensi-perseorangan/submit',[CreateAccountController::class, 'saveReferensiPerseorangan'])->name('data.referensi.perseorangan.submit');

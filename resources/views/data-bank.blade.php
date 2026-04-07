@@ -6,28 +6,29 @@
 <section class="auth-wrapper">
     <div class="container text-start">
         @include('components.step-header', [
-            'step' => 7,
-            'back' => route('data.profil.resiko')
+            'step' => $step,
+            'hideBack' => true
         ])
         <div class="mb-5">
-            <h3 class="head-lanjut text-white mb-2">Hampir Selesai! Lengkapi Data Rekening Anda Lalu Mulai Investasi</h3>
-            <p class="desc-lanjut mb-0">Pastikan rekening benar untuk penarikan dana.</p>
+            <h3 class="head-lanjut text-white mb-2">Rekening Bank Pribadi</h3>
+            <p class="desc-lanjut mb-0"></p>
         </div>
-        <form method="POST" action="">
+        <form method="POST" action="{{ route('data.bank.submit') }}">
             @csrf
+            <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Pemilik Rekening</label>
-                <input type="text" name="nama" id="nama" class="form-control form-global" value="{{ session('personalData.nama') }}" disabled style="background:#42526D; border:unset;">
+                <input type="text" name="bankAccountOwner" id="bankAccountOwner" class="form-control form-global" value="{{ session('personalData.name') }}" readonly style="background:#42526D; border:unset;">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Bank Tujuan Penarikan</label>
-                <select name="bank" id="bankSelect" class="form-control form-global">
+                <select name="bankName" id="bankSelect" data-selected="{{ old('bankName', $bankData['bankName'] ?? '') }}"     class="form-control form-global">
                     <option value="">Pilih Bank</option>
                 </select>
             </div> 
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nomor Rekening</label>
-                <input type="text" name="nomor_rekening" id="nomor_rekening" class="form-control form-global" placeholder="Tulis Nomor Rekening">
+                <input type="text" name="bankAccountNumber" id="bankAccountNumber" value="{{ old('bankAccountNumber', $bankData['bankAccountNumber'] ?? '') }}" class="form-control form-global" placeholder="Tulis Nomor Rekening">
             </div>
             <button type="submit" id="btnNext" class="btn btn-primary btn-regist w-100 mb-3">Lanjutkan</button>
         </form>

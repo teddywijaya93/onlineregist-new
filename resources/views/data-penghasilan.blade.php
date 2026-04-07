@@ -18,7 +18,6 @@
             <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Pekerjaan Nasabah</label>
-                <input type="hidden" id="genderSelect" value="{{ session('personalData.jenisKelamin') }}">
                 <select name="employmentType" id="employmentSelect" data-selected="{{ old('employmentType', $financialData['employmentType'] ?? '') }}" class="form-control form-global">
                     <option value="">Pilih Pekerjaan</option>
                 </select>
