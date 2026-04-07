@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Data Bank')
+@section('title','Upload Signature')
 @section('content')
 
 <meta name="csrf-token" content="{{ csrf_token() }}">

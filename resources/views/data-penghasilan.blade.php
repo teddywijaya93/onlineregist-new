@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Penghasilan Nasabah')
+@section('title','Data Penghasilan')
 @section('content')
 
 <meta name="csrf-token" content="{{ csrf_token() }}">

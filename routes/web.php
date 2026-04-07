@@ -93,4 +93,6 @@ Route::middleware(['step.guard'])->group(function () {
     Route::post('/data-bank/submit',[CreateAccountController::class, 'saveBank'])->name('data.bank.submit');
 
     Route::view('/data-universitas', 'data-universitas')->name('data.universitas');
+
+    Route::view('/data-signature', 'data-signature')->name('data.signature');
 });
