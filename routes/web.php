@@ -89,6 +89,8 @@ Route::middleware(['step.guard'])->group(function () {
     Route::view('/data-referensi-perseorangan', 'data-referensi-perseorangan')->name('data.referensi.perseorangan');
     // Step 5
     Route::view('/data-bank', 'data-bank')->name('data.bank');
+
+    Route::view('/data-universitas', 'data-universitas')->name('data.universitas');
 });
 
 // Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
