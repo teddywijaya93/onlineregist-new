@@ -157,7 +157,7 @@ class Verifikasi_KTPController extends Controller
             ]);
 
         } catch (\Throwable $e) {
-            return back()->with('api_message', 'Internal Server Error');
+            return back()->with('error', $e->getMessage());
         }
     }
 }

@@ -1,12 +1,22 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const bankSelect        = document.getElementById("bankSelect");
+    const bankSelect = document.getElementById("bankSelect");
 
     fetch(window.routes.bank)
         .then(res => res.json())
         .then(res => {
-            bankSelect.innerHTML ="<option value=''>Pilih Bank</option>";
+            const selectedValue = (bankSelect.dataset.selected || '').toLowerCase().trim();
+
+            bankSelect.innerHTML = "<option value=''>Pilih Bank</option>";
+
             res.data.forEach(item => {
-                bankSelect.innerHTML += `<option value="${item.id}">${item.description}</option>`;
+                const itemId   = String(item.id);
+                const itemDesc = (item.description || '').toLowerCase().trim();
+
+                const isSelected = selectedValue === itemId || selectedValue === itemDesc
+                    ? 'selected'
+                    : '';
+
+                bankSelect.innerHTML += `<option value="${itemId}" ${isSelected}>${item.description}</option>`;
             });
         });
 });

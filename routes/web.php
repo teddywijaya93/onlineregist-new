@@ -94,5 +94,6 @@ Route::middleware(['step.guard'])->group(function () {
 
     Route::view('/data-universitas', 'data-universitas')->name('data.universitas');
 
-    Route::view('/data-signature', 'data-signature')->name('data.signature');
+    Route::get('/data-signature', [CreateAccountController::class, 'showSignature'])->name('data.signature');
+    Route::post('/data-signature/submit', [CreateAccountController::class, 'saveSignature'])->name('data.signature.submit');
 });

@@ -10,36 +10,34 @@
             'hideBack' => true
         ])
         <div class="mb-5">
-            <h3 class="head-lanjut text-white mb-2">Rekening Bank Pribadi</h3>
+            <h3 class="head-lanjut text-white text-center mb-2">Spesimen Tanda Tangan</h3>
             <p class="desc-lanjut mb-0"></p>
         </div>
-        <form method="POST" action="{{ route('data.bank.submit') }}">
+        <form method="POST" action="{{ route('data.signature.submit') }}" id="signatureForm">
             @csrf
-            <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
-            <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Nama Pemilik Rekening</label>
-                <input type="text" name="bankAccountOwner" id="bankAccountOwner" class="form-control form-global" value="{{ session('personalData.name') }}" readonly style="background:#42526D; border:unset;">
+            <input type="hidden" name="image" id="imageInput">
+            <input type="file" id="fileInput" accept="image/*" hidden>
+            <div class="signature-card text-center mb-4">
+                <!-- Preview -->
+                <div id="previewMode"><img src="{{ asset('storage/ttd-area.svg') }}" class="w-100"></div>
+
+                <!-- Draw -->
+                <div id="drawMode" class="d-none">
+                    <div class="signature-pad-wrapper"><canvas id="signature-pad"></canvas></div>
+                </div>
             </div>
-            <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Bank Tujuan Penarikan</label>
-                <select name="bankName" id="bankSelect" data-selected="{{ old('bankName', $bankData['bankName'] ?? '') }}"     class="form-control form-global">
-                    <option value="">Pilih Bank</option>
-                </select>
-            </div> 
-            <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Nomor Rekening</label>
-                <input type="text" name="bankAccountNumber" id="bankAccountNumber" value="{{ old('bankAccountNumber', $bankData['bankAccountNumber'] ?? '') }}" class="form-control form-global" placeholder="Tulis Nomor Rekening">
+            <div class="row">
+                <div class="col-12 col-lg-6">
+                    <button type="button" id="btnLeft" class="btn btn-primary btn-take w-100 mb-3">Ambil dari galeri</button>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <button type="button" id="btnRight" class="btn btn-primary btn-regist w-100 mb-3">Mulai ambil tanda tangan</button>
+                </div>
             </div>
-            <button type="submit" id="btnNext" class="btn btn-primary btn-regist w-100 mb-3">Lanjutkan</button>
         </form>
     </div>
 </section>
 
-<script>
-window.routes = {
-    bank   : "{{ route('master.bank') }}",
-};
-</script>
-<script src="{{ asset('js/bank.js') }}"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script src="{{ asset('js/signature.js') }}"></script>
 @endsection

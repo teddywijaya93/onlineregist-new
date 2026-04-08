@@ -89,7 +89,7 @@ class CreateAccountController extends Controller
             ]);
 
         } catch (\Throwable $e) {
-            return back()->with('error', 'Terjadi Kesalahan Sistem');
+                return back()->with('error', $e->getMessage());
         }
     }
 
@@ -233,7 +233,7 @@ class CreateAccountController extends Controller
             return back()->with('error', $result['message'] ?? 'Gagal');
 
         } catch (\Throwable $e) {
-            return back()->with('error', 'Terjadi Kesalahan Sistem');
+            return back()->with('error', $e->getMessage());
         }
     }
 
@@ -314,7 +314,7 @@ class CreateAccountController extends Controller
             return back()->with('error', $result['message'] ?? 'Gagal');
 
         } catch (\Throwable $e) {
-            return back()->with('error', 'Terjadi Kesalahan Sistem');
+            return back()->with('error', $e->getMessage());
         }
     }
 
@@ -397,7 +397,7 @@ class CreateAccountController extends Controller
             return back()->with('error', $result['message'] ?? 'Gagal');
 
         } catch (\Throwable $e) {
-            return back()->with('error', 'Terjadi Kesalahan Sistem');
+            return back()->with('error', $e->getMessage());
         }
     }
 
@@ -470,13 +470,81 @@ class CreateAccountController extends Controller
                     'bankData' => $bankData,
                     'registrationStep' => $result['registrationStep']
                 ]);
-                return redirect()->route('data.bank')->with('success', $result['message'] ?? 'Berhasil');
+                return redirect()->route('data.signature')->with('success', $result['message'] ?? 'Berhasil');
             }
 
             return back()->with('error', $result['message'] ?? 'Gagal');
 
         } catch (\Throwable $e) {
-            return back()->with('error', 'Terjadi Kesalahan Sistem');
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function showSignature()
+    {
+        if (!session()->has('registrationId')) {
+            return redirect()->route('email');
+        }
+
+        $step = session('registrationStep');
+
+        return view('data-signature', [
+            'step' => StepRedirectService::stepNumber($step),
+            'hideBack' => StepRedirectService::hideBack()
+        ]);
+    }
+
+    public function saveSignature(Request $request)
+    {
+        try {
+            if (!session()->has('registrationId')) {
+                return redirect()->route('email');
+            }
+
+            $request->validate([
+                'image' => 'required|string'
+            ]);
+            $imageBase64 = $request->image;
+
+            $hash = md5($imageBase64);
+            $namaFile = 'Signature_' . $hash . '.png';
+
+            $response = \Http::withHeaders([
+                'Accept'        => 'application/json',
+                'Content-Type'  => 'application/json',
+            ])
+            ->post(
+                'https://dev.profits.co.id:8283/registration/uploadAttachment',
+                [
+                    "registrationId" => session('registrationId'),
+                    "datas" => [
+                        "fileType"  => "signature",
+                        "fileName"  => $namaFile,
+                        "fileImage" => $imageBase64
+                    ]
+                ]
+            );
+            $result = $response->json();
+
+            \Log::info('Upload Signature', $result);
+            if (!empty($result['status']) && $result['status'] === true) {
+
+                session([
+                    'registrationStep' => $result['registrationStep']
+                ]);
+
+                return redirect()->route('data.signature')->with('success', $result['message'] ?? 'Berhasil');
+            }
+
+            return back()->with('error', $result['message'] ?? 'Gagal');
+
+        } catch (\Throwable $e) {
+
+            \Log::error('Upload Signature ERROR', [
+                'message' => $e->getMessage()
+            ]);
+
+            return back()->with('error', $e->getMessage());
         }
     }
 }

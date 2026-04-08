@@ -52,19 +52,18 @@ class Verifikasi_WajahController extends Controller
                 'Accept'        => 'application/json',
                 'Content-Type'  => 'application/json',
             ])
-                ->timeout(15)
-                ->connectTimeout(5)
-                ->retry(1, 200)
-                ->post(
-                    'https://dev.profits.co.id:8283/registration/uploadAttachment',[
-                    "registrationId" => session('registrationId'),
-                    "datas" => [
-                        "fileType"  => "selfie",
-                        "fileName"  => $namaFile,
-                        "fileImage" => $imageBase64
-                    ]
+            ->timeout(15)
+            ->connectTimeout(5)
+            ->retry(1, 200)
+            ->post(
+                'https://dev.profits.co.id:8283/registration/uploadAttachment',[
+                "registrationId" => session('registrationId'),
+                "datas" => [
+                    "fileType"  => "selfie",
+                    "fileName"  => $namaFile,
+                    "fileImage" => $imageBase64
                 ]
-            );
+            ]);
             $data = $response->json();
 
             Log::info('Upload Selfie', [$data]);
@@ -86,7 +85,7 @@ class Verifikasi_WajahController extends Controller
                 ]);
 
         } catch (\Throwable $e) {
-            return back()->with('api_message','Internal Server Error');
+            return back()->with('error', $e->getMessage());
         }
     }
 }

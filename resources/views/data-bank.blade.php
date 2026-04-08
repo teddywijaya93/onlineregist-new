@@ -30,7 +30,9 @@
                 <label class="form-label text-white text-form-global mb-2">Nomor Rekening</label>
                 <input type="text" name="bankAccountNumber" id="bankAccountNumber" value="{{ old('bankAccountNumber', $bankData['bankAccountNumber'] ?? '') }}" class="form-control form-global" placeholder="Tulis Nomor Rekening">
             </div>
-            <button type="submit" id="btnNext" class="btn btn-primary btn-regist w-100 mb-3">Lanjutkan</button>
+            <button type="submit" class="btn btn-primary btn-regist w-100">
+                {{ $isUpdate ? 'Ubah' : 'Lanjutkan' }}
+            </button>
         </form>
     </div>
 </section>
