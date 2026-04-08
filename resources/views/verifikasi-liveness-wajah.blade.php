@@ -30,7 +30,7 @@
                 <h6 class="text-white mb-2">Hasil Foto</h6>
                 <img id="resultImage" class="w-100 rounded border">
             </div>
-            <button type="button" id="btnRetake" class="btn btn-warning btn-regist w-100 mb-2 d-none">Ambil Ulang</button>
+            <button type="button" id="btnRetake" class="btn btn-warning btn-regist w-100 mb-2 text-white d-none">Ambil Ulang</button>
             <button type="submit" id="btnSubmit" class="btn btn-success btn-regist w-100 mb-3 d-none">Lanjutkan</button>
         </form>
     </div>

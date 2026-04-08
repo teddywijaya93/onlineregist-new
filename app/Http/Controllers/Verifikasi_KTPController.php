@@ -14,8 +14,8 @@ class Verifikasi_KTPController extends Controller
 {
     public function index()
     {
-        if ($r = StepRedirectService::guardStep()) {
-            return redirect($r);
+        if (!session()->has('registrationId')) {
+            return redirect()->route('email');
         }
 
         $step = session('registrationStep');

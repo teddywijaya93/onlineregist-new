@@ -571,7 +571,7 @@ async function submitAccount() {
             });
 
             // lanjut step berikut
-            window.location.href = "/next-step";
+            window.location.href = "/email";
 
         } else {
             Swal.fire({

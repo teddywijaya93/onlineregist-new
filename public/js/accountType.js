@@ -36,7 +36,7 @@ async function saveAccountType() {
 
         if (!data.status) return;
 
-        window.location.href = "/next-step";
+        window.location.href = "/verifikasi-ktp";
 
     } catch {
         Swal.fire({

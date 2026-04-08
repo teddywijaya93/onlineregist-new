@@ -34,24 +34,45 @@ function loadMasterDropdown(selectId, url, placeholder) {
     const select = document.getElementById(selectId);
     if (!select) return;
 
-    const selectedValue = select.dataset.selected;
+    const selectedValue = select.dataset.selected || '';
+
     fetch(url)
         .then(res => res.json())
         .then(res => {
             const list = res.data ?? res.datas ?? [];
+
             select.innerHTML = `<option value="">${placeholder}</option>`;
+
             list.forEach(item => {
-                const value = item.id;
-                if (!value) return;
-                const isSelected = selectedValue == value ? 'selected' : '';
-                select.innerHTML += `<option value="${value}" ${isSelected}> ${escapeHtml(item.description)}</option>`;
+                const value = String(item.id);
+                const text  = item.description || '';
+
+                const normSelected = normalize(selectedValue);
+                const normText     = normalize(text);
+
+                const isSelected =
+                    normSelected === normalize(value) ||
+                    normSelected === normText ||
+                    normText.includes(normSelected) ||
+                    normSelected.includes(normText);
+
+                const opt = document.createElement("option");
+                opt.value = value;
+                opt.textContent = text;
+
+                if (isSelected) {
+                    opt.selected = true;
+                }
+
+                select.appendChild(opt);
             });
         });
 }
 
-function escapeHtml(text) {
-    return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+function normalize(str) {
+    return String(str)
+        .toLowerCase()
+        .replace(/[\/,]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
 }

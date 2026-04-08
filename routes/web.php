@@ -81,19 +81,22 @@ Route::middleware(['step.guard'])->group(function () {
     Route::post('/data-personal/submit',[CreateAccountController::class, 'savePersonal'])->name('data.personal.submit');
 
     // Step 2
+    Route::get('/data-penghasilan', [CreateAccountController::class, 'showFinancial'])->name('data.penghasilan');
+    Route::post('/data-penghasilan/submit',[CreateAccountController::class, 'saveFinancial'])->name('data.penghasilan.submit');
+  
+    // Step 3
     Route::get('/data-pekerjaan', [CreateAccountController::class, 'showEmployment'])->name('data.pekerjaan');
     Route::post('/data-pekerjaan/submit',[CreateAccountController::class, 'saveEmployment'])->name('data.pekerjaan.submit');
 
-    // Step 3
-    Route::get('/data-penghasilan', [CreateAccountController::class, 'showFinancial'])->name('data.penghasilan');
-    Route::post('/data-penghasilan/submit',[CreateAccountController::class, 'saveFinancial'])->name('data.penghasilan.submit');
+    // Step 3 If Mahasiswa
+    Route::get('/data-universitas', [CreateAccountController::class, 'showUniversitas'])->name('data.universitas');
+    Route::post('/data-universitas/submit',[CreateAccountController::class, 'saveUniversitas'])->name('data.universitas.submit');
 
-    // Step 5
+    // Step 4
     Route::get('/data-bank', [CreateAccountController::class, 'showBank'])->name('data.bank');
     Route::post('/data-bank/submit',[CreateAccountController::class, 'saveBank'])->name('data.bank.submit');
 
-    Route::view('/data-universitas', 'data-universitas')->name('data.universitas');
-
+    // Step 5
     Route::get('/data-signature', [CreateAccountController::class, 'showSignature'])->name('data.signature');
     Route::post('/data-signature/submit', [CreateAccountController::class, 'saveSignature'])->name('data.signature.submit');
 });

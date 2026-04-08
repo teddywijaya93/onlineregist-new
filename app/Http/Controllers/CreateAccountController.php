@@ -89,7 +89,7 @@ class CreateAccountController extends Controller
             ]);
 
         } catch (\Throwable $e) {
-                return back()->with('error', $e->getMessage());
+            return back()->with('error', $e->getMessage());
         }
     }
 
@@ -131,13 +131,25 @@ class CreateAccountController extends Controller
 
         // Change gender from OCR to API
         if (!empty($personalData['gender'])) {
-            $map = [
-                'LAKI-LAKI' => 'Pria',
-                'PEREMPUAN' => 'Wanita',
+            $genderMap = [
+                'Pria' => '1',
+                'Wanita' => '2',
             ];
 
-            $key = strtoupper($personalData['gender']);
-            $personalData['gender'] = $map[$key] ?? $personalData['gender'];
+            $personalData['gender'] = $genderMap[$personalData['gender']] ?? $personalData['gender'];
+        }
+
+        // Change religion from OCR to API
+        if (!empty($personalData['religion'])) {
+            $religionMap = [
+                'Islam' => '1',
+                'Kristen' => '2',
+                'Buddha' => '3',
+                'Katolik' => '4',
+                'Kong Hu Cu' => '5',
+                'Hindu' => '6',
+            ];
+            $personalData['religion'] = $religionMap[$personalData['religion']] ?? $personalData['religion'];
         }
 
         // Format birthDate
@@ -154,6 +166,7 @@ class CreateAccountController extends Controller
             'data' => $data,
             'isUpdate' => !empty($personalData),
             'step' => StepRedirectService::stepNumber($step),
+            'totalStep' => StepRedirectService::totalStep(),
             'hideBack' => StepRedirectService::hideBack()
         ]);
     }
@@ -227,7 +240,9 @@ class CreateAccountController extends Controller
                     'personalData' => $personalData,
                     'registrationStep' => $result['registrationStep']
                 ]);
-                return redirect()->route('data.penghasilan')->with('success', $result['message'] ?? 'Berhasil');
+                $nextStep = StepRedirectService::nextStep('personalInformation');
+
+                return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
             }
 
             return back()->with('error', $result['message'] ?? 'Gagal');
@@ -308,7 +323,9 @@ class CreateAccountController extends Controller
                     'financialData' => $financialData,
                     'registrationStep' => $result['registrationStep']
                 ]);
-                return redirect()->route('data.pekerjaan')->with('success', $result['message'] ?? 'Berhasil');
+                $nextStep = StepRedirectService::nextStep('financialProfile');
+
+                return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
             }
 
             return back()->with('error', $result['message'] ?? 'Gagal');
@@ -333,6 +350,7 @@ class CreateAccountController extends Controller
             'employmentData' => $employmentData,
             'isUpdate' => !empty($employmentData),
             'step' => StepRedirectService::stepNumber($step),
+            'totalStep' => StepRedirectService::totalStep(),
             'hideBack' => StepRedirectService::hideBack()
         ]);
     }
@@ -391,7 +409,92 @@ class CreateAccountController extends Controller
                     'employmentData' => $employmentData,
                     'registrationStep' => $result['registrationStep']
                 ]);
-                return redirect()->route('data.bank')->with('success', $result['message'] ?? 'Berhasil');
+                $nextStep = StepRedirectService::nextStep('employmentInformation');
+
+                return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
+            }
+
+            return back()->with('error', $result['message'] ?? 'Gagal');
+
+        } catch (\Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function showUniversitas()
+    {
+        if (!session()->has('registrationId')) {
+            return redirect()->route('email');
+        }
+
+        $this->getRegistration();
+
+        $step = session('registrationStep');
+        $universitasData = session('universitasData', []);
+
+        return view('data-universitas', [
+            'universitasData' => $universitasData,
+            'isUpdate' => !empty($universitasData),
+            'step' => StepRedirectService::stepNumber($step),
+            'totalStep' => StepRedirectService::totalStep(),
+            'hideBack' => StepRedirectService::hideBack()
+        ]);
+    }
+
+    public function saveUniversitas(Request $request)
+    {
+        if (!session()->has('registrationId')) {
+            return redirect()->route('email');
+        }
+
+        $universitasData = $request->validate([
+            'employer'                => 'nullable|string|max:255',
+            'employmentDurationYear'  => 'required|int',
+            'employmentDurationMonth' => 'required|int',
+            'officeAddress'           => 'nullable|string',
+        ]);
+        // dd($universitasData);
+        $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('universityInformation')
+            ? 'UPDATE'
+            : 'CREATE';
+
+        $payload = [
+            "registrationId" => session('registrationId'),
+            "step"           => "universityInformation",
+            "process"        => $processType,
+            "datas"          => $universitasData
+        ];
+        \Log::info('Step University Information - Payload', $payload);
+
+        try {
+            $response = \Http::withHeaders([
+                'Accept'        => 'application/json',
+                'Content-Type'  => 'application/json',
+            ])
+            ->timeout(15)
+            ->connectTimeout(5)
+            ->retry(1, 200)
+            ->post(
+                'https://dev.profits.co.id:8283/registration/saveRegistration',
+                $payload
+            );
+            $result = $response->json();
+
+            \Log::info('Step University Information - API Response', $result);
+            if (!empty($result['status']) && $result['status'] === true) {
+
+                \Log::info('Step University Information - Success', [
+                    'registrationId' => session('registrationId'),
+                    'nextStep' => $result['registrationStep'] ?? null
+                ]);
+
+                session([
+                    'universitasData' => $universitasData,
+                    'registrationStep' => $result['registrationStep']
+                ]);
+                $nextStep = StepRedirectService::nextStep('universityInformation');
+
+                return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
             }
 
             return back()->with('error', $result['message'] ?? 'Gagal');
@@ -416,6 +519,7 @@ class CreateAccountController extends Controller
             'bankData' => $bankData,
             'isUpdate' => !empty($bankData),
             'step' => StepRedirectService::stepNumber($step),
+            'totalStep' => StepRedirectService::totalStep(),
             'hideBack' => StepRedirectService::hideBack()
         ]);
     }
@@ -470,7 +574,9 @@ class CreateAccountController extends Controller
                     'bankData' => $bankData,
                     'registrationStep' => $result['registrationStep']
                 ]);
-                return redirect()->route('data.signature')->with('success', $result['message'] ?? 'Berhasil');
+                $nextStep = StepRedirectService::nextStep('financialInformation');
+
+                return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
             }
 
             return back()->with('error', $result['message'] ?? 'Gagal');
@@ -490,6 +596,7 @@ class CreateAccountController extends Controller
 
         return view('data-signature', [
             'step' => StepRedirectService::stepNumber($step),
+            'totalStep' => StepRedirectService::totalStep(),
             'hideBack' => StepRedirectService::hideBack()
         ]);
     }
@@ -532,18 +639,12 @@ class CreateAccountController extends Controller
                 session([
                     'registrationStep' => $result['registrationStep']
                 ]);
-
                 return redirect()->route('data.signature')->with('success', $result['message'] ?? 'Berhasil');
             }
 
             return back()->with('error', $result['message'] ?? 'Gagal');
 
         } catch (\Throwable $e) {
-
-            \Log::error('Upload Signature ERROR', [
-                'message' => $e->getMessage()
-            ]);
-
             return back()->with('error', $e->getMessage());
         }
     }
