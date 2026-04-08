@@ -7,7 +7,7 @@
     <div class="container text-start">
         @include('components.step-header', [
             'step' => $step,
-            'hideBack' => true
+            'hideBack' => $hideBack
         ])
         <div class="mb-5">
             <h3 class="head-lanjut text-white text-center mb-2">Spesimen Tanda Tangan</h3>

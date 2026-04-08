@@ -335,6 +335,25 @@ class CreateAccountController extends Controller
         }
     }
 
+    public function showRelation()
+    {
+        if (!session()->has('registrationId')) {
+            return redirect()->route('email');
+        }
+
+        $this->getRegistration();
+
+        $step = session('registrationStep');
+        $relationData = session('relationData', []);
+
+        return view('data-relation', [
+            'isUpdate' => !empty($relationData),
+            'step' => StepRedirectService::stepNumber($step),
+            'totalStep' => StepRedirectService::totalStep(),
+            'hideBack' => StepRedirectService::hideBack()
+        ]);
+    }
+
     public function showEmployment()
     {
         if (!session()->has('registrationId')) {

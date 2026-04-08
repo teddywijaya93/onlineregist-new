@@ -12,79 +12,115 @@ class StepRedirectService
         'personalInformation'   => 'data.personal',
         'financialProfile'      => 'data.penghasilan',
         'employmentInformation' => 'data.pekerjaan',
-        'relation'              => 'data.referensi.perseorangan',
-        'bankInformation'       => 'data.bank',
+        'universityInformation' => 'data.universitas',
+        'relation'              => 'data.relation',
+        'financialInformation'  => 'data.bank',
+        'uploadSignature'       => 'data.signature',
     ];
 
-    public const STEP_NUMBER = [
-        'createPin'             => 1,
-        'accountType'           => 1,
-        'uploadKtp'             => 2,
-        'uploadSelfie'          => 2,
-        'personalInformation'   => 3,
-        'financialProfile'      => 4,
-        'employmentInformation' => 5,
-        'relation'              => 6,
-        'bankInformation'       => 7,
-    ];
-
-    public static function guardStep(): ?string
+    // FLOW DINAMIS
+    public static function getFlow(): array
     {
-        $sessionStep = session('registrationStep');
+        $employmentData = session('financialData') ?? [];
+        $employmentType = $employmentData['employmentType'] ?? null;
 
-        // kalau belum ada step → balik ke awal
-        if (!$sessionStep) {
-            return route('verifikasi.ktp');
+        $flow = [
+            'createPin',
+            'accountType',
+            'uploadKtp',
+            'uploadSelfie',
+            'personalInformation',
+            'financialProfile',
+        ];
+
+        if (str_contains(strtolower($employmentType), 'mahasiswa')) {
+            // Mahasiswa
+            $flow[] = 'universityInformation';
+            $flow[] = 'relation';
+
+        } elseif (
+            str_contains(strtolower($employmentType), 'pensiun') ||
+            str_contains(strtolower($employmentType), 'irt')
+        ) {
+            // IRT & Pensiunan
+            $flow[] = 'relation';
+
+        } else {
+            // Default
+            $flow[] = 'employmentInformation';
         }
-        $currentRouteName = request()->route()->getName();
 
-        // cari step dari route sekarang
-        $currentStep = array_search($currentRouteName, self::STEP_ROUTE);
+        $flow[] = 'financialInformation';
+        $flow[] = 'uploadSignature';
 
-        if (!$currentStep) {
-            return null;
-        }
-
-        $sessionIndex = self::STEP_NUMBER[$sessionStep] ?? 0;
-        $currentIndex = self::STEP_NUMBER[$currentStep] ?? 0;
-
-        // kalau user di step LEBIH DEPAN → jangan tarik mundur
-        if ($currentIndex <= $sessionIndex) {
-            return null;
-        }
-
-        // kalau user lompat step → redirect ke step seharusnya
-        return route(self::STEP_ROUTE[$sessionStep]);
+        return $flow;
     }
 
+    // NEXT STEP
+    public static function nextStep(string $currentStep): ?string
+    {
+        $flow  = self::getFlow();
+        $index = array_search($currentStep, $flow);
+
+        return $flow[$index + 1] ?? null;
+    }
+
+    // STEP NUMBER (UI)
+    public static function stepNumber(?string $step): int
+    {
+        $flow  = self::getFlow();
+        $index = array_search($step, $flow);
+
+        return $index !== false ? $index + 1 : 1;
+    }
+
+    public static function totalStep(): int
+    {
+        return count(self::getFlow());
+    }
+
+    // ROUTE HELPER
     public static function routeByStep(?string $step): string
     {
         if (!$step || !isset(self::STEP_ROUTE[$step])) {
             return route('verifikasi.ktp');
         }
+
         return route(self::STEP_ROUTE[$step]);
     }
 
-    public static function nextStep(string $currentStep): ?string
+    // PROCESS TYPE
+    public static function getProcessType(string $targetStep): string
     {
-        $keys = array_keys(self::STEP_ROUTE);
-        $index = array_search($currentStep, $keys);
+        $sessionStep = session('registrationStep');
+        $flow = self::getFlow();
 
-        return $keys[$index + 1] ?? null;
-    }
+        $sessionIndex = array_search($sessionStep, $flow);
+        $targetIndex  = array_search($targetStep, $flow);
 
-    public static function stepNumber(?string $step): int
-    {
-        return self::STEP_NUMBER[$step] ?? 1;
+        return $sessionIndex >= $targetIndex ? 'UPDATE' : 'CREATE';
     }
 
     public static function hideBack(): bool
     {
         $step = session('registrationStep');
+
         return in_array($step, [
+            'createPin',
+            'accountType',
             'uploadKtp',
             'uploadSelfie',
-            'personalInformation'
         ]);
+    }
+
+    public static function prevStep(string $currentStep): ?string
+    {
+        $flow  = self::getFlow();
+        $index = array_search($currentStep, $flow);
+
+        if ($index === false || $index === 0) {
+            return null;
+        }
+        return $flow[$index - 1];
     }
 }

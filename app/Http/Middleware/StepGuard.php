@@ -14,24 +14,23 @@ class StepGuard
         if (!$sessionStep) {
             return redirect()->route('email');
         }
-
+        $currentRoute = $request->route()->getName();
+        $flow = StepRedirectService::getFlow();
         $currentStep = array_search(
-            $request->route()->getName(),
+            $currentRoute,
             StepRedirectService::STEP_ROUTE
         );
 
-        $allowedSteps = array_keys(StepRedirectService::STEP_ROUTE);
-        $sessionIndex = array_search($sessionStep, $allowedSteps);
-        $currentIndex = array_search($currentStep, $allowedSteps);
-
-        // Kalau user lompat ke step setelah sessionStep
-        if ($currentIndex > $sessionIndex) {
-            return redirect(
-                StepRedirectService::routeByStep($sessionStep)
-            );
+        if ($currentStep === false) {
+            return $next($request);
         }
+        $sessionIndex = array_search($sessionStep, $flow);
+        $currentIndex = array_search($currentStep, $flow);
 
-        // Kalau kembali ke step sebelumnya, izinkan
+        // Block hanya kalau lompat ke depan
+        if ($currentIndex > $sessionIndex) {
+            return redirect()->route(StepRedirectService::STEP_ROUTE[$sessionStep]);
+        }
         return $next($request);
     }
 }
