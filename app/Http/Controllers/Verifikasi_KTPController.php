@@ -112,10 +112,11 @@ class Verifikasi_KTPController extends Controller
             // 8. SIMPAN FILE LOKAL
             $hash = md5($imageBase64);
             $namaFile = 'KTP_' . $hash . '.jpg';
-            Storage::disk('public')->put(
-                'ktp/' . $namaFile,
-                base64_decode($imageBase64)
-            );
+
+            // Storage::disk('public')->put(
+            //     'ktp/' . $namaFile,
+            //     base64_decode($imageBase64)
+            // );
 
             // 9. UPLOAD KE API PROFITS
             $response = Http::withHeaders([

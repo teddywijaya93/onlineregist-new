@@ -118,16 +118,16 @@ class CreateAccountController extends Controller
         $data = array_merge($ocrData, $personalData);
 
         // Change maritalStatus from OCR to API
-        if (!empty($personalData['maritalStatus'])) {
-            $map = [
-                'KAWIN' => 'Menikah',
-                'BELUM KAWIN' => 'Belum Menikah',
-                'CERAI' => 'Janda',
-            ];
+        // if (!empty($personalData['maritalStatus'])) {
+        //     $map = [
+        //         'KAWIN' => 'Menikah',
+        //         'BELUM KAWIN' => 'Belum Menikah',
+        //         'CERAI' => 'Janda',
+        //     ];
 
-            $key = strtoupper($personalData['maritalStatus']);
-            $personalData['maritalStatus'] = $map[$key] ?? $personalData['maritalStatus'];
-        }
+        //     $key = strtoupper($personalData['maritalStatus']);
+        //     $personalData['maritalStatus'] = $map[$key] ?? $personalData['maritalStatus'];
+        // }
 
         // Change gender from OCR to API
         if (!empty($personalData['gender'])) {

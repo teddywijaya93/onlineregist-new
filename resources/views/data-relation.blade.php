@@ -39,12 +39,10 @@
                     <button type="button" class="btn btn-outline-primary form-global w-100" id="btnUploadKtp">Upload KTP</button>
                 </div>
 
-                 <!-- Preview -->
+                <!-- Preview -->
                 <div id="ktpPreviewWrapper" class="mt-3 d-none">
                     <img id="ktpPreview" style="width:100%; border-radius:8px;" />
-                    <button type="button" class="btn btn-sm btn-danger mt-2 w-100" id="removeKtp">
-                        Hapus
-                    </button>
+                    <button type="button" class="btn btn-sm btn-danger mt-2 w-100" id="removeKtp">Hapus</button>
                 </div>
             </div>
             <div class="form-group mb-4">
