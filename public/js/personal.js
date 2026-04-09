@@ -25,11 +25,8 @@ async function loadSelect(id, url, placeholder = "Pilih") {
             opt.value = value;
             opt.textContent = text;
 
-            // MATCH BY ID OR TEXT (OCR SAFE)
-            if (
-                String(value) === String(selected) ||
-                String(text).toLowerCase() === String(selected).toLowerCase()
-            ) {
+            // ✅ ONLY MATCH BY ID
+            if (String(value) === String(selected)) {
                 opt.selected = true;
             }
             select.appendChild(opt);

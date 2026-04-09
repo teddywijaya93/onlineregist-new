@@ -508,3 +508,9 @@ body{
     background:#EA5D5F !important;
     color:#FFF !important;
 }
+#removeKtp{
+    background:#EA5D5F;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 400;  
+}

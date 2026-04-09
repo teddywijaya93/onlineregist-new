@@ -12,3 +12,7 @@ function initInputFilters() {
         });
     });
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    initInputFilters();
+});

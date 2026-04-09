@@ -15,22 +15,23 @@
         </div>
         <form method="POST" action="{{ route('data.universitas.submit') }}">
             @csrf
+            <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Universitas</label>
-                <input type="text" name="employer" id="employer" class="form-control form-global" value="{{ old('employer', $universitasData['employer'] ?? '') }}">
+                <input type="text" name="employer" id="employer" class="form-control form-global alphabet-only" value="{{ old('employer', $universitasData['employer'] ?? '') }}" placeholder="Tulis Nama Universitas">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Universitas</label>
-                <textarea rows="3" name="officeAddress" id="officeAddress" class="form-control form-global" placeholder="Alamat Sesuai e-KTP Domisili">{{ old('officeAddress', $universitasData['officeAddress'] ?? '') }}</textarea>
+                <textarea rows="3" name="officeAddress" id="officeAddress" class="form-control form-global alphabet-only" placeholder="Masukan Alamat Universitas">{{ old('officeAddress', $universitasData['officeAddress'] ?? '') }}</textarea>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Lama Kuliah</label>
                 <div class="row">
                     <div class="col-6">
-                        <input type="text" name="employmentDurationYear" id="employmentDurationYear" value="{{ old('employmentDurationYear', $universitasData['employmentDurationYear'] ?? '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Tahun">
+                        <input type="text" name="employmentDurationYear" id="employmentDurationYear" class="form-control form-global numeric-only" value="{{ old('employmentDurationYear', $universitasData['employmentDurationYear'] ?? '') }}" maxlength="2" placeholder="Tahun">
                     </div>
                     <div class="col-6">
-                        <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" value="{{ old('employmentDurationMonth', $universitasData['employmentDurationMonth'] ?? '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Bulan">
+                        <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" class="form-control form-global numeric-only" value="{{ old('employmentDurationMonth', $universitasData['employmentDurationMonth'] ?? '') }}" maxlength="2" placeholder="Bulan">
                     </div>
                 </div>
             </div>

@@ -21,25 +21,25 @@
             <input type="hidden" name="religion" value="{{ old('religion', $data['religion'] ?? '') }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Sesuai e-KTP</label>
-                <input type="text" name="name" id="name" value="{{ old('name', $data['name'] ?? '') }}" class="form-control form-global" placeholder="Nama Sesuai e-KTP">
+                <input type="text" name="name" id="name" class="form-control form-global alphabet-only" value="{{ old('name', $data['name'] ?? '') }}" placeholder="Nama Sesuai e-KTP">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nomor e-KTP</label>
-                <input type="text" name="identificationNumber" id="identificationNumber" value="{{ old('identificationNumber', $data['identificationNumber'] ?? '') }}" class="form-control form-global numeric-only" inputmode="numeric" maxlength="16" placeholder="Nomor e-KTP">
+                <input type="text" name="identificationNumber" id="identificationNumber" class="form-control form-global numeric-only" value="{{ old('identificationNumber', $data['identificationNumber'] ?? '') }}" maxlength="16" placeholder="Nomor e-KTP">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Tanggal Lahir</label>
-                <input type="date" name="dateOfBirth" id="dateOfBirth" value="{{ old('dateOfBirth', $data['dateOfBirth'] ?? '') }}"  class="form-control form-global" placeholder="Tanggal Lahir">
+                <input type="date" name="dateOfBirth" id="dateOfBirth" class="form-control form-global alphabet-only" value="{{ old('dateOfBirth', $data['dateOfBirth'] ?? '') }}"placeholder="Tanggal Lahir">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Status Perkawinan</label>
-                <select name="maritalStatus" id="maritalSelect" class="form-control" data-selected="{{ old('maritalStatus', $data['maritalStatus'] ?? '') }}">
+                <select name="maritalStatus" id="maritalSelect" class="form-control form-global" data-selected="{{ $data['maritalStatus'] ?? '' }}">
                     <option value="">Pilih Status Perkawinan</option>
                 </select>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Gadis Ibu Kandung</label>
-                <input type="text" name="motherMaidenName" id="motherMaidenName" value="{{ old('motherMaidenName', $data['motherMaidenName'] ?? '') }}" class="form-control form-global alphabet-only"  placeholder="Nama Gadis Ibu Kandung">
+                <input type="text" name="motherMaidenName" id="motherMaidenName" class="form-control form-global alphabet-only" value="{{ old('motherMaidenName', $data['motherMaidenName'] ?? '') }}" placeholder="Nama Gadis Ibu Kandung">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Sesuai e-KTP</label>
@@ -50,13 +50,13 @@
                 <input type="hidden" name="city" id="citySelect" class="form-control form-global" readonly>
                 <input type="hidden" name="kecamatan" id="kecamatanSelect" class="form-control form-global" readonly>
                 <div class="custom-select-wrapper">
-                    <input type="text" name="kelurahan" id="kelurahanSearch" value="{{ old('kelurahan', $data['kelurahan'] ?? '') }}" class="form-control form-global" placeholder="Cari Kelurahan">
+                    <input type="text" name="kelurahan" id="kelurahanSearch" class="form-control form-global" value="{{ old('kelurahan', $data['kelurahan'] ?? '') }}" placeholder="Cari Kelurahan">
                     <div id="kelurahanDropdown" class="dropdown-list"></div>
                 </div>
             </div>
             <div class="form-group mb-4">  
                 <label class="form-label text-white text-form-global mb-2">Kode Pos</label>
-                <input type="text" name="postalCode" id="postalCode" value="{{ old('postalCode', $data['postalCode'] ?? '') }}" class="form-control form-global"  readonly>
+                <input type="text" name="postalCode" id="postalCode" class="form-control form-global" value="{{ old('postalCode', $data['postalCode'] ?? '') }}" readonly>
             </div>
             <!-- Checklist -->
             <div class="form-group mb-4">
@@ -73,13 +73,13 @@
                 <input type="hidden" name="residenceCity" id="residenceCity" class="form-control form-global" readonly>
                 <input type="hidden" name="residenceKecamatan" id="residenceKecamatan" class="form-control form-global" readonly>
                 <div class="custom-select-wrapper">
-                    <input type="text" name="residenceKelurahan" id="residenceKelurahan" value="{{ old('residenceKelurahan', $data['residenceKelurahan'] ?? '') }}" class="form-control form-global"  placeholder="Kelurahan Domisili">
+                    <input type="text" name="residenceKelurahan" id="residenceKelurahan" class="form-control form-global" value="{{ old('residenceKelurahan', $data['residenceKelurahan'] ?? '') }}" placeholder="Kelurahan Domisili">
                     <div id="residenceKelurahanDropdown" class="dropdown-list"></div>
                 </div>
             </div>
             <div class="form-group mb-4">  
                 <label class="form-label text-white text-form-global mb-2">Kode Pos Domisili</label>
-                <input type="text" name="residencePostalCode" id="residencePostalCode" value="{{ old('residencePostalCode', $data['residencePostalCode'] ?? '') }}" class="form-control form-global" placeholder="Kode Pos Domisili" readonly>
+                <input type="text" name="residencePostalCode" id="residencePostalCode" class="form-control form-global" value="{{ old('residencePostalCode', $data['residencePostalCode'] ?? '') }}" placeholder="Kode Pos Domisili" readonly>
             </div>
             <button type="submit" class="btn btn-primary btn-regist w-100">
                 {{ $isUpdate ? 'Ubah' : 'Lanjutkan' }}

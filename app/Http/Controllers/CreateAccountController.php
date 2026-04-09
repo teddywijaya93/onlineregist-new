@@ -135,7 +135,6 @@ class CreateAccountController extends Controller
                 'Pria' => '1',
                 'Wanita' => '2',
             ];
-
             $personalData['gender'] = $genderMap[$personalData['gender']] ?? $personalData['gender'];
         }
 
@@ -150,6 +149,17 @@ class CreateAccountController extends Controller
                 'Hindu' => '6',
             ];
             $personalData['religion'] = $religionMap[$personalData['religion']] ?? $personalData['religion'];
+        }
+
+        // Change marital from OCR to API
+        if (!empty($personalData['maritalStatus'])) {
+            $maritalMap = [
+                'Belum Menikah' => '1',
+                'Menikah' => '2',
+                'Janda' => '3',
+                'Duda' => '4',
+            ];
+            $personalData['maritalStatus'] = $maritalMap[$personalData['maritalStatus']] ?? $personalData['maritalStatus'];
         }
 
         // Format birthDate
@@ -267,6 +277,7 @@ class CreateAccountController extends Controller
             'financialData' => $financialData,
             'isUpdate' => !empty($financialData),
             'step' => StepRedirectService::stepNumber($step),
+            'totalStep' => StepRedirectService::totalStep(),
             'hideBack' => StepRedirectService::hideBack()
         ]);
     }
@@ -346,12 +357,102 @@ class CreateAccountController extends Controller
         $step = session('registrationStep');
         $relationData = session('relationData', []);
 
+        // gender
+        $genderMap = [
+            'Pria' => '1',
+            'Wanita' => '2',
+        ];
+
+        // marital
+        $maritalMap = [
+            'Menikah' => '1',
+            'Belum Menikah' => '2',
+            'Janda' => '3',
+            'Duda' => '4',
+        ];
+
+        // ambil dari session
+        $personalData = session('personalData', []);
+
+        $genderId = $genderMap[$personalData['gender'] ?? ''] ?? '';
+        $maritalId = $maritalMap[$personalData['maritalStatus'] ?? ''] ?? '';
+
         return view('data-relation', [
+            'relationData' => $relationData,
             'isUpdate' => !empty($relationData),
             'step' => StepRedirectService::stepNumber($step),
             'totalStep' => StepRedirectService::totalStep(),
-            'hideBack' => StepRedirectService::hideBack()
+            'hideBack' => StepRedirectService::hideBack(),
+            'genderId' => $genderId,
+            'maritalId' => $maritalId,
         ]);
+    }
+
+    public function saveRelation(Request $request)
+    {
+        if (!session()->has('registrationId')) {
+            return redirect()->route('email');
+        }
+
+        $relationData = $request->validate([
+            'beneficiaryName'               => 'required',
+            'beneficiaryRelation'           => 'required',
+            'beneficiaryEmploymentPosition' => 'required',
+            'beneficiaryOwnerBusinessLine'  => 'required',
+            'beneficiaryOwnerEmployerName'  => 'required',
+            'beneficiaryOwnerOfficeAddress' => 'required',
+            'beneficiaryKtpFileName'        => 'required',
+            'beneficiaryKtpImage'           => 'required',
+        ]);
+        // dd($relationData);
+        $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('relation')
+            ? 'UPDATE'
+            : 'CREATE';
+
+        $payload = [
+            "registrationId" => session('registrationId'),
+            "step"           => "relation",
+            "process"        => $processType,
+            "datas"          => $relationData
+        ];
+        \Log::info('Step Relation - Payload', $payload);
+
+        try {
+            $response = \Http::withHeaders([
+                'Accept'        => 'application/json',
+                'Content-Type'  => 'application/json',
+            ])
+            ->timeout(15)
+            ->connectTimeout(5)
+            ->retry(1, 200)
+            ->post(
+                'https://dev.profits.co.id:8283/registration/saveRegistration',
+                $payload
+            );
+            $result = $response->json();
+
+            \Log::info('Step Relation - API Response', $result);
+            if (!empty($result['status']) && $result['status'] === true) {
+
+                \Log::info('Step Relation - Success', [
+                    'registrationId' => session('registrationId'),
+                    'nextStep' => $result['registrationStep'] ?? null
+                ]);
+
+                session([
+                    'relationData' => $relationData,
+                    'registrationStep' => $result['registrationStep']
+                ]);
+                $nextStep = StepRedirectService::nextStep('relation');
+
+                return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
+            }
+
+            return back()->with('error', $result['message'] ?? 'Gagal');
+
+        } catch (\Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     public function showEmployment()
@@ -467,10 +568,10 @@ class CreateAccountController extends Controller
         }
 
         $universitasData = $request->validate([
-            'employer'                => 'nullable|string|max:255',
+            'employer'                => 'required|string|max:100',
             'employmentDurationYear'  => 'required|int',
             'employmentDurationMonth' => 'required|int',
-            'officeAddress'           => 'nullable|string',
+            'officeAddress'           => 'required|string|max:100',
         ]);
         // dd($universitasData);
         $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('universityInformation')
@@ -654,7 +755,6 @@ class CreateAccountController extends Controller
 
             \Log::info('Upload Signature', $result);
             if (!empty($result['status']) && $result['status'] === true) {
-
                 session([
                     'registrationStep' => $result['registrationStep']
                 ]);

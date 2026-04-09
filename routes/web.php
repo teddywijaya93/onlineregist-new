@@ -93,6 +93,7 @@ Route::middleware(['step.guard'])->group(function () {
     Route::post('/data-universitas/submit',[CreateAccountController::class, 'saveUniversitas'])->name('data.universitas.submit');
 
     Route::get('/data-relation', [CreateAccountController::class, 'showRelation'])->name('data.relation');
+    Route::post('/data-relation/submit',[CreateAccountController::class, 'saveRelation'])->name('data.relation.submit');
 
     // Step 4
     Route::get('/data-bank', [CreateAccountController::class, 'showBank'])->name('data.bank');
