@@ -29,10 +29,7 @@ body{
 }
 
 /* Register Blade */
-.register-title{
-    font-size: 20px;
-    font-weight: 600;
-}
+
 .start-text{
     font-size: 24px;
     font-weight: 600;
@@ -85,27 +82,6 @@ body{
     font-size: 14px;
     font-weight: 500;
 }
-.password-toggle{position: relative;}
-.password-toggle input{padding-right: 45px;}
-.password-toggle button{
-    position: absolute;
-    top: 50%;
-    right: 12px;
-    transform: translateY(-50%);
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    padding: 0;
-    display: flex;
-    align-items: center;
-}
-.password-toggle button svg{
-    width: 20px;
-    height: 20px;
-    stroke: #adb5bd;
-    transition: stroke 0.2s ease;
-}
-.password-toggle button:hover svg{stroke:#FFF;}
 .icon-regist{
     width: 72px;
     height: 72px;
@@ -140,59 +116,6 @@ body{
 }
 
 /* OTP */
-.otp-wrapper{
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
-}
-.otp-icon{
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: rgba(0,255,150,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-}
-.otp-icon i{
-    font-size: 28px;
-    color:#00FF9C;
-}
-.otp-title{
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 10px;
-}
-.otp-sub {
-    font-size: 14px;
-    opacity: 0.8;
-}
-.otp-number{
-    color:#3DA5FF;
-    font-weight: 600;
-}
-.otp-inputs{
-    display: flex;
-    gap: 12px;
-    margin: 30px 0;
-}
-.otp-inputs input{
-    width: 50px;
-    height: 60px;
-    text-align: center;
-    font-size: 22px;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.3);
-    background: transparent;
-    color:#FFF;
-    outline: none;
-}
-.otp-inputs input:focus{border-color:#3DA5FF;}
 .resend{
     font-size: 14px;
     margin-bottom: 30px;
@@ -201,22 +124,6 @@ body{
     color:#3DA5FF;
     text-decoration: none;
     font-weight: 600;
-}
-.btn-continue{
-    width: 100%;
-    max-width: 400px;
-    padding: 14px;
-    border-radius: 8px;
-    border: none;
-    font-weight: 600;
-    background: #ccc;
-    color:#666;
-    cursor: not-allowed;
-}
-.btn-continue.active{
-    background:#3DA5FF;
-    color:#FFF;
-    cursor: pointer;
 }
 
 /* Username Box */
@@ -248,8 +155,6 @@ body{
     color:#4DA3FF;
     cursor: pointer;
 }
-/* .d-none{display: none;} */
-.input-error{border: 1px solid#FF4D4F !important;}
 .input-eye{position: relative;}
 .eye-btn {
     position: absolute;
@@ -260,8 +165,6 @@ body{
     color:#AAA;
     font-size: 16px;
 }
-
-.pr-eye {padding-right: 40px;}
 
 /* PIN Trading */
 .pin-wrapper{
@@ -427,12 +330,6 @@ body{
 }
 
 /*  */
-.readonly-field{
-    background-color:#2B2F45;
-    opacity: 0.7;
-    pointer-events: none;
-    cursor: not-allowed;
-}
 .swal2-title{
     font-size: 22px;
     line-height: 32px;
@@ -513,4 +410,22 @@ body{
     padding: 12px;
     font-size: 14px;
     font-weight: 400;  
+}
+.sk-text{
+    font-size: 14px;
+    font-weight: 400;
+}
+.sk-desc{
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 120%;
+}
+.bdr-sk{
+    border:1px solid#202B41;
+    width: 100%;
+    margin: 20px 0;
+}
+.agreement-check{
+    font-size: 14px;
+    font-weight: 500;
 }

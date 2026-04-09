@@ -100,6 +100,7 @@ Route::middleware(['step.guard'])->group(function () {
     Route::post('/data-bank/submit',[CreateAccountController::class, 'saveBank'])->name('data.bank.submit');
 
     // Step 5
+    Route::view('/syarat-ketentuan', 'syarat-ketentuan')->name('syarat.ketentuan');
     Route::get('/data-signature', [CreateAccountController::class, 'showSignature'])->name('data.signature');
     Route::post('/data-signature/submit', [CreateAccountController::class, 'saveSignature'])->name('data.signature.submit');
 });

@@ -39,8 +39,8 @@ class StepRedirectService
             $flow[] = 'relation';
 
         } elseif (
-            str_contains(strtolower($employmentType), 'pensiun') ||
-            str_contains(strtolower($employmentType), 'irt')
+            str_contains(strtolower($employmentType), 'pensiunan') ||
+            str_contains(strtolower($employmentType), 'ibu rumah tangga')
         ) {
             // IRT & Pensiunan
             $flow[] = 'relation';
