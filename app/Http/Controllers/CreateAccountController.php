@@ -16,22 +16,36 @@ class CreateAccountController extends Controller
         $accountId = session('accountId');
         if (!$accountId) {
             return response()->json([
-                "status"=>false,
-                "message"=>"AccountId Kosong"
+                "status" => false,
+                "message" => "AccountId Kosong"
             ]);
         }
 
-        $response = Http::timeout(15)
+        try {
+            $response = Http::timeout(15)
             ->connectTimeout(5)
             ->retry(1, 200)
             ->post(
-            'https://dev.profits.co.id:8283/registration/createPin',
-            [
-                "accountId" => $accountId,
-                "pin" => $request->pin
-            ]
-        );
-        return $response->json();
+                'https://dev.profits.co.id:8283/registration/createPin',
+                [
+                    "accountId" => $accountId,
+                    "pin" => $request->pin
+                ]
+            );
+            $result = $response->json();
+
+            \Log::info('Create PIN - API Response', $result);
+            if (!empty($result['status']) && $result['status'] === true) {
+                session([
+                    'registrationStep' => $result['registrationStep']
+                ]);
+            }
+
+            return response()->json($result);
+
+        }  catch (\Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     public function createAccountType(Request $request)
@@ -40,21 +54,34 @@ class CreateAccountController extends Controller
         if (!$registrationId) {
             return response()->json([
                 "status" => false,
-                "message" => "registrationId Kosong"
+                "message" => "RegistrasiId Kosong"
             ]);
         }
-
-        $response = Http::timeout(15)
+        try {
+            $response = Http::timeout(15)
             ->connectTimeout(5)
             ->retry(1, 200)
             ->post(
-            'https://dev.profits.co.id:8283/registration/createAccountType',
-            [
-                "registrationId" => $registrationId,
-                "accountType" => $request->accountType
-            ]
-        );
-        return $response->json();
+                'https://dev.profits.co.id:8283/registration/createAccountType',
+                [
+                    "registrationId" => $registrationId,
+                    "accountType" => $request->accountType
+                ]
+            );
+            $result = $response->json();
+            
+            \Log::info('Account Type - API Response', $result);
+            if (!empty($result['status']) && $result['status'] === true) {
+                session([
+                    'registrationStep' => $result['registrationStep']
+                ]);
+            }
+
+            return response()->json($result);
+        
+        } catch (\Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 
     private function getRegistration()
@@ -240,12 +267,6 @@ class CreateAccountController extends Controller
 
             \Log::info('Step Personal Information - API Response', $result);
             if (!empty($result['status']) && $result['status'] === true) {
-
-                \Log::info('Step Personal Information - Success', [
-                    'registrationId' => session('registrationId'),
-                    'nextStep' => $result['registrationStep'] ?? null
-                ]);
-
                 session([
                     'personalData' => $personalData,
                     'registrationStep' => $result['registrationStep']
@@ -282,69 +303,63 @@ class CreateAccountController extends Controller
         ]);
     }
 
-    public function saveFinancial(Request $request)
-    {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
-        $financialData = $request->validate([
-            'employmentType'      => 'required|string',
-            'education'           => 'required|string',
-            'mainIncomeRange'     => 'required|string',
-            'primaryFundSources'  => 'required|string',
-            'investmentObjective' => 'required|string',
-        ]);
-        // dd($financialData);
-        $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('financialProfile')
-            ? 'UPDATE'
-            : 'CREATE';
-
-        $payload = [
-            "registrationId" => session('registrationId'),
-            "step"           => "financialProfile",
-            "process"        => $processType,
-            "datas"          => $financialData
-        ];
-        \Log::info('Step Financial Profile - Payload', $payload);
-
-        try {
-            $response = \Http::withHeaders([
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
-            ])
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/saveRegistration',
-                $payload
-            );
-            $result = $response->json();
-
-            \Log::info('Step Financial Profile - API Response', $result);
-            if (!empty($result['status']) && $result['status'] === true) {
-
-                \Log::info('Step Financial Profile - Success', [
-                    'registrationId' => session('registrationId'),
-                    'nextStep' => $result['registrationStep'] ?? null
-                ]);
-
-                session([
-                    'financialData' => $financialData,
-                    'registrationStep' => $result['registrationStep']
-                ]);
-                $nextStep = StepRedirectService::nextStep('financialProfile');
-
-                return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
+        public function saveFinancial(Request $request)
+        {
+            if (!session()->has('registrationId')) {
+                return redirect()->route('email');
             }
 
-            return back()->with('error', $result['message'] ?? 'Gagal');
+            $financialData = $request->validate([
+                'employmentType'      => 'required|string',
+                'education'           => 'required|string',
+                'mainIncomeRange'     => 'required|string',
+                'primaryFundSources'  => 'required|string',
+                'investmentObjective' => 'required|string',
+            ]);
+            // dd($financialData);
+            $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('financialProfile')
+                ? 'UPDATE'
+                : 'CREATE';
 
-        } catch (\Throwable $e) {
-            return back()->with('error', $e->getMessage());
+            $payload = [
+                "registrationId" => session('registrationId'),
+                "step"           => "financialProfile",
+                "process"        => $processType,
+                "datas"          => $financialData
+            ];
+            \Log::info('Step Financial Profile - Payload', $payload);
+
+            try {
+                $response = \Http::withHeaders([
+                    'Accept'        => 'application/json',
+                    'Content-Type'  => 'application/json',
+                ])
+                ->timeout(15)
+                ->connectTimeout(5)
+                ->retry(1, 200)
+                ->post(
+                    'https://dev.profits.co.id:8283/registration/saveRegistration',
+                    $payload
+                );
+                $result = $response->json();
+
+                \Log::info('Step Financial Profile - API Response', $result);
+                if (!empty($result['status']) && $result['status'] === true) {
+                    session([
+                        'financialData' => $financialData,
+                        'registrationStep' => $result['registrationStep']
+                    ]);
+                    $nextStep = StepRedirectService::nextStep('financialProfile');
+
+                    return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
+                }
+
+                return back()->with('error', $result['message'] ?? 'Gagal');
+
+            } catch (\Throwable $e) {
+                return back()->with('error', $e->getMessage());
+            }
         }
-    }
 
     public function showRelation()
     {
@@ -433,12 +448,6 @@ class CreateAccountController extends Controller
 
             \Log::info('Step Relation - API Response', $result);
             if (!empty($result['status']) && $result['status'] === true) {
-
-                \Log::info('Step Relation - Success', [
-                    'registrationId' => session('registrationId'),
-                    'nextStep' => $result['registrationStep'] ?? null
-                ]);
-
                 session([
                     'relationData' => $relationData,
                     'registrationStep' => $result['registrationStep']
@@ -519,12 +528,6 @@ class CreateAccountController extends Controller
 
             \Log::info('Step Employment Information - API Response', $result);
             if (!empty($result['status']) && $result['status'] === true) {
-
-                \Log::info('Step Employment Information - Success', [
-                    'registrationId' => session('registrationId'),
-                    'nextStep' => $result['registrationStep'] ?? null
-                ]);
-
                 session([
                     'employmentData' => $employmentData,
                     'registrationStep' => $result['registrationStep']
@@ -602,12 +605,6 @@ class CreateAccountController extends Controller
 
             \Log::info('Step University Information - API Response', $result);
             if (!empty($result['status']) && $result['status'] === true) {
-
-                \Log::info('Step University Information - Success', [
-                    'registrationId' => session('registrationId'),
-                    'nextStep' => $result['registrationStep'] ?? null
-                ]);
-
                 session([
                     'universitasData' => $universitasData,
                     'registrationStep' => $result['registrationStep']
@@ -634,6 +631,7 @@ class CreateAccountController extends Controller
 
         $step = session('registrationStep');
         $bankData = session('bankData', []);
+        // session()->forget('isAgreementApproved');
 
         return view('data-bank', [
             'bankData' => $bankData,
@@ -684,19 +682,13 @@ class CreateAccountController extends Controller
 
             \Log::info('Step Financial Information - API Response', $result);
             if (!empty($result['status']) && $result['status'] === true) {
-
-                \Log::info('Step Financial Information - Success', [
-                    'registrationId' => session('registrationId'),
-                    'nextStep' => $result['registrationStep'] ?? null
-                ]);
-
                 session([
                     'bankData' => $bankData,
                     'registrationStep' => $result['registrationStep']
                 ]);
                 $nextStep = StepRedirectService::nextStep('financialInformation');
 
-                return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
+                return redirect()->route('syarat.ketentuan')->with('success', $result['message'] ?? 'Berhasil');
             }
 
             return back()->with('error', $result['message'] ?? 'Gagal');
@@ -706,10 +698,24 @@ class CreateAccountController extends Controller
         }
     }
 
+    public function agreeAgreement()
+    {
+        session([
+            'isAgreementApproved' => true,
+            'signature_from' => 'bank'
+        ]);
+
+        return redirect()->route('data.signature');
+    }
+
     public function showSignature()
     {
         if (!session()->has('registrationId')) {
             return redirect()->route('email');
+        }
+
+        if (!session('isAgreementApproved')) {
+            return redirect()->route('syarat.ketentuan');
         }
 
         $step = session('registrationStep');
@@ -717,7 +723,8 @@ class CreateAccountController extends Controller
         return view('data-signature', [
             'step' => StepRedirectService::stepNumber($step),
             'totalStep' => StepRedirectService::totalStep(),
-            'hideBack' => StepRedirectService::hideBack()
+            'hideBack' => StepRedirectService::hideBack(),
+            'from' => session('signature_from')
         ]);
     }
 
@@ -758,7 +765,9 @@ class CreateAccountController extends Controller
                 session([
                     'registrationStep' => $result['registrationStep']
                 ]);
-                return redirect()->route('data.signature')->with('success', $result['message'] ?? 'Berhasil');
+                $nextStep = $result['registrationStep'] ?? null;
+
+                return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
             }
 
             return back()->with('error', $result['message'] ?? 'Gagal');

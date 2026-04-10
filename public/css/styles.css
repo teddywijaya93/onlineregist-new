@@ -9,7 +9,7 @@ body{
     align-items: center;
     justify-content: center;
 }
-.auth-wrapper .container{max-width: 520px;}
+.auth-wrapper .container{max-width: 580px;}
 .icons img{
     width: 40px;
     margin: 0 6px;
@@ -308,9 +308,9 @@ body{
     align-items: center;
     margin-bottom: 16px;
 }
-.step-back{
+.step-back, .step-callcenter{
     color:#FFF;
-    font-size: 22px;
+    font-size: 24px;
     text-decoration: none;
 }
 .step-text{
@@ -318,7 +318,7 @@ body{
     font-size: 14px;
     font-weight: 500;
 }
-.step-progress{
+/* .step-progress{
     width: 100%;
     height: 4px;
     background: rgba(255,255,255,0.15);
@@ -327,6 +327,20 @@ body{
     height: 4px;
     background:#3898FF;
     transition: width 0.3s ease;
+} */
+.step-progress {
+    display: flex;
+    gap: 6px;
+}
+.step-segment {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+.step-segment.active {
+    background: #4DA3FF; /* biru aktif */
 }
 
 /*  */
@@ -425,7 +439,7 @@ body{
     width: 100%;
     margin: 20px 0;
 }
-.agreement-check{
+.agreement-text{
     font-size: 14px;
     font-weight: 500;
 }
@@ -437,4 +451,10 @@ body{
     color:#EA5D5F;
     font-size: 14PX;
     margin-top: 4px;
+}
+.alert-bank{
+    background:#1c2a44;
+    border: 1px solid#E6D112;
+    border-radius: 8px;
+    padding: 12px;
 }

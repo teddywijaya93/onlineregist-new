@@ -39,9 +39,10 @@ class AuthController extends Controller
             $data = $response->json();
 
             session([
+                'accountId'          => $data['accountId'] ?? null,
                 'registrationStatus' => $data['registrationStatus'] ?? null,
                 'registrationStep'   => $data['registrationStep'] ?? null,
-                'registrationId'   => $data['registrationId'] ?? null,
+                'registrationId'     => $data['registrationId'] ?? null,
             ]);
 
             if (($data['registrationStatus'] ?? null) === 'NEW') {

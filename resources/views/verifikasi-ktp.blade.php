@@ -15,7 +15,7 @@
         <div class="icons mb-4"><img src="{{ asset('storage/ktp_images.png') }}" class="w-100"></div>
         <form method="POST" action="{{ route('verifikasi.ktp.process') }}" enctype="multipart/form-data">
             @csrf
-            <input type="file" name="ktp_image" accept="image/*" class="form-control mb-3" required>
+            <input type="file" name="ktp_image" accept="image/*" class="btn btn-outline-primary form-global w-100" required>
             <div class="mb-3">
                 <img id="previewImage" src="" alt="Preview KTP" style="width:100%; height:500px; object-fit:contain; background:#000; display:none;">
             </div>
@@ -25,25 +25,6 @@
 </section>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const message = @json(session('api_message'));
-    const status  = @json(session('api_status'));
-
-    if (message) {
-        let iconType = 'info';
-        if (status === true || status === 'true') {
-            iconType = 'success';
-        } else if (status === false || status === 'false') {
-            iconType = 'warning';
-        }
-        Swal.fire({
-            icon: iconType,
-            title: 'Informasi',
-            text: message,
-            confirmButtonColor: '#3085d6'
-        });
-    }
-});
 document.querySelector('input[name="ktp_image"]').addEventListener('change', function(e) {
     const file = e.target.files[0];
     const preview = document.getElementById('previewImage');

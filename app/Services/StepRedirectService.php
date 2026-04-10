@@ -5,8 +5,8 @@ namespace App\Services;
 class StepRedirectService
 {
     public const STEP_ROUTE = [
-        // 'createPin'             => 'create.pin',
-        // 'accountType'           => 'account.type',
+        'createPin'             => 'create.pin',
+        'accountType'           => 'account.type',
         'uploadKtp'             => 'verifikasi.ktp',
         'uploadSelfie'          => 'verifikasi.wajah',
         'personalInformation'   => 'data.personal',
@@ -25,8 +25,8 @@ class StepRedirectService
         $employmentType = $employmentData['employmentType'] ?? null;
 
         $flow = [
-            'createPin',
-            'accountType',
+            // 'createPin',
+            // 'accountType',
             'uploadKtp',
             'uploadSelfie',
             'personalInformation',

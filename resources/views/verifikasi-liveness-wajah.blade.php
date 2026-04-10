@@ -22,7 +22,7 @@
             <canvas id="canvas" class="d-none"></canvas>
 
             <!-- BUTTON -->
-            <button type="button" id="btnCamera" class="btn btn-secondary btn-regist w-100 mb-2">Aktifkan Kamera</button>
+            <button type="button" id="btnCamera" class="btn btn-primary btn-regist w-100 mb-2">Aktifkan Kamera</button>
             <button type="button" id="btnCapture" class="btn btn-primary btn-regist w-100 mb-2 d-none">Capture Foto</button>
 
             <!-- PREVIEW IMAGE -->
@@ -39,26 +39,6 @@
 </section>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const message = @json(session('api_message'));
-    const status  = @json(session('api_status'));
-
-    if (message) {
-        let iconType = 'info';
-        if (status === true || status === 'true') {
-            iconType = 'success';
-        } else if (status === false || status === 'false') {
-            iconType = 'warning';
-        }
-        Swal.fire({
-            icon: iconType,
-            title: 'Informasi',
-            text: message,
-            confirmButtonColor: '#3085d6'
-        });
-    }
-});
-
 const video      = document.getElementById('video');
 const canvas     = document.getElementById('canvas');
 const ctx        = canvas.getContext('2d');

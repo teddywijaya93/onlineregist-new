@@ -85,6 +85,7 @@ async function submitPin() {
         try {
             const res = await fetch("/create-pin", {
                 method: "POST",
+                credentials: "same-origin", 
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": token
