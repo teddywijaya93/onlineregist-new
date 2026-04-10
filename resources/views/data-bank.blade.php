@@ -30,6 +30,12 @@
                 <label class="form-label text-white text-form-global mb-2">Nomor Rekening</label>
                 <input type="text" name="bankAccountNumber" id="bankAccountNumber" value="{{ old('bankAccountNumber', $bankData['bankAccountNumber'] ?? '') }}" class="form-control form-global" placeholder="Tulis Nomor Rekening">
             </div>
+            <div class="alert alert-warning d-flex align-items-start gap-3 mb-5 alert-bank">
+                <div style="font-size:20px; color:#E6D112;"><i class="fa fa-circle-exclamation"></i></div>
+                <div style="font-size:12px; font-weight:500; letter-spacing:2%; color:#B3B9C4">
+                    Pastikan Nomor Rekening Bank yang Anda masukkan aktif dan valid, karena penarikan dana dari Rekening Efek hanya dapat ditujukan Rekening Bank Pribadi yang terdaftar.
+                </div>  
+            </div>
             <button type="submit" class="btn btn-primary btn-regist w-100">
                 {{ $isUpdate ? 'Ubah' : 'Lanjutkan' }}
             </button>

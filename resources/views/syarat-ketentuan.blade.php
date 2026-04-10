@@ -44,26 +44,21 @@
         <h4 class="sk-desc text-white mb-3">Pernyataan Kebenaran Identitas Pemilik Manfaat maupun sumber dana</h4>
         <div class="sk-text text-white mb-5">Nasabah dengan ini menyatakan bahwa identitas dan sumber dana dari Pemilik Manfaat telah sesuai dengan yang disampaikan.</div>
 
-        <form method="POST" action="{" id="">
+        <form method="POST" action="{{ route('syarat.ketentuan.agree') }}">
             @csrf
-            <div class="form-group mb-3 text-white">
-                <label><input type="checkbox" class="agreement-check">
-                    Saya memahami bahwa nasabah dilarang memberikan kuasa transaksi kepada pegawai PT Phintraco Sekuritas...
-                </label>
+            <div class="form-group mb-3 text-white d-flex align-items-start gap-2">
+                <input type="checkbox" class="agreement-check" style="margin-top:7px">
+                <span class="agreement-text">Saya memahami bahwa nasabah dilarang memberikan kuasa transaksi kepada pegawai PT Phintraco Sekuritas, sehingga dengan ini Saya menjamin bahwa Saya tidak akan memberi kuasa transaksi kepada pegawai PT Phintraco Sekuritas atas rekening efek Saya.</span>
             </div>
-            <div class="form-group mb-3 text-white">
-                <label><input type="checkbox" class="agreement-check">
-                    Saya memberikan persetujuan kepada PT Phintraco Sekuritas untuk memproses data pribadi saya...
-                </label>
+            <div class="form-group mb-3 text-white d-flex align-items-start gap-2">
+                <input type="checkbox" class="agreement-check" style="margin-top:7px">
+                <span class="agreement-text">Saya memberikan persetujuan kepada PT Phintraco Sekuritas untuk memproses data pribadi saya sesuai dengan ruang lingkup tujuan pemrosesan data.</span>
             </div>
-            <div class="form-group mb-4 text-white">
-                <label><input type="checkbox" class="agreement-check">
-                    Saya menyatakan telah membaca, memahami dan menyetujui syarat dan ketentuan...
-                </label>
+            <div class="form-group mb-4 text-white d-flex align-items-start gap-2">
+                <input type="checkbox" class="agreement-check" style="margin-top:7px">
+                <span class="agreement-text">Saya menyatakan telah membaca, memahami dan menyetujui syarat dan ketentuan dari PT Phintraco Sekuritas dan Bank RDN.</span>
             </div>
-            <button type="button" id="btnNext" class="btn btn-primary btn-regist w-100" disabled>
-                Setuju
-            </button>
+            <button type="submit" id="btnNext" class="btn btn-primary btn-regist w-100" disabled>Setuju</button>
         </form>
     </div>
 </section>
@@ -78,14 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.disabled = !allChecked;
     }
 
-    checks.forEach(c => {
-        c.addEventListener('change', validate);
-    });
-
-    // klik tombol → redirect
-    btn.addEventListener('click', function () {
-        window.location.href = "{{ route('data.signature') }}";
-    });
+    checks.forEach(c => c.addEventListener('change', validate));
 });
 </script>
 

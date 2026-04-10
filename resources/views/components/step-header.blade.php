@@ -13,12 +13,17 @@
     <div class="step-top">
         @if(!$hideBack && $prev)
         <a href="{{ route(\App\Services\StepRedirectService::STEP_ROUTE[$prev]) }}" class="step-back">
-            <i class="fa fa-angle-left"></i>
+            <i class="fa fa-arrow-left"></i>
         </a>
         @endif
-        <div class="step-text">Step {{ $stepNumber }} / {{ $totalStep }}</div>
+        <div class="step-callcenter text-end"><i class="fa fa-headset"></i></div>
     </div>
-    <div class="step-progress">
+    <!-- <div class="step-progress">
         <div class="step-progress-fill" style="width: {{ $progressPercent }}%"></div>
+    </div> -->
+    <div class="step-progress d-flex gap-2">
+        @for ($i = 1; $i <= $totalStep; $i++)
+        <div class="step-segment {{ $i <= $stepNumber ? 'active' : '' }}"></div>
+        @endfor
     </div>
 </div>

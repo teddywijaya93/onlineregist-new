@@ -101,6 +101,8 @@ Route::middleware(['step.guard'])->group(function () {
 
     // Step 5
     Route::view('/syarat-ketentuan', 'syarat-ketentuan')->name('syarat.ketentuan');
+    Route::post('/syarat-ketentuan/agree', [CreateAccountController::class, 'agreeAgreement'])->name('syarat.ketentuan.agree');
+
     Route::get('/data-signature', [CreateAccountController::class, 'showSignature'])->name('data.signature');
     Route::post('/data-signature/submit', [CreateAccountController::class, 'saveSignature'])->name('data.signature.submit');
 });
