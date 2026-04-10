@@ -13,7 +13,7 @@
             <h3 id="referenceTitle" class="head-lanjut text-white mb-2">Data Referensi</h3>
             <p class="desc-lanjut mb-0"></p>
         </div>
-        <form method="POST" action="{{ route('data.relation.submit') }}">
+        <form id="relationForm" method="POST" action="{{ route('data.relation.submit') }}">
             @csrf
             <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
             <input type="hidden" name="gender" id="gender" value="{{ $genderId }}">

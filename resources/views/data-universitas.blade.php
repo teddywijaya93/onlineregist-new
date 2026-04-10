@@ -13,7 +13,7 @@
             <h3 class="head-lanjut text-white mb-2">Data Unversitas</h3>
             <p class="desc-lanjut mb-0"></p>
         </div>
-        <form method="POST" action="{{ route('data.universitas.submit') }}">
+        <form id="universityForm" method="POST" action="{{ route('data.universitas.submit') }}">
             @csrf
             <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
             <div class="form-group mb-4">
@@ -42,11 +42,6 @@
     </div>
 </section>
 
-<script>
-window.routes = {
-    bank   : "{{ route('master.bank') }}",
-};
-</script>
-<script src="{{ asset('js/bank.js') }}"></script>
+<script src="{{ asset('js/university.js') }}"></script>
 
 @endsection

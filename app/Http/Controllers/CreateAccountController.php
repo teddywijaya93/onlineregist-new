@@ -197,19 +197,19 @@ class CreateAccountController extends Controller
 
         $personalData = $request->validate([
             'identificationNumber'  => 'required|digits:16',
-            'name'                  => 'required',
+            'name'                  => 'required|string',
             'dateOfBirth'           => 'required|date',
-            'birthLocation'         => 'required',
-            'religion'              => 'required',
-            'gender'                => 'required',
-            'maritalStatus'         => 'required',
-            'address'               => 'required',
-            'kelurahan'             => 'required',
-            'postalCode'            => 'required',
-            'residenceAddress'      => 'required',
-            'residenceKelurahan'    => 'required',
-            'residencePostalCode'   => 'required',
-            'motherMaidenName'      => 'required',
+            'birthLocation'         => 'required|string',
+            'religion'              => 'required|string',
+            'gender'                => 'required|string',
+            'maritalStatus'         => 'required|string',
+            'address'               => 'required|string|max:225',
+            'kelurahan'             => 'required|string',
+            'postalCode'            => 'required|string',
+            'residenceAddress'      => 'required|string|max:225',
+            'residenceKelurahan'    => 'required|string',
+            'residencePostalCode'   => 'required|string',
+            'motherMaidenName'      => 'required|string',
         ]);
         // dd($personalData);
         $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('personalInformation')
@@ -289,11 +289,11 @@ class CreateAccountController extends Controller
         }
 
         $financialData = $request->validate([
-            'employmentType'      => 'required',
-            'education'           => 'required',
-            'mainIncomeRange'     => 'required',
-            'primaryFundSources'  => 'required',
-            'investmentObjective' => 'required',
+            'employmentType'      => 'required|string',
+            'education'           => 'required|string',
+            'mainIncomeRange'     => 'required|string',
+            'primaryFundSources'  => 'required|string',
+            'investmentObjective' => 'required|string',
         ]);
         // dd($financialData);
         $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('financialProfile')
@@ -395,12 +395,12 @@ class CreateAccountController extends Controller
         }
 
         $relationData = $request->validate([
-            'beneficiaryName'               => 'required',
-            'beneficiaryRelation'           => 'required',
-            'beneficiaryEmploymentPosition' => 'required',
-            'beneficiaryOwnerBusinessLine'  => 'required',
-            'beneficiaryOwnerEmployerName'  => 'required',
-            'beneficiaryOwnerOfficeAddress' => 'required',
+            'beneficiaryName'               => 'required|string|max:100',
+            'beneficiaryRelation'           => 'required|string',
+            'beneficiaryEmploymentPosition' => 'required|string',
+            'beneficiaryOwnerBusinessLine'  => 'required|string',
+            'beneficiaryOwnerEmployerName'  => 'required|string',
+            'beneficiaryOwnerOfficeAddress' => 'required|string',
             'beneficiaryKtpFileName'        => 'required',
             'beneficiaryKtpImage'           => 'required',
         ]);
@@ -482,13 +482,13 @@ class CreateAccountController extends Controller
         }
 
         $employmentData = $request->validate([
-            'employer'                => 'nullable|string|max:255',
-            'employmentPosition'      => 'required',
-            'businessLine'            => 'required',
-            'employmentDurationYear'  => 'nullable|string',
-            'employmentDurationMonth' => 'nullable|string',
-            'officeAddress'           => 'nullable|string',
-            'officeTelephone'         => 'nullable|string|max:13',
+            'employer'                => 'required|string|max:100',
+            'employmentPosition'      => 'required|string',
+            'businessLine'            => 'required|string',
+            'employmentDurationYear'  => 'required|integer',
+            'employmentDurationMonth' => 'required|integer',
+            'officeAddress'           => 'required|string|max:100',
+            'officeTelephone'         => 'required|string|max:13',
         ]);
         // dd($employmentData);
         $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('employmentInformation')
@@ -569,8 +569,8 @@ class CreateAccountController extends Controller
 
         $universitasData = $request->validate([
             'employer'                => 'required|string|max:100',
-            'employmentDurationYear'  => 'required|int',
-            'employmentDurationMonth' => 'required|int',
+            'employmentDurationYear'  => 'required|integer',
+            'employmentDurationMonth' => 'required|integer',
             'officeAddress'           => 'required|string|max:100',
         ]);
         // dd($universitasData);
@@ -651,9 +651,9 @@ class CreateAccountController extends Controller
         }
 
         $bankData = $request->validate([
-            'bankName'          => 'required',
-            'bankAccountOwner'  => 'required',
-            'bankAccountNumber' => 'required',
+            'bankName'          => 'required|string',
+            'bankAccountOwner'  => 'required|string',
+            'bankAccountNumber' => 'required|string',
         ]);
         // dd($bankData);
         $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('financialInformation')

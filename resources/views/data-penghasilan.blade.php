@@ -13,7 +13,7 @@
             <h3 class="head-lanjut text-white mb-2">Profil Keuangan</h3>
             <p class="desc-lanjut mb-0"></p>
         </div>
-        <form method="POST" action="{{ route('data.penghasilan.submit') }}">
+        <form id="financialForm" method="POST" action="{{ route('data.penghasilan.submit') }}">
             @csrf
             <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
             <div class="form-group mb-4">

@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
+    initValidation();
+
     loadMasterDropdown(
         "incomeRangeSelect",
         window.routes.incomeRange,
@@ -75,4 +77,47 @@ function normalize(str) {
         .replace(/[\/,]/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
+}
+
+function initValidation() {
+    const form = document.getElementById("financialForm");
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        clearErrors();
+
+        let isValid = true;
+
+        isValid &= validateRequired("employmentSelect", "Pekerjaan Nasabah Wajib Diisi");
+        isValid &= validateRequired("educationSelect", "Pendidikan Terakhir Wajib Diisi");
+        isValid &= validateRequired("incomeRangeSelect", "Penghasilan Per Bulan Wajib Diisi");
+        isValid &= validateRequired("primaryFundSelect", "Sumber Dana Wajib Diisi");
+        isValid &= validateRequired("investmentObjectiveSelect", "Tujuan Investasi Wajib Diisi");
+
+        if (!isValid) {
+            scrollToFirstError();
+            return;
+        }
+
+        form.submit();
+    });
+
+    // realtime clear error
+    const fields = [
+        "employmentType",
+        "education",
+        "mainIncomeRange",
+        "primaryFundSources",
+        "investmentObjective",
+    ];
+
+    fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        el.addEventListener("input", () => clearFieldError(el));
+        el.addEventListener("change", () => clearFieldError(el));
+    });
 }

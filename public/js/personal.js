@@ -1,7 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
     await initSelects();
+
     initSameAddress();
     restrictMaritalByGender();
+    initValidation();
+
     document.getElementById("genderSelect")?.addEventListener("change", restrictMaritalByGender);
 });
 
@@ -111,4 +114,59 @@ function restrictMaritalByGender() {
             maritalSelect.value = "";
         }
     }
+}
+
+function initValidation() {
+    const form = document.getElementById("personalForm");
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        clearErrors();
+
+        let isValid = true;
+
+        isValid &= validateRequired("name", "Nama Lengkap Wajib Diisi");
+        isValid &= validateRequired("identificationNumber", "NIK Wajib Diisi");
+        isValid &= validateRequired("dateOfBirth", "Tanggal Lahir Wajib Diisi");
+        isValid &= validateRequired("maritalSelect", "Status Perkawinan Diisi");
+        isValid &= validateRequired("motherMaidenName", "Nama Gadis Ibu Kandung Wajib Diisi");
+        isValid &= validateRequired("address", "Alama Wajib Diisi");
+        isValid &= validateRequired("kelurahanSearch", "Kelurahan Wajib Diisi");
+        isValid &= validateRequired("postalCode", "Postal Kode Wajib Diisi");
+        isValid &= validateRequired("residenceAddress", "Residence Alamat Wajib Diisi");
+        isValid &= validateRequired("residenceKelurahan", "Residence Kelurahan Wajib Diisi");
+        isValid &= validateRequired("residencePostalCode", "Residence Postal Kode Wajib Diisi");
+
+        if (!isValid) {
+            scrollToFirstError();
+            return;
+        }
+
+        form.submit();
+    });
+
+    // realtime clear error
+    const fields = [
+        "name",
+        "identificationNumber",
+        "dateOfBirth",
+        "maritalStatus",
+        "motherMaidenName",
+        "address",
+        "kelurahan",
+        "postalCode",
+        "residenceAddress",
+        "residenceKelurahan",
+        "residencePostalCode"
+    ];
+
+    fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        el.addEventListener("input", () => clearFieldError(el));
+        el.addEventListener("change", () => clearFieldError(el));
+    });
 }

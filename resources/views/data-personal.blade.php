@@ -13,7 +13,7 @@
             <h3 class="head-lanjut text-white mb-2">Identitas Diri</h3>
             <p class="desc-lanjut mb-0">Data identitas diri diwajibkan oleh Otoritas Jasa Keuangan (OJK) dan dilindungi kerahasiaannya.</p>
         </div>
-        <form method="POST" action="{{ route('data.personal.submit') }}">
+        <form id="personalForm" method="POST" action="{{ route('data.personal.submit') }}">
             @csrf
             <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
             <input type="hidden" name="birthLocation" value="{{ old('birthLocation', $data['birthLocation'] ?? '') }}">

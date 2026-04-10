@@ -429,3 +429,12 @@ body{
     font-size: 14px;
     font-weight: 500;
 }
+/*  */
+.input-error{
+    border: 1px solid#EA5D5F !important;
+}
+.error-text{
+    color:#EA5D5F;
+    font-size: 14PX;
+    margin-top: 4px;
+}

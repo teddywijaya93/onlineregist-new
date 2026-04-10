@@ -2,15 +2,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     let employmentType = document.getElementById("employmentType")?.value;
 
     if (!employmentType) return;
-
     const employmentId = await getEmploymentId(employmentType);
-
-    console.log("Employment ID:", employmentId);
 
     if (!employmentId) return;
 
     loadBusinessline(employmentId);
     loadPosition(employmentId);
+    initValidation();
 });
 
 async function getEmploymentId(text) {
@@ -102,4 +100,51 @@ function loadPosition(employmentId) {
             });
         })
         .catch(err => console.error('Position Error:', err));
+}
+
+function initValidation() {
+    const form = document.getElementById("employmentForm");
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        clearErrors();
+
+        let isValid = true;
+
+        isValid &= validateRequired("employer", "Nama Perusahaan/Tempat Bekerja Wajib Diisi");
+        isValid &= validateRequired("businesslineSelect", "Bidang Usaha Wajib Diisi");
+        isValid &= validateRequired("positionSelect", "Jabatan Wajib Diisi");
+        isValid &= validateRequired("officeAddress", "Alamat Perusahaan Wajib Diisi");
+        isValid &= validateRequired("officeTelephone", "Telepon Kantor Wajib Diisi");
+        isValid &= validateRequired("employmentDurationYear", "Tahun Bekerja Wajib Diisi");
+        isValid &= validateRequired("employmentDurationMonth", "Bulan Bekerja Wajib Diisi");
+
+        if (!isValid) {
+            scrollToFirstError();
+            return;
+        }
+
+        form.submit();
+    });
+
+    // realtime clear error
+    const fields = [
+        "employer",
+        "businessLine",
+        "employmentPosition",
+        "officeAddress",
+        "officeTelephone",
+        "employmentDurationYear",
+        "employmentDurationMonth",
+    ];
+
+    fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        el.addEventListener("input", () => clearFieldError(el));
+        el.addEventListener("change", () => clearFieldError(el));
+    });
 }

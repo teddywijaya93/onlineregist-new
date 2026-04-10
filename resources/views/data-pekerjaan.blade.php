@@ -13,7 +13,7 @@
             <h3 class="head-lanjut text-white mb-2">Data Pekerjaan</h3>
             <p class="desc-lanjut mb-0"></p>
         </div>
-        <form method="POST" action="{{ route('data.pekerjaan.submit') }}">
+        <form id="employmentForm" method="POST" action="{{ route('data.pekerjaan.submit') }}">
             @csrf
             <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
             <input type="hidden" name="employmentType" id="employmentType" value="{{ old('employmentType', session('financialData.employmentType')) }}">

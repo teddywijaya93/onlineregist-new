@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const bankSelect = document.getElementById("bankSelect");
+    initValidation();
 
+    const bankSelect = document.getElementById("bankSelect");
     fetch(window.routes.bank)
         .then(res => res.json())
         .then(res => {
@@ -20,3 +21,42 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 });
+
+function initValidation() {
+    const form = document.getElementById("bankForm");
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        clearErrors();
+
+        let isValid = true;
+
+        isValid &= validateRequired("bankSelect", "Bank Tujuan Penarikan Wajib Diisi");
+        isValid &= validateRequired("bankAccountOwner", "Nomor Pemilik Rekening Wajib Diisi");
+        isValid &= validateRequired("bankAccountNumber", "Nomor Rekening Wajib Diisi");
+
+        if (!isValid) {
+            scrollToFirstError();
+            return;
+        }
+
+        form.submit();
+    });
+
+    // realtime clear error
+    const fields = [
+        "bankName",
+        "bankAccountOwner",
+        "bankAccountNumber",
+    ];
+
+    fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        el.addEventListener("input", () => clearFieldError(el));
+        el.addEventListener("change", () => clearFieldError(el));
+    });
+}

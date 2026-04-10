@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
     initReferenceRelation();
     initKtpUpload();
+    initValidation();
 
     await loadEmployment();
-
     const employmentSelect = document.getElementById("employmentSelect");
 
     // 🔥 FORCE LOAD BUSINESSLINE SETELAH EMPLOYMENT KE-SET
@@ -229,5 +229,52 @@ function initKtpUpload() {
 
         imageInput.value = "";
         fileNameInput.value = "";
+    });
+}
+
+function initValidation() {
+    const form = document.getElementById("relationForm");
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        clearErrors();
+
+        let isValid = true;
+
+        isValid &= validateRequired("beneficiaryName", "Nama Referensi Perorangan Wajib Diisi");
+        isValid &= validateRequired("beneficiaryRelationSelect", "Hubungan dengan Nasabah Wajib Diisi");
+        isValid &= validateRequired("employmentSelect", "Pekerjaan Referensi Perorangan Wajib Diisi");
+        isValid &= validateRequired("businesslineSelect", "Bidang Usaha Referensi Perorangan Wajib Diisi");
+        isValid &= validateRequired("beneficiaryOwnerEmployerName", "Pekerjaan Referensi Perorangan Wajib Diisi");
+        isValid &= validateRequired("beneficiaryOwnerOfficeAddress", "Alamat Referensi Perorangan Wajib Diisi");
+        isValid &= validateRequired("beneficiaryKtpImage", "Upload KTP Referensi Perorangan Wajib Diisi");
+
+        if (!isValid) {
+            scrollToFirstError();
+            return;
+        }
+
+        form.submit();
+    });
+
+    // realtime clear error
+    const fields = [
+        "beneficiaryName",
+        "beneficiaryRelationSelect",
+        "employmentSelect",
+        "businesslineSelect",
+        "beneficiaryOwnerEmployerName",
+        "beneficiaryOwnerOfficeAddress",
+        "beneficiaryKtpImage"
+    ];
+
+    fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        el.addEventListener("input", () => clearFieldError(el));
+        el.addEventListener("change", () => clearFieldError(el));
     });
 }
