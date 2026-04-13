@@ -8,7 +8,7 @@
         <input type="hidden" id="email" value="{{ session('reg_phone') }}">
         <div class="text-start mb-4"><img class="icon-regist" src="{{ asset('storage/mobile.svg') }}"></div>
         <h3 class="text-white congrats-text text-start mb-2">Verifikasi Nomor Ponsel</h3>
-        <p class="silahkan-cek-text text-start mb-5">Masukkan 6 digit OTP yang dikirimkan melalui Whatsapp. {{ Str::mask(session('reg_phone'), '*', 3, 6) }}</p>
+        <p class="silahkan-cek-text text-start mb-5">Masukkan 6 digit OTP yang dikirimkan melalui Whatsapp. {{ Str::mask(session('reg_phone'), '*',5, 5) }}</p>
         <div class="d-flex gap-2 mb-4">
             @for ($i = 0; $i < 6; $i++)
                 <input type="text" maxlength="1" class="form-control text-center otp-box" style="width:50px;height:55px;font-size:20px;">

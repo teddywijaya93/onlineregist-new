@@ -41,13 +41,13 @@ class Verifikasi_KTPController extends Controller
 
             $file = $request->file('ktp_image');
             if (!$file->isValid()) {
-                return back()->with('api_message', 'File upload tidak valid');
+                return back()->with('error', 'File upload tidak valid');
             }
 
             // 3. CONVERT KE BASE64 (CLEAN)
             $binary = file_get_contents($file->getRealPath());
             if ($binary === false) {
-                return back()->with('api_message', 'Gagal membaca file');
+                return back()->with('error', 'Gagal membaca file');
             }
             $imageBase64 = base64_encode($binary);
             $imageBase64 = trim($imageBase64);
@@ -65,7 +65,7 @@ class Verifikasi_KTPController extends Controller
             );
 
             if ($auth->failed()) {
-                return back()->with('api_message', 'Auth Tilaka Gagal!');
+                return back()->with('error', 'Auth Tilaka Gagal!');
             }
             $accessToken = $auth->json('access_token');
 
@@ -83,7 +83,7 @@ class Verifikasi_KTPController extends Controller
             );
 
             if ($ocr->failed()) {
-                return back()->with('api_message', 'Foto Bukan KTP, Silahkan Upload Ulang');
+                return back()->with('error', 'Foto Bukan KTP, Silahkan Upload Ulang');
             }
             $ocrResult = $ocr->json();
             Log::info('OCR RESULT', [$ocrResult]);
@@ -98,10 +98,7 @@ class Verifikasi_KTPController extends Controller
             Log::info('IS KTP CHECK', [$isKtp, $data]);
 
             if (!$isKtp) {
-                return back()->with([
-                    'api_message' => 'Data KTP tidak terbaca dengan benar',
-                    'api_status'  => false
-                ]);
+                return back()->with('error', 'Data KTP tidak terbaca dengan benar');
             }
 
             // 7. SIMPAN KE SESSION
@@ -141,10 +138,7 @@ class Verifikasi_KTPController extends Controller
 
             // Log::info('UPLOAD RESPONSE', [$resultUpload]);
             if ($response->failed()) {
-                return back()->with([
-                    'api_message' => $resultUpload['message'] ?? 'Upload gagal',
-                    'api_status'  => false
-                ]);
+                return back()->with('error', $resultUpload['message'] ?? 'Upload gagal');
             }
 
             // 10. NEXT STEP
@@ -152,10 +146,11 @@ class Verifikasi_KTPController extends Controller
                 'registrationStep' => 'uploadSelfie'
             ]);
 
-            return redirect()->route('verifikasi.wajah')->with([
-                'api_message' => $resultUpload['message'] ?? 'Berhasil',
-                'api_status'  => $resultUpload['status'] ?? true
-            ]);
+            return redirect()->route('verifikasi.wajah')->with(
+                ($resultUpload['status'] ?? true)
+                    ? ['success' => $resultUpload['message'] ?? 'Berhasil']
+                    : ['error'   => $resultUpload['message'] ?? 'Gagal']
+            );
 
         } catch (\Throwable $e) {
             return back()->with('error', $e->getMessage());

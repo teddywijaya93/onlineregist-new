@@ -58,7 +58,7 @@ class Verifikasi_WajahController extends Controller
             );
 
             if ($auth->failed()) {
-                return back()->with('api_message', 'Auth Tilaka Gagal!');
+                return back()->with('error', 'Auth Tilaka Gagal!');
             }
             $accessToken = $auth->json('access_token');
 
@@ -80,10 +80,7 @@ class Verifikasi_WajahController extends Controller
             );
 
             if ($liveness->failed()) {
-                return back()->with([
-                    'api_message' => 'Liveness check gagal',
-                    'api_status'  => false
-                ]);
+            return back()->with('error', 'Liveness Check Gagal');
             }
             $livenessResult = $liveness->json();
             Log::info('LIVENESS RESULT', [$livenessResult]);
@@ -97,10 +94,7 @@ class Verifikasi_WajahController extends Controller
                 false;
 
             if (!$isLive) {
-                return back()->with([
-                    'api_message' => 'Wajah tidak valid / terdeteksi spoofing',
-                    'api_status'  => false
-                ]);
+                return back()->with('error', 'Wajah Tidak Valid / Terdeteksi Spoofing');
             }
 
             // 7. SIMPAN FILE LOKAL
@@ -129,10 +123,7 @@ class Verifikasi_WajahController extends Controller
             $resultUpload = $response->json();
 
             if ($response->failed()) {
-                return back()->with([
-                    'api_message' => $resultUpload['message'] ?? 'Upload gagal',
-                    'api_status'  => false
-                ]);
+                return back()->with('error', $resultUpload['message'] ?? 'Upload Gagal');
             }
 
             // 9. NEXT STEP
@@ -140,10 +131,10 @@ class Verifikasi_WajahController extends Controller
                 'registrationStep' => 'personalInformation'
             ]);
 
-            return redirect()->route('data.personal')->with([
-                'api_message' => $resultUpload['message'] ?? 'Berhasil',
-                'api_status'  => $resultUpload['status'] ?? true
-            ]);
+            if ($resultUpload['status'] ?? true) {
+                return redirect()->route('data.personal')->with('success', $resultUpload['message'] ?? 'Berhasil');
+            }
+            return redirect()->route('data.personal')->with('error', $resultUpload['message'] ?? 'Gagal');
 
         } catch (\Throwable $e) {
             return back()->with('error', $e->getMessage());

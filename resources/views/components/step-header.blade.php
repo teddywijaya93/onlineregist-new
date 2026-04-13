@@ -10,13 +10,13 @@
 @endphp
 
 <div class="step-header mb-5">
-    <div class="step-top">
+    <div class="step-top d-flex align-items-center">
         @if(!$hideBack && $prev)
         <a href="{{ route(\App\Services\StepRedirectService::STEP_ROUTE[$prev]) }}" class="step-back">
             <i class="fa fa-arrow-left"></i>
         </a>
         @endif
-        <div class="step-callcenter text-end"><i class="fa fa-headset"></i></div>
+        <div class="step-callcenter ms-auto"><i class="fa fa-headset"></i></div>
     </div>
     <!-- <div class="step-progress">
         <div class="step-progress-fill" style="width: {{ $progressPercent }}%"></div>
