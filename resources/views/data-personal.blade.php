@@ -29,7 +29,7 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Tanggal Lahir</label>
-                <input type="date" name="dateOfBirth" id="dateOfBirth" class="form-control form-global alphabet-only" value="{{ old('dateOfBirth', $data['dateOfBirth'] ?? '') }}"placeholder="Tanggal Lahir">
+                <input type="date" name="dateOfBirth" id="dateOfBirth" class="form-control form-global" value="{{ old('dateOfBirth', $data['dateOfBirth'] ?? '') }}" placeholder="Tanggal Lahir">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Status Perkawinan</label>

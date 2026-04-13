@@ -37,6 +37,7 @@ function loadMasterDropdown(selectId, url, placeholder) {
     if (!select) return;
 
     const selectedValue = select.dataset.selected || '';
+    const gender = document.querySelector('input[name="gender"]')?.value;
 
     fetch(url)
         .then(res => res.json())
@@ -48,6 +49,14 @@ function loadMasterDropdown(selectId, url, placeholder) {
             list.forEach(item => {
                 const value = String(item.id);
                 const text  = item.description || '';
+
+                if (selectId === "employmentSelect") {
+                    const isIRT = text.toLowerCase().includes("ibu rumah tangga");
+
+                    if (gender === "Pria" && isIRT) {
+                        return;
+                    }
+                }
 
                 const normSelected = normalize(selectedValue);
                 const normText     = normalize(text);

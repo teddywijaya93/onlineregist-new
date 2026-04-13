@@ -1,11 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
     await initSelects();
-
     initSameAddress();
-    restrictMaritalByGender();
     initValidation();
-
-    document.getElementById("genderSelect")?.addEventListener("change", restrictMaritalByGender);
+    restrictMaritalByGender();
 });
 
 async function loadSelect(id, url, placeholder = "Pilih") {
@@ -43,6 +40,7 @@ async function loadSelect(id, url, placeholder = "Pilih") {
 // INIT MASTER DROPDOWNS
 async function initSelects() {
     await loadSelect("maritalSelect", window.routes.marital, "Pilih Status Perkawinan");
+    restrictMaritalByGender();
 }
 
 function initSameAddress() {
@@ -89,31 +87,61 @@ function initSameAddress() {
 }
 
 function restrictMaritalByGender() {
-    const gender = document.getElementById("genderSelect")?.value;
+    const gender = document.querySelector('input[name="gender"]')?.value;
     const maritalSelect = document.getElementById("maritalSelect");
 
     if (!gender || !maritalSelect) return;
 
-    const jandaOption = maritalSelect.querySelector('option[value="3"]');
-    const dudaOption  = maritalSelect.querySelector('option[value="4"]');
-
-    if (gender === "1") { // PRIA
-        if (jandaOption) jandaOption.style.display = "none";
-
-        if (dudaOption)  dudaOption.style.display = "";
-
-        if (maritalSelect.value === "3") {
-            maritalSelect.value = "";
+    Array.from(maritalSelect.options).forEach(opt => {
+        opt.style.display = "";
+        // Pria & Duda -> Janda Hide
+        if (gender === "1" && opt.value === "3") {
+            opt.style.display = "none";
         }
-    } else if (gender === "2") { // WANITA
-        if (dudaOption)  dudaOption.style.display = "none";
-
-        if (jandaOption) jandaOption.style.display = "";
-
-        if (maritalSelect.value === "4") {
-            maritalSelect.value = "";
+        // Wanita & Janda -> Duda Hide
+        if (gender === "2" && opt.value === "4") {
+            opt.style.display = "none";
         }
+    });
+
+    if (
+        (gender === "1" && maritalSelect.value === "3") ||
+        (gender === "2" && maritalSelect.value === "4")
+    ) {
+        maritalSelect.value = "";
     }
+}
+
+function validateAge(id, message) {
+    const el = document.getElementById(id);
+    if (!el || !el.value) return true;
+
+    const parts = el.value.split("-");
+    const dob = new Date(parts[0], parts[1] - 1, parts[2]);
+    const today = new Date();
+
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+        age--;
+    }
+
+    if (age < 17) {
+        el.classList.add("is-invalid");
+
+        let error = el.parentElement.querySelector(".invalid-feedback");
+
+        if (!error) {
+            error = document.createElement("div");
+            error.className = "invalid-feedback";
+            el.parentElement.appendChild(error);
+        }
+        error.innerText = message;
+
+        return false;
+    }
+    return true;
 }
 
 function initValidation() {
@@ -130,6 +158,7 @@ function initValidation() {
         isValid &= validateRequired("name", "Nama Lengkap Wajib Diisi");
         isValid &= validateRequired("identificationNumber", "NIK Wajib Diisi");
         isValid &= validateRequired("dateOfBirth", "Tanggal Lahir Wajib Diisi");
+        isValid &= validateAge("dateOfBirth", " Umur Minimal 17 Tahun");
         isValid &= validateRequired("maritalSelect", "Status Perkawinan Diisi");
         isValid &= validateRequired("motherMaidenName", "Nama Gadis Ibu Kandung Wajib Diisi");
         isValid &= validateRequired("address", "Alama Wajib Diisi");

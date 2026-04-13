@@ -144,18 +144,6 @@ class CreateAccountController extends Controller
         $personalData = session('personalData', []);    
         $data = array_merge($ocrData, $personalData);
 
-        // Change maritalStatus from OCR to API
-        // if (!empty($personalData['maritalStatus'])) {
-        //     $map = [
-        //         'KAWIN' => 'Menikah',
-        //         'BELUM KAWIN' => 'Belum Menikah',
-        //         'CERAI' => 'Janda',
-        //     ];
-
-        //     $key = strtoupper($personalData['maritalStatus']);
-        //     $personalData['maritalStatus'] = $map[$key] ?? $personalData['maritalStatus'];
-        // }
-
         // Change gender from OCR to API
         if (!empty($personalData['gender'])) {
             $genderMap = [
@@ -181,8 +169,8 @@ class CreateAccountController extends Controller
         // Change marital from OCR to API
         if (!empty($personalData['maritalStatus'])) {
             $maritalMap = [
-                'Belum Menikah' => '1',
-                'Menikah' => '2',
+                'Menikah' => '1',
+                'Belum Menikah' => '2',
                 'Janda' => '3',
                 'Duda' => '4',
             ];
@@ -293,9 +281,13 @@ class CreateAccountController extends Controller
 
         $step = session('registrationStep');
         $financialData = session('financialData', []);
+        $personalData = session('personalData', []);
 
         return view('data-penghasilan', [
             'financialData' => $financialData,
+            'data' => [
+                'gender' => $personalData['gender'] ?? null
+            ],
             'isUpdate' => !empty($financialData),
             'step' => StepRedirectService::stepNumber($step),
             'totalStep' => StepRedirectService::totalStep(),
@@ -499,6 +491,8 @@ class CreateAccountController extends Controller
             'officeAddress'           => 'required|string|max:100',
             'officeTelephone'         => 'required|string|max:13',
         ]);
+        $employmentData['employmentDurationYear']  = (int) $employmentData['employmentDurationYear'];
+        $employmentData['employmentDurationMonth'] = (int) $employmentData['employmentDurationMonth'];
         // dd($employmentData);
         $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('employmentInformation')
             ? 'UPDATE'
@@ -576,6 +570,8 @@ class CreateAccountController extends Controller
             'employmentDurationMonth' => 'required|integer',
             'officeAddress'           => 'required|string|max:100',
         ]);
+        $universitasData['employmentDurationYear']  = (int) $universitasData['employmentDurationYear'];
+        $universitasData['employmentDurationMonth'] = (int) $universitasData['employmentDurationMonth'];
         // dd($universitasData);
         $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('universityInformation')
             ? 'UPDATE'
