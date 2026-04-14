@@ -61,11 +61,11 @@ Route::get('/get-registration-status', function () {
 
 Route::middleware(['step.guard'])->group(function () {
     // Create PIN
-    Route::view('/create-pin', 'create-pin')->name('create-pin');
+    Route::view('/create-pin', 'create-pin')->name('create.pin');
     Route::post('/create-pin', [CreateAccountController::class,'createPin']);
 
     // Account Type
-    Route::view('/account-type', 'account-type')->name('account-type');
+    Route::view('/account-type', 'account-type')->name('account.type');
     Route::post('/account-type',[CreateAccountController::class,'createAccountType']);
 
     // OCR

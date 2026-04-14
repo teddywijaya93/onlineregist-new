@@ -5,7 +5,7 @@ namespace App\Services;
 class StepRedirectService
 {
     public const STEP_ROUTE = [
-        'createPin'             => 'create.pin',
+        'createPIN'             => 'create.pin',
         'accountType'           => 'account.type',
         'uploadKtp'             => 'verifikasi.ktp',
         'uploadSelfie'          => 'verifikasi.wajah',
@@ -25,8 +25,8 @@ class StepRedirectService
         $employmentType = $employmentData['employmentType'] ?? null;
 
         $flow = [
-            // 'createPin',
-            // 'accountType',
+            'createPIN',
+            'accountType',
             'uploadKtp',
             'uploadSelfie',
             'personalInformation',
@@ -80,13 +80,15 @@ class StepRedirectService
     }
 
     // ROUTE HELPER
-    public static function routeByStep(?string $step): string
+    public static function routeByStep(?string $step): ?string
     {
-        if (!$step || !isset(self::STEP_ROUTE[$step])) {
-            return route('verifikasi.ktp');
+        if (!$step) {
+            return null;
         }
 
-        return route(self::STEP_ROUTE[$step]);
+        return isset(self::STEP_ROUTE[$step])
+            ? route(self::STEP_ROUTE[$step])
+            : null;
     }
 
     // PROCESS TYPE

@@ -3,8 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
         .querySelector('meta[name="csrf-token"]')
         ?.getAttribute("content");
     const path = window.location.pathname;
-
-    // Phone Validation
     const phone = document.getElementById("phone");
 
     if (phone) {
@@ -53,8 +51,18 @@ document.addEventListener("DOMContentLoaded", function () {
                         email: email
                     })
                 });
-
                 const checkData = await checkRes.json();
+
+                sessionStorage.setItem("registrationStatus", checkData.registrationStatus);
+                sessionStorage.setItem("registrationStep", checkData.registrationStep);
+
+                // jangan simpan null
+                if (checkData.redirect && checkData.redirect !== "null") {
+                    sessionStorage.setItem("redirect", checkData.redirect);
+                } else {
+                    sessionStorage.removeItem("redirect"); // bersihin kalau kosong
+                }
+
                 await Swal.fire({
                     icon: checkData.status ? "success" : "error",
                     title: checkData.message || "Response"
@@ -77,7 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         email: email
                     })
                 });
-
                 const otpData = await otpRes.json();
                 await Swal.fire({
                     icon: otpData.status ? "success" : "error",
@@ -199,14 +206,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
 
                     // cek status dari session backend
-                    const resStatus = await fetch("/get-registration-status");
-                    const statusData = await resStatus.json();
+                    const status   = sessionStorage.getItem("registrationStatus");
+                    const redirect = sessionStorage.getItem("redirect");
 
-                    // kalau NEW → langsung ke step terakhir
-                    if (statusData.registrationStatus === "NEW") {
-                        window.location.href = statusData.redirect;
+                    if (status === "NEW" && redirect && redirect !== "null") {
+                        window.location.href = redirect;
                     } else {
-                        // flow normal
                         window.location.href = "/mobile";
                     }
 
@@ -298,8 +303,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 ruleNoSymbol.style.color = "#999";
             }
 
-            if (val.length < 5) {
+            if (!(hasLetter && hasNumber && noSymbol && val.length >= 5)) {
                 errorText.innerText = "";
+                this.classList.remove("input-error");
+
+                // sembunyikan rekomendasi kalau ada
+                if (typeof suggestBox !== "undefined") {
+                    suggestBox.classList.add("d-none");
+                }
+
                 return;
             }
 
@@ -350,11 +362,16 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             counter.innerText = val.length + "/15";
 
-            if (val.length < 7) {
+            // VALIDASI RULE (WAJIB TAMBAH)
+            const hasLetter = /[a-zA-Z]/.test(val);
+            const hasNumber = /[0-9]/.test(val);
+            const noSymbol  = /^[a-zA-Z0-9]*$/.test(val);
+
+            // STOP kalau belum valid semua
+            if (!(hasLetter && hasNumber && noSymbol && val.length >= 5)) {
                 errorText.innerText = "";
                 this.classList.remove("input-error");
                 suggestBox.classList.add("d-none");
-
                 return;
             }
 
@@ -471,7 +488,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
                 return;
             }
-            const full = "08" + val;
+            const full = "+62" + val;
 
             try {
                 await fetch( "/save-phone",{
@@ -571,7 +588,14 @@ async function submitAccount() {
             });
 
             // lanjut step berikut
-            window.location.href = "/email";
+            // window.location.href = "/email";
+            const redirect = sessionStorage.getItem("redirect");
+
+            if (redirect && redirect !== "null") {
+                window.location.href = redirect;
+            } else {
+                window.location.href = "/create-pin";
+            }
 
         } else {
             Swal.fire({

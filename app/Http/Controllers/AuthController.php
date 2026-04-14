@@ -37,6 +37,14 @@ class AuthController extends Controller
                 ]);
             }
             $data = $response->json();
+            $data['redirect'] = null;
+
+            if (($data['registrationStatus'] ?? null) === 'NEW') {
+                $redirect = StepRedirectService::routeByStep($data['registrationStep']);
+                if ($redirect) {
+                    $data['redirect'] = $redirect;
+                }
+            }
 
             session([
                 'accountId'          => $data['accountId'] ?? null,
@@ -44,12 +52,6 @@ class AuthController extends Controller
                 'registrationStep'   => $data['registrationStep'] ?? null,
                 'registrationId'     => $data['registrationId'] ?? null,
             ]);
-
-            if (($data['registrationStatus'] ?? null) === 'NEW') {
-                $data['message'] = 'Silahkan lanjutkan pendaftaran<br/> Ke step anda yang terakhir';
-            } else {
-                $data['message'] = 'Email belum terdaftar<br/>Silahkan lanjutkan pendaftaran';
-            }
 
             return response()->json($data);
 
