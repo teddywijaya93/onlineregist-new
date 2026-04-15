@@ -429,9 +429,7 @@ class CreateAccountController extends Controller
         // dd($relationData);
         
         $currentStep = session('registrationStep');
-        $processType = $currentStep === 'relation'
-            ? 'CREATE'
-            : 'UPDATE';
+        $processType = 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
@@ -515,9 +513,7 @@ class CreateAccountController extends Controller
         // dd($employmentData);
 
         $currentStep = session('registrationStep');
-        $processType = $currentStep === 'employmentInformation'
-            ? 'CREATE'
-            : 'UPDATE';
+        $processType = 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
@@ -598,9 +594,7 @@ class CreateAccountController extends Controller
         // dd($universitasData);
 
         $currentStep = session('registrationStep');
-        $processType = $currentStep === 'universityInformation'
-            ? 'CREATE'
-            : 'UPDATE';
+        $processType = 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
@@ -678,9 +672,7 @@ class CreateAccountController extends Controller
         // dd($bankData);
 
         $currentStep = session('registrationStep');
-        $processType = $currentStep === 'financialInformation'
-            ? 'CREATE'
-            : 'UPDATE';
+        $processType = 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),

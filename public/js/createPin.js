@@ -2,6 +2,9 @@ let step = 1;
 let firstPin = "";
 
 document.addEventListener("DOMContentLoaded", () => {
+    const btnBack = document.getElementById("btnBack");
+    if (btnBack) btnBack.style.display = "none";
+
     const inputs = document.querySelectorAll(".pin-input");
     const btn = document.getElementById("btnPin");
 
@@ -11,8 +14,25 @@ document.addEventListener("DOMContentLoaded", () => {
             if (input.value.length === 1 && index < 5) {
                 inputs[index + 1].focus();
             }
+            input.classList.toggle("filled", input.value !== "");
             checkPin();
         });
+
+        // BACKSPACE
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Backspace") {
+                if (input.value === "" && index > 0) {
+                    inputs[index - 1].focus();
+                    
+                    // optional: sekalian hapus sebelumnya
+                    inputs[index - 1].value = "";
+                    inputs[index - 1].classList.remove("filled");
+                }
+            }
+        });
+
+        // DISABLED PASTE
+        input.addEventListener("paste", e => e.preventDefault());
     });
 
     function checkPin() {
@@ -31,7 +51,10 @@ function getPin() {
 
 function clearPin() {
     const inputs = document.querySelectorAll(".pin-input");
-    inputs.forEach(i => i.value = "");
+    inputs.forEach(i => {
+        i.value = "";
+        i.classList.remove("filled");
+    });
     inputs[0].focus();
 }
 
@@ -66,6 +89,7 @@ async function submitPin() {
 
         document.getElementById("titlePin").innerText ="Konfirmasi PIN Trading";
         document.getElementById("descPin").innerText ="Masukkan ulang 6 digit PIN Trading";
+        document.getElementById("btnBack").style.display = "inline-block";
 
         return;
     }

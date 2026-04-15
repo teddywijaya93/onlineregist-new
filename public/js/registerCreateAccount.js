@@ -122,9 +122,38 @@ document.addEventListener("DOMContentLoaded", function () {
         // AUTO MOVE
         otpInputs.forEach((input, index) => {
             input.addEventListener("input", function () {
-                if (this.value.length === 1 &&
-                    index < otpInputs.length - 1) {
+                this.value = this.value.replace(/\D/g, "");
+
+                if (this.value.length === 1 && index < otpInputs.length - 1) {
                     otpInputs[index + 1].focus();
+                }
+            });
+
+            // BACKSPACE
+            input.addEventListener("keydown", function (e) {
+                if (e.key === "Backspace") {
+                    if (this.value === "" && index > 0) {
+                        otpInputs[index - 1].focus();
+                        otpInputs[index - 1].value = "";
+                    }
+                }
+            });
+
+            // ENABLED PASTE
+            input.addEventListener("paste", function (e) {
+                e.preventDefault();
+
+                const pasteData = e.clipboardData.getData("text").replace(/\D/g, "");
+
+                if (!pasteData) return;
+                otpInputs.forEach((inp, i) => {
+                    inp.value = pasteData[i] || "";
+                });
+
+                // fokus ke terakhir yang keisi
+                const lastIndex = Math.min(pasteData.length, otpInputs.length) - 1;
+                if (lastIndex >= 0) {
+                    otpInputs[lastIndex].focus();
                 }
             });
         });
@@ -551,7 +580,7 @@ async function submitAccount() {
     const password = document.getElementById("password").value;
     const confirm = document.getElementById("confirmPassword").value;
 
-    // 🔥 VALIDASI USERNAME (INI YANG LO MAU)
+    // VALIDASI USERNAME
     const hasLetter = /[a-zA-Z]/.test(username);
     const hasNumber = /[0-9]/.test(username);
     const noSymbol  = /^[a-zA-Z0-9]*$/.test(username);

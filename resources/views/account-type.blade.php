@@ -16,20 +16,26 @@
                 <label class="customer-type-card">
                     <input type="radio" id="accountType" name="accountType" value="REGULAR">
                     <div class="product-content text-start text-white">
-                        <div class="rek-saham-type mb-3"><span class="icon">📈</span> Regular</div>
-                        <div class="rek-saham-txt mb-3">Fleksibel untuk Semua Transaksi Saham</div>
-                        <p class="rek-saham-desc mb-0">Gunakan Rekening Dana Nasabah reguler untuk bertransaksi saham dan produk pasar modal secara umum dan pilihan emiten yang lengkap.</p>
+                        <div class="rek-saham-type mb-3">
+                            <img src="{{ asset('storage/icon_reg.svg') }}" height="20">&nbsp;&nbsp;
+                            <span>Regular</span>
+                        </div>
+                        <div class="rek-saham-txt mb-3">Investasi di Pasar Modal Indonesia</div>
+                        <p class="rek-saham-desc mb-0">Investasi di seluruh produk Pasar Modal Indonesia menggunakan Profits Online Trading dengan layanan personal.</p>
                     </div>
                     <div class="radio-circle"></div>
                 </label>
 
                 <!-- SYARIAH -->
-                <label class="customer-type-card">
+                <label class="customer-type-card mb-5">
                     <input type="radio" id="accountType" name="accountType" value="SYARIAH">
                     <div class="product-content text-start text-white">
-                        <div class="rek-saham-type mb-3"><span class="icon">☪</span> Syariah</div>
+                        <div class="rek-saham-type mb-3">
+                            <img src="{{ asset('storage/icon_syariah.svg') }}" height="20">&nbsp;&nbsp;
+                            <span>Syariah</span>
+                        </div>
                         <div class="rek-saham-txt mb-3">Investasi Sesuai Prinsip Syariah</div>
-                        <p class="rek-saham-desc mb-0">Rekening Dana Nasabah berbasis syariah untuk transaksi saham yang masuk Daftar Efek Syariah (DES), bebas riba dan sesuai prinsip Islam.</p>
+                        <p class="rek-saham-desc mb-0">Investasi di Pasar Modal Syariah sesuai dengan Prinsip Syariah menggunakan Profits Online Trading yang telah tersertifikasi DSN-MUI.</p>
                     </div>
                     <div class="radio-circle"></div>
                 </label>
