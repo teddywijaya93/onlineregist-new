@@ -74,8 +74,8 @@ class Verifikasi_WajahController extends Controller
                     'is_quality'            => true,
                     'is_attribute'          => true,
                     'validate_quality'      => false,
-                    'validate_attribute'    => false,
-                    'validate_nface'        => false
+                    'validate_attribute'    => true,
+                    'validate_nface'        => true
                 ]
             );
 

@@ -546,10 +546,25 @@ async function submitAccount() {
         .querySelector('meta[name="csrf-token"]')
         ?.getAttribute("content");
 
-    const username = document.getElementById("username").value;
+    const usernameInput = document.getElementById("username");
+    const username = usernameInput.value;
     const password = document.getElementById("password").value;
     const confirm = document.getElementById("confirmPassword").value;
 
+    // 🔥 VALIDASI USERNAME (INI YANG LO MAU)
+    const hasLetter = /[a-zA-Z]/.test(username);
+    const hasNumber = /[0-9]/.test(username);
+    const noSymbol  = /^[a-zA-Z0-9]*$/.test(username);
+
+    if (!(hasLetter && hasNumber && noSymbol && username.length >= 5)) {
+        Swal.fire({
+            icon: "warning",
+            title: "Username belum memenuhi syarat"
+        });
+        return;
+    }
+
+    // VALIDASI BASIC
     if (!username || !password) {
         Swal.fire({
             icon: "warning",
@@ -587,10 +602,7 @@ async function submitAccount() {
                 title: "Account berhasil dibuat"
             });
 
-            // lanjut step berikut
-            // window.location.href = "/email";
             const redirect = sessionStorage.getItem("redirect");
-
             if (redirect && redirect !== "null") {
                 window.location.href = redirect;
             } else {

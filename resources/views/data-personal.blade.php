@@ -15,7 +15,7 @@
         </div>
         <form id="personalForm" method="POST" action="{{ route('data.personal.submit') }}">
             @csrf
-            <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
+            <!-- <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}"> -->
             <input type="hidden" name="birthLocation" value="{{ old('birthLocation', $data['birthLocation'] ?? '') }}">
             <input type="hidden" name="gender" value="{{ old('gender', $data['gender'] ?? '') }}">
             <input type="hidden" name="religion" value="{{ old('religion', $data['religion'] ?? '') }}">

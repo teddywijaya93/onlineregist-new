@@ -15,7 +15,7 @@
         </div>
         <form id="bankForm" method="POST" action="{{ route('data.bank.submit') }}">
             @csrf
-            <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
+            <!-- <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}"> -->
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Pemilik Rekening</label>
                 <input type="text" name="bankAccountOwner" id="bankAccountOwner" class="form-control form-global" value="{{ session('personalData.name') }}" readonly style="background:#42526D; border:unset;">

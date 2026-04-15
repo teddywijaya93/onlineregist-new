@@ -159,7 +159,7 @@ function initValidation() {
         isValid &= validateRequired("identificationNumber", "NIK Wajib Diisi");
         isValid &= validateRequired("dateOfBirth", "Tanggal Lahir Wajib Diisi");
         isValid &= validateAge("dateOfBirth", " Umur Minimal 17 Tahun");
-        isValid &= validateRequired("maritalSelect", "Status Perkawinan Diisi");
+        isValid &= validateRequired("maritalSelect", "Status Perkawinan Wajib Diisi");
         isValid &= validateRequired("motherMaidenName", "Nama Gadis Ibu Kandung Wajib Diisi");
         isValid &= validateRequired("address", "Alama Wajib Diisi");
         isValid &= validateRequired("kelurahanSearch", "Kelurahan Wajib Diisi");

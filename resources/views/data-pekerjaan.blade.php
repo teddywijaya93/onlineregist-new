@@ -15,7 +15,7 @@
         </div>
         <form id="employmentForm" method="POST" action="{{ route('data.pekerjaan.submit') }}">
             @csrf
-            <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
+            <!-- <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}"> -->
             <input type="hidden" name="employmentType" id="employmentType" value="{{ old('employmentType', session('financialData.employmentType')) }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Perusahaan/Tempat Bekerja</label>

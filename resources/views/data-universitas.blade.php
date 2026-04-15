@@ -15,7 +15,7 @@
         </div>
         <form id="universityForm" method="POST" action="{{ route('data.universitas.submit') }}">
             @csrf
-            <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
+            <!-- <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}"> -->
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Universitas</label>
                 <input type="text" name="employer" id="employer" class="form-control form-global alphabet-only" value="{{ old('employer', $universitasData['employer'] ?? '') }}" placeholder="Tulis Nama Universitas">

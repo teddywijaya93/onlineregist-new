@@ -112,6 +112,8 @@ class CreateAccountController extends Controller
                 'personalData'     => $result['personalInformation'] ?? [],
                 'financialData'    => $result['financialProfile'] ?? [],
                 'employmentData'   => $result['employmentInformation'] ?? [],
+                'universitasData'  => $result['universityInformation'] ?? [],
+                'relationData'     => $result['relation'] ?? [],
                 'bankData'         => $result['financialInformation'] ?? [],
             ]);
 
@@ -129,6 +131,7 @@ class CreateAccountController extends Controller
         $this->getRegistration();
 
         $step = session('registrationStep');
+        $personalData = session('personalData', []);    
         $ocr = session('ocr_result');
 
         if (!$ocr && $step === 'personalInformation') {
@@ -141,7 +144,6 @@ class CreateAccountController extends Controller
             : [];
         // dd($ocrData);
 
-        $personalData = session('personalData', []);    
         $data = array_merge($ocrData, $personalData);
 
         // Change gender from OCR to API
@@ -186,10 +188,12 @@ class CreateAccountController extends Controller
 
         // merge session override OCR
         $data = array_merge($ocrData, $personalData);
+        $currentStep = session('registrationStep');
+        $isUpdate = $currentStep !== 'personalInformation';
 
         return view('data-personal', [
             'data' => $data,
-            'isUpdate' => !empty($personalData),
+            'isUpdate' => $isUpdate,
             'step' => StepRedirectService::stepNumber($step),
             'totalStep' => StepRedirectService::totalStep(),
             'hideBack' => StepRedirectService::hideBack()
@@ -199,7 +203,7 @@ class CreateAccountController extends Controller
     public function savePersonal(Request $request)
     {
         if (!session()->has('registrationId')) {
-            return redirect()->route('verifikasi.ktp');
+            return redirect()->route('email');
         }
 
         if ($request->tanggalLahir) {
@@ -226,10 +230,16 @@ class CreateAccountController extends Controller
             'residencePostalCode'   => 'required|string',
             'motherMaidenName'      => 'required|string',
         ]);
+        $personalData['city'] = $request->city ?? '';
+        $personalData['residenceCity'] = $request->residenceCity ?? $personalData['city'];
+        $personalData['kecamatan'] = $request->kecamatan ?? '';
+        $personalData['residenceKecamatan'] = $request->residenceKecamatan ?? '';
+
         // dd($personalData);
-        $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('personalInformation')
-            ? 'UPDATE'
-            : 'CREATE';
+        $currentStep = session('registrationStep');
+        $processType = $currentStep === 'personalInformation'
+            ? 'CREATE'
+            : 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
@@ -282,76 +292,81 @@ class CreateAccountController extends Controller
         $step = session('registrationStep');
         $financialData = session('financialData', []);
         $personalData = session('personalData', []);
+        $currentStep = session('registrationStep');
+        $isUpdate = $currentStep !== 'financialProfile';
 
         return view('data-penghasilan', [
             'financialData' => $financialData,
+            'isUpdate' => $isUpdate,
+            'step' => StepRedirectService::stepNumber($step),
+            'totalStep' => StepRedirectService::totalStep(),
+            'hideBack' => StepRedirectService::hideBack(),
+
             'data' => [
                 'gender' => $personalData['gender'] ?? null
             ],
-            'isUpdate' => !empty($financialData),
-            'step' => StepRedirectService::stepNumber($step),
-            'totalStep' => StepRedirectService::totalStep(),
-            'hideBack' => StepRedirectService::hideBack()
         ]);
     }
 
-        public function saveFinancial(Request $request)
-        {
-            if (!session()->has('registrationId')) {
-                return redirect()->route('email');
-            }
-
-            $financialData = $request->validate([
-                'employmentType'      => 'required|string',
-                'education'           => 'required|string',
-                'mainIncomeRange'     => 'required|string',
-                'primaryFundSources'  => 'required|string',
-                'investmentObjective' => 'required|string',
-            ]);
-            // dd($financialData);
-            $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('financialProfile')
-                ? 'UPDATE'
-                : 'CREATE';
-
-            $payload = [
-                "registrationId" => session('registrationId'),
-                "step"           => "financialProfile",
-                "process"        => $processType,
-                "datas"          => $financialData
-            ];
-            \Log::info('Step Financial Profile - Payload', $payload);
-
-            try {
-                $response = \Http::withHeaders([
-                    'Accept'        => 'application/json',
-                    'Content-Type'  => 'application/json',
-                ])
-                ->timeout(15)
-                ->connectTimeout(5)
-                ->retry(1, 200)
-                ->post(
-                    'https://dev.profits.co.id:8283/registration/saveRegistration',
-                    $payload
-                );
-                $result = $response->json();
-
-                \Log::info('Step Financial Profile - API Response', $result);
-                if (!empty($result['status']) && $result['status'] === true) {
-                    session([
-                        'financialData' => $financialData,
-                        'registrationStep' => $result['registrationStep']
-                    ]);
-                    $nextStep = StepRedirectService::nextStep('financialProfile');
-
-                    return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
-                }
-
-                return back()->with('error', $result['message'] ?? 'Gagal');
-
-            } catch (\Throwable $e) {
-                return back()->with('error', $e->getMessage());
-            }
+    public function saveFinancial(Request $request)
+    {
+        if (!session()->has('registrationId')) {
+            return redirect()->route('email');
         }
+
+        $financialData = $request->validate([
+            'employmentType'      => 'required|string',
+            'education'           => 'required|string',
+            'mainIncomeRange'     => 'required|string',
+            'primaryFundSources'  => 'required|string',
+            'investmentObjective' => 'required|string',
+        ]);
+        // dd($financialData);
+
+        $currentStep = session('registrationStep');
+        $processType = $currentStep === 'financialProfile'
+            ? 'CREATE'
+            : 'UPDATE';
+
+        $payload = [
+            "registrationId" => session('registrationId'),
+            "step"           => "financialProfile",
+            "process"        => $processType,
+            "datas"          => $financialData
+        ];
+        \Log::info('Step Financial Profile - Payload', $payload);
+
+        try {
+            $response = \Http::withHeaders([
+                'Accept'        => 'application/json',
+                'Content-Type'  => 'application/json',
+            ])
+            ->timeout(15)
+            ->connectTimeout(5)
+            ->retry(1, 200)
+            ->post(
+                'https://dev.profits.co.id:8283/registration/saveRegistration',
+                $payload
+            );
+            $result = $response->json();
+
+            \Log::info('Step Financial Profile - API Response', $result);
+            if (!empty($result['status']) && $result['status'] === true) {
+                session([
+                    'financialData' => $financialData,
+                    'registrationStep' => $result['registrationStep']
+                ]);
+                $nextStep = StepRedirectService::nextStep('financialProfile');
+
+                return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
+            }
+
+            return back()->with('error', $result['message'] ?? 'Gagal');
+
+        } catch (\Throwable $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
 
     public function showRelation()
     {
@@ -363,6 +378,9 @@ class CreateAccountController extends Controller
 
         $step = session('registrationStep');
         $relationData = session('relationData', []);
+        $personalData = session('personalData', []);
+        $currentStep = session('registrationStep');
+        $isUpdate = $currentStep !== 'relation';
 
         // gender
         $genderMap = [
@@ -377,19 +395,16 @@ class CreateAccountController extends Controller
             'Janda' => '3',
             'Duda' => '4',
         ];
-
-        // ambil dari session
-        $personalData = session('personalData', []);
-
         $genderId = $genderMap[$personalData['gender'] ?? ''] ?? '';
         $maritalId = $maritalMap[$personalData['maritalStatus'] ?? ''] ?? '';
 
         return view('data-relation', [
             'relationData' => $relationData,
-            'isUpdate' => !empty($relationData),
+            'isUpdate' => $isUpdate,
             'step' => StepRedirectService::stepNumber($step),
             'totalStep' => StepRedirectService::totalStep(),
             'hideBack' => StepRedirectService::hideBack(),
+
             'genderId' => $genderId,
             'maritalId' => $maritalId,
         ]);
@@ -412,9 +427,11 @@ class CreateAccountController extends Controller
             'beneficiaryKtpImage'           => 'required',
         ]);
         // dd($relationData);
-        $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('relation')
-            ? 'UPDATE'
-            : 'CREATE';
+        
+        $currentStep = session('registrationStep');
+        $processType = $currentStep === 'relation'
+            ? 'CREATE'
+            : 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
@@ -466,10 +483,12 @@ class CreateAccountController extends Controller
 
         $step = session('registrationStep');
         $employmentData = session('employmentData', []);
+        $currentStep = session('registrationStep');
+        $isUpdate = $currentStep !== 'employmentInformation';
 
         return view('data-pekerjaan', [
             'employmentData' => $employmentData,
-            'isUpdate' => !empty($employmentData),
+            'isUpdate' => $isUpdate,
             'step' => StepRedirectService::stepNumber($step),
             'totalStep' => StepRedirectService::totalStep(),
             'hideBack' => StepRedirectService::hideBack()
@@ -494,9 +513,11 @@ class CreateAccountController extends Controller
         $employmentData['employmentDurationYear']  = (int) $employmentData['employmentDurationYear'];
         $employmentData['employmentDurationMonth'] = (int) $employmentData['employmentDurationMonth'];
         // dd($employmentData);
-        $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('employmentInformation')
-            ? 'UPDATE'
-            : 'CREATE';
+
+        $currentStep = session('registrationStep');
+        $processType = $currentStep === 'employmentInformation'
+            ? 'CREATE'
+            : 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
@@ -548,10 +569,12 @@ class CreateAccountController extends Controller
 
         $step = session('registrationStep');
         $universitasData = session('universitasData', []);
+        $currentStep = session('registrationStep');
+        $isUpdate = $currentStep !== 'universityInformation';
 
         return view('data-universitas', [
             'universitasData' => $universitasData,
-            'isUpdate' => !empty($universitasData),
+            'isUpdate' => $isUpdate,
             'step' => StepRedirectService::stepNumber($step),
             'totalStep' => StepRedirectService::totalStep(),
             'hideBack' => StepRedirectService::hideBack()
@@ -573,9 +596,11 @@ class CreateAccountController extends Controller
         $universitasData['employmentDurationYear']  = (int) $universitasData['employmentDurationYear'];
         $universitasData['employmentDurationMonth'] = (int) $universitasData['employmentDurationMonth'];
         // dd($universitasData);
-        $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('universityInformation')
-            ? 'UPDATE'
-            : 'CREATE';
+
+        $currentStep = session('registrationStep');
+        $processType = $currentStep === 'universityInformation'
+            ? 'CREATE'
+            : 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
@@ -627,11 +652,12 @@ class CreateAccountController extends Controller
 
         $step = session('registrationStep');
         $bankData = session('bankData', []);
-        // session()->forget('isAgreementApproved');
+        $currentStep = session('registrationStep');
+        $isUpdate = $currentStep !== 'financialInformation';
 
         return view('data-bank', [
             'bankData' => $bankData,
-            'isUpdate' => !empty($bankData),
+            'isUpdate' => $isUpdate,
             'step' => StepRedirectService::stepNumber($step),
             'totalStep' => StepRedirectService::totalStep(),
             'hideBack' => StepRedirectService::hideBack()
@@ -650,9 +676,11 @@ class CreateAccountController extends Controller
             'bankAccountNumber' => 'required|string',
         ]);
         // dd($bankData);
-        $processType = StepRedirectService::stepNumber(session('registrationStep')) >= StepRedirectService::stepNumber('financialInformation')
-            ? 'UPDATE'
-            : 'CREATE';
+
+        $currentStep = session('registrationStep');
+        $processType = $currentStep === 'financialInformation'
+            ? 'CREATE'
+            : 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),

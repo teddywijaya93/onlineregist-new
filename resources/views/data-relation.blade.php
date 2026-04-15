@@ -15,7 +15,7 @@
         </div>
         <form id="relationForm" method="POST" action="{{ route('data.relation.submit') }}">
             @csrf
-            <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
+            <!-- <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}"> -->
             <input type="hidden" name="gender" id="gender" value="{{ $genderId }}">
             <input type="hidden" name="maritalStatus" id="maritalStatus" value="{{ $maritalId }}">
             <div class="form-group mb-4">
