@@ -125,4 +125,80 @@ class StepRedirectService
         }
         return $flow[$index - 1];
     }
+
+    // Dashboard
+    public static function getGroupedFlow(): array
+    {
+        $flow = self::getFlow();
+        $groupMap = [
+            [
+                'key'   => 'account',
+                'steps' => ['createPIN', 'accountType'],
+                'label' => 'Pembuatan Akun Profits',
+            ],
+            [
+                'key'   => 'ktp',
+                'steps' => ['uploadKtp', 'uploadSelfie'],
+                'label' => 'Pengambilan Foto KTP dan Selfie',
+            ],
+            [
+                'key'   => 'personalInformation',
+                'steps' => ['personalInformation'],
+                'label' => 'Melengkapi Identitas Diri',
+            ],
+            [
+                'key'   => 'financialProfile',
+                'steps' => ['financialProfile'],
+                'label' => 'Melengkapi Profil Keuangan',
+            ],
+            [
+                'key'   => 'employmentInformation',
+                'steps' => ['employmentInformation'],
+                'label' => 'Melengkapi Data Pekerjaan',
+            ],
+            [
+                'key'   => 'universityInformation',
+                'steps' => ['universityInformation'],
+                'label' => 'Melengkapi Data Universitas',
+            ],
+            [
+                'key'   => 'relation',
+                'steps' => ['relation'],
+                'label' => 'Melengkapi Data Relasi',
+            ],
+            [
+                'key'   => 'financialInformation',
+                'steps' => ['financialInformation'],
+                'label' => 'Melengkapi Rekening Bank Pribadi',
+            ],
+            [
+                'key'   => 'uploadSignature',
+                'steps' => ['uploadSignature'],
+                'label' => 'Persetujuan Syarat dan Ketentuan',
+            ],
+        ];
+
+        $groups = [];
+        foreach ($groupMap as $group) {
+            $indexes = [];
+            foreach ($group['steps'] as $step) {
+                $i = array_search($step, $flow);
+                if ($i !== false) {
+                    $indexes[] = $i;
+                }
+            }
+
+            if (empty($indexes)) {
+                continue;
+            }
+
+            $groups[] = [
+                'label'     => $group['label'],
+                'minIndex'  => min($indexes),
+                'maxIndex'  => max($indexes),
+                'firstStep' => $flow[min($indexes)],
+            ];
+        }
+        return $groups;
+    }
 }

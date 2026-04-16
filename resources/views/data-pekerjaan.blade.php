@@ -35,7 +35,7 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Perusahaan</label>
-                <textarea rows="3" name="officeAddress" id="officeAddress" class="form-control form-global" placeholder="Alamat Sesuai e-KTP Domisili">{{ old('officeAddress', $employmentData['officeAddress'] ?? '') }}</textarea>
+                <textarea rows="3" name="officeAddress" id="officeAddress" class="form-control form-global" placeholder="Tulis Alamat Perusahaan">{{ old('officeAddress', $employmentData['officeAddress'] ?? '') }}</textarea>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Telepon Kantor</label>

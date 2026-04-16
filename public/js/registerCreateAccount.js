@@ -100,10 +100,6 @@ document.addEventListener("DOMContentLoaded", function () {
             } catch (err) {
                 console.error(err);
 
-                Swal.fire({
-                    icon: "error",
-                    title: "Terjadi kesalahan sistem"
-                });
             } finally {
                 btnNext.disabled = false;
             }
@@ -238,17 +234,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     const status   = sessionStorage.getItem("registrationStatus");
                     const redirect = sessionStorage.getItem("redirect");
 
-                    if (status === "NEW" && redirect && redirect !== "null") {
+                    if (status === "NEW") {
+                        window.location.href = "/dashboard";
+                        return;
+                    }
+
+                    if (redirect && redirect !== "null") {
                         window.location.href = redirect;
                     } else {
-                        window.location.href = "/mobile";
+                        window.location.href = "/dashboard";
                     }
 
                 } catch {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Internal Server Error"
-                    });
 
                 } finally {
                     btnNext.disabled = false;

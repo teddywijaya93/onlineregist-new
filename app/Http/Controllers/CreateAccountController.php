@@ -11,6 +11,15 @@ use App\Services\StepRedirectService;
 
 class CreateAccountController extends Controller
 {
+    public function index()
+    {
+        $flow = StepRedirectService::getFlow();
+        $groups = StepRedirectService::getGroupedFlow();
+        $currentStep = session('registrationStep');
+
+        return view('dashboard', compact('flow', 'groups', 'currentStep'));
+    }
+
     public function createPin(Request $request)
     {
         $accountId = session('accountId');

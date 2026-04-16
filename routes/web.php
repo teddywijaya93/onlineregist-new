@@ -51,15 +51,17 @@ Route::post('/verify-otp-mobile',[AuthController::class,'verifyOtpMobile']);
 Route::view('/create-account', 'create-account')->name('create-account');
 Route::post('/create-account', [AuthController::class, 'createAccount'])->name('create.account');
 
-Route::get('/get-registration-status', function () {
-    return response()->json([
-        'registrationStatus' => session('registrationStatus'),
-        'registrationStep'   => session('registrationStep'),
-        'redirect' => \App\Services\StepRedirectService::routeByStep(session('registrationStep'))
-    ]);
-});
+// Route::get('/get-registration-status', function () {
+//     return response()->json([
+//         'registrationStatus' => session('registrationStatus'),
+//         'registrationStep'   => session('registrationStep'),
+//         'redirect' => \App\Services\StepRedirectService::routeByStep(session('registrationStep'))
+//     ]);
+// });
 
 Route::middleware(['step.guard'])->group(function () {
+    Route::get('/dashboard', [CreateAccountController::class, 'index'])->name('dashboard');
+
     // Create PIN
     Route::view('/create-pin', 'create-pin')->name('create.pin');
     Route::post('/create-pin', [CreateAccountController::class,'createPin']);

@@ -29,7 +29,6 @@ body{
 }
 
 /* Register Blade */
-
 .start-text{
     font-size: 24px;
     font-weight: 600;
@@ -492,6 +491,7 @@ body{
     font-size: 14px;
     font-weight: 500;
 }
+
 /*  */
 .input-error{
     border: 1px solid#EA5D5F !important;
@@ -506,4 +506,43 @@ body{
     border: 1px solid#E6D112;
     border-radius: 8px;
     padding: 12px;
+}
+
+/*  */
+.step-box{
+    background: linear-gradient(194.04deg, #3898FF -293.37%, rgba(34, 91, 153, 0) 88.93%);
+    border: 1px solid #243757;
+    border-radius: 8px;
+    padding: 12px;
+}
+.circle{
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+.circle.done{
+    background:#17D98C;
+    color:#020617;
+    width: 40px;
+    height: 40px;
+}
+.circle.active{
+    background:#17D98C;
+    color:#020617;
+    width: 40px;
+    height: 40px;
+}
+.circle.inactive{
+    background:#B3B9C4;
+    color:#020617;
+    width: 40px;
+    height: 40px;
+}
+.text-step-dashboard{
+    font-size: 14px;
+    font-weight: 600;
 }

@@ -91,10 +91,6 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = "/next-step";
 
         } catch {
-            Swal.fire({
-                icon: "error",
-                title: "Internal Server Error"
-            });
 
         } finally {
             btnNext.disabled = false;
