@@ -128,23 +128,21 @@ class CreateAccountController extends Controller
             return redirect()->route('email');
         }
 
-        $this->getRegistration();
-
         $step = session('registrationStep');
-        $personalData = session('personalData', []);    
         $ocr = session('ocr_result');
 
         if (!$ocr && $step === 'personalInformation') {
             session(['registrationStep' => 'uploadKtp']);
             return redirect()->route('verifikasi.ktp')->with('error', 'Silakan upload ulang KTP');
         }
-        $raw = isset($ocr['result']) ? $ocr['result'] : $ocr;
-        $ocrData = $ocr
-            ? \App\Services\OcrNormalizer::normalize($raw)
+        $raw = $ocr['data'] ?? [];
+        $ocrData = !empty($raw)
+            ? \App\Services\OcrNormalizer::normalize(['data' => $raw])
             : [];
         // dd($ocrData);
 
-        $data = array_merge($ocrData, $personalData);
+        $this->getRegistration();
+        $personalData = session('personalData', []);
 
         // Change gender from OCR to API
         if (!empty($personalData['gender'])) {
@@ -186,8 +184,13 @@ class CreateAccountController extends Controller
             } catch (\Exception $e) {}
         }
 
-        // merge session override OCR
-        $data = array_merge($ocrData, $personalData);
+        $data = $ocrData;
+        foreach ($personalData as $key => $value) {
+            if (!empty($value)) {
+                $data[$key] = $value;
+            }
+        }
+
         $currentStep = session('registrationStep');
         $isUpdate = $currentStep !== 'personalInformation';
 

@@ -20,6 +20,9 @@
             <input type="text" maxlength="1" class="pin-input" inputmode="numeric">
             <input type="text" maxlength="1" class="pin-input" inputmode="numeric">
         </div>
+        <div class="text-center mt-3 mb-5">
+            <button type="button" id="togglePin" class="btn btn-sm btn-secondary">Show PIN</button>
+        </div>
         <div class="pin-info mb-4">Jangan bagikan PIN Trading Anda kepada siapa pun. PIN Trading diperlukan untuk menjaga keamanan transaksi.</div>
         <button id="btnPin" class="btn btn-primary btn-regist w-100 mb-3" onclick="submitPin()"> Lanjutkan</button>
     </div>

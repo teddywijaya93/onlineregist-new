@@ -199,6 +199,11 @@ body{
     background:#3898FF;
     border:6px soliid#133254;
 }
+.pin-input.show-pin{
+    background: transparent;
+    color:#FFF;
+    caret-color:#FFF;
+}
 
 /* Referral Blade */
 .btn-back{font-size: 20px;}

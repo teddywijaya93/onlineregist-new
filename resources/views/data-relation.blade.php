@@ -63,7 +63,7 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Kantor Referensi Perorangan</label>
-                <textarea rows="3" name="beneficiaryOwnerOfficeAddress" id="beneficiaryOwnerOfficeAddress" class="form-control form-global alphabet-only" placeholder="Tulis Alamat Kantor Institusi">{{ old('beneficiaryOwnerOfficeAddress', $relationData['beneficiaryOwnerOfficeAddress'] ?? '') }}</textarea>
+                <textarea rows="3" name="beneficiaryOwnerOfficeAddress" id="beneficiaryOwnerOfficeAddress" class="form-control form-global" placeholder="Tulis Alamat Kantor Institusi">{{ old('beneficiaryOwnerOfficeAddress', $relationData['beneficiaryOwnerOfficeAddress'] ?? '') }}</textarea>
             </div>
             <button type="submit" class="btn btn-primary btn-regist w-100">
                 {{ $isUpdate ? 'Ubah' : 'Lanjutkan' }}

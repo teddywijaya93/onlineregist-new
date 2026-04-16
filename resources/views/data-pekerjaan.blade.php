@@ -39,7 +39,7 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Telepon Kantor</label>
-                <input type="text" name="officeTelephone" id="officeTelephone" value="{{ old('officeTelephone', $employmentData['officeTelephone'] ?? '') }}" class="form-control form-global numeric-only" maxlength="13" placeholder="Tulis Telepon Kantor">
+                <input type="text" name="officeTelephone" id="officeTelephone" value="{{ old('officeTelephone', $employmentData['officeTelephone'] ?? '') }}" class="form-control form-global numeric-only" minlength="9" placeholder="Tulis Telepon Kantor">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Lama Berkerja</label>

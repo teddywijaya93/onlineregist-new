@@ -1,5 +1,6 @@
 let step = 1;
 let firstPin = "";
+let showPin = false;
 
 document.addEventListener("DOMContentLoaded", () => {
     const btnBack = document.getElementById("btnBack");
@@ -7,6 +8,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const inputs = document.querySelectorAll(".pin-input");
     const btn = document.getElementById("btnPin");
+    const toggleBtn = document.getElementById("togglePin");
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener("click", () => {
+            showPin = !showPin;
+
+            toggleBtn.innerText = showPin ? "Hide PIN" : "Show PIN";
+
+            inputs.forEach(input => {
+                if (showPin) {
+                    input.classList.add("show-pin");
+                } else {
+                    input.classList.remove("show-pin");
+                }
+            });
+            checkPin();
+        });
+    }
 
     inputs.forEach((input, index) => {
         input.addEventListener("input", () => {
@@ -20,15 +39,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // BACKSPACE
         input.addEventListener("keydown", (e) => {
-            if (e.key === "Backspace") {
-                if (input.value === "" && index > 0) {
-                    inputs[index - 1].focus();
-                    
-                    // optional: sekalian hapus sebelumnya
-                    inputs[index - 1].value = "";
-                    inputs[index - 1].classList.remove("filled");
+            input.addEventListener("keydown", (e) => {
+                if (e.key === "Backspace") {
+                    if (input.value !== "") {
+                        // hapus isi sendiri dulu
+                        input.value = "";
+                        input.classList.remove("filled");
+                    } else if (index > 0) {
+                        // kalau kosong → pindah ke kiri
+                        inputs[index - 1].focus();
+                        inputs[index - 1].value = "";
+                        inputs[index - 1].classList.remove("filled");
+                    }
+                    checkPin();
+                    e.preventDefault();
                 }
-            }
+            });
         });
 
         // DISABLED PASTE
@@ -39,6 +65,19 @@ document.addEventListener("DOMContentLoaded", () => {
         let pin = "";
         inputs.forEach(i => pin += i.value);
         btn.disabled = pin.length !== 6;
+
+        const display = document.getElementById("pinDisplay");
+        if (display) {
+            let view = "";
+            inputs.forEach(i => {
+                if (showPin) {
+                    view += (i.value ? i.value : "-") + " ";
+                } else {
+                    view += (i.value ? "●" : "○") + " ";
+                }
+            });
+            display.innerText = view.trim();
+        }
     }
 });
 
@@ -55,6 +94,12 @@ function clearPin() {
         i.value = "";
         i.classList.remove("filled");
     });
+
+    const display = document.getElementById("pinDisplay");
+    if (display) {
+        display.innerText = "● ● ● ● ● ●";
+    }
+
     inputs[0].focus();
 }
 

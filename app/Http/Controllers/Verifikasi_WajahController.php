@@ -79,22 +79,69 @@ class Verifikasi_WajahController extends Controller
                 ]
             );
 
-            if ($liveness->failed()) {
-            return back()->with('error', 'Liveness Check Gagal');
-            }
             $livenessResult = $liveness->json();
             Log::info('LIVENESS RESULT', [$livenessResult]);
+
+            if (!$liveness->successful()) {
+                Log::error('LIVENESS ERROR', [
+                    'status' => $liveness->status(),
+                    'body' => $liveness->body()
+                ]);
+                return back()->with('error', 'Gagal memproses wajah. Pastikan wajah terlihat jelas.');
+            }
 
             // 6. VALIDASI LIVENESS
             $data = $livenessResult['data'] ?? [];
 
-            $isLive =
-                $data['is_live'] ??
-                $data['liveness'] ??
-                false;
+            $nface = $data['nface'] ?? 0;
+            $deepfake = $data['deepfake'] ?? false;
+            $livenessStatus = $data['liveness']['status'] ?? false;
+            $probability = (float) ($data['liveness']['probability'] ?? 0);
 
-            if (!$isLive) {
-                return back()->with('error', 'Wajah Tidak Valid / Terdeteksi Spoofing');
+            $attr = $data['attributes'] ?? [];
+            $mask = $attr['mask_on'] ?? false;
+            $sunglasses = $attr['sunglasses_on'] ?? false;
+            $eyeglasses = $attr['eyeglasses_on'] ?? false;
+            $hat = $attr['hat_on'] ?? false;
+            $faceBlocker = $attr['face_blocker_on'] ?? false;
+    
+            // VALIDASI lebih dari 1 wajah
+            if ($nface > 1) {
+                return back()->with('error', 'Terdeteksi lebih dari 1 wajah. Harap ambil foto sendiri.');
+            }
+            // VALIDASI DEEPFAKE
+            if ($deepfake === true) {
+                return back()->with('error', 'Terdeteksi penggunaan deepfake / manipulasi wajah.');
+            }
+
+            // VALIDASI Liveness False
+            if (!$livenessStatus) {
+                return back()->with('error', 'Wajah tidak terdeteksi sebagai live (spoofing terindikasi).');
+            }
+
+            // VALIDASI Probability < 60%
+            if ($probability < 60) {
+                return back()->with('error', 'Kualitas liveness rendah. Silakan ulangi foto wajah.');
+            }
+
+            // VALIDASI Masker
+            if ($mask) {
+                return back()->with('error', 'Harap lepas masker saat verifikasi.');
+            }
+
+            // VALIDASI Kacamata Hitam & Kacamata Biasa
+            if ($sunglasses || $eyeglasses) {
+                return back()->with('error', 'Harap lepas kacamata saat verifikasi.');
+            }
+
+            // VALIDASI Topi
+            if ($hat) {
+                return back()->with('error', 'Harap lepas topi saat verifikasi.');
+            }
+
+            // VALIDASI Penutup Wajah
+            if ($faceBlocker) {
+                return back()->with('error', 'Wajah tidak terlihat jelas.');
             }
 
             // 7. SIMPAN FILE LOKAL

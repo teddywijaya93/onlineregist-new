@@ -36,7 +36,8 @@ function loadMasterDropdown(selectId, url, placeholder) {
     const select = document.getElementById(selectId);
     if (!select) return;
 
-    const selectedValue = select.dataset.selected || '';
+    const selectedValue = (select.dataset.selected || '').trim();
+    const hasSelected = selectedValue !== '';
     const gender = document.querySelector('input[name="gender"]')?.value;
 
     fetch(url)
@@ -50,22 +51,15 @@ function loadMasterDropdown(selectId, url, placeholder) {
                 const value = String(item.id);
                 const text  = item.description || '';
 
-                if (selectId === "employmentSelect") {
-                    const isIRT = text.toLowerCase().includes("ibu rumah tangga");
-
-                    if (gender === "Pria" && isIRT) {
-                        return;
-                    }
-                }
-
                 const normSelected = normalize(selectedValue);
                 const normText     = normalize(text);
 
-                const isSelected =
+               const isSelected = hasSelected && (
                     normSelected === normalize(value) ||
                     normSelected === normText ||
                     normText.includes(normSelected) ||
-                    normSelected.includes(normText);
+                    normSelected.includes(normText)
+                );
 
                 const opt = document.createElement("option");
                 opt.value = value;
@@ -77,6 +71,14 @@ function loadMasterDropdown(selectId, url, placeholder) {
 
                 select.appendChild(opt);
             });
+
+            if (selectedValue && !select.value) {
+                Array.from(select.options).forEach(opt => {
+                    if (normalize(opt.text).includes(normalize(selectedValue))) {
+                        select.value = opt.value;
+                    }
+                });
+            }
         });
 }
 
