@@ -65,7 +65,7 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Perusahaan/Institusi/Pendidikan</label>
-                <input type="text" name="beneficiaryOwnerEmployerName" id="beneficiaryOwnerEmployerName" class="form-control form-global alphabet-only" value="{{ old('beneficiaryOwnerEmployerName', $relationData['beneficiaryOwnerEmployerName'] ?? '') }}" placeholder="Tulis Nama Institusi">
+                <input type="text" name="beneficiaryOwnerEmployerName" id="beneficiaryOwnerEmployerName" class="form-control form-global" value="{{ old('beneficiaryOwnerEmployerName', $relationData['beneficiaryOwnerEmployerName'] ?? '') }}" placeholder="Tulis Nama Institusi">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Kantor Referensi Perorangan</label>

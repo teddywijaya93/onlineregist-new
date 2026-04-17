@@ -15,7 +15,7 @@
         <div class="icons mb-4"><img src="{{ asset('storage/ktp_images.png') }}" class="w-100"></div>
         <form method="POST" action="{{ route('verifikasi.ktp.process') }}" enctype="multipart/form-data">
             @csrf
-            <input type="file" name="ktp_image" accept="image/*" class="btn btn-outline-primary form-global w-100" required>
+            <input type="file" name="ktp_image" accept="image/*" class="btn btn-outline-primary btn-upload form-global w-100" required>
             <div class="mb-3">
                 <img id="previewImage" src="" alt="Preview KTP" style="width:100%; height:500px; object-fit:contain; background:#000; display:none;">
             </div>

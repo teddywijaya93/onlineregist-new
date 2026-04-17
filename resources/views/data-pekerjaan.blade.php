@@ -19,7 +19,7 @@
             <input type="hidden" name="employmentType" id="employmentType" value="{{ old('employmentType', session('financialData.employmentType')) }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Perusahaan/Tempat Bekerja</label>
-                <input type="text" name="employer" id="employer" value="{{ old('employer', $employmentData['employer'] ?? '') }}" class="form-control form-global alphabet-only" placeholder="Tulis Nama Perusahaan">
+                <input type="text" name="employer" id="employer" value="{{ old('employer', $employmentData['employer'] ?? '') }}" class="form-control form-global" placeholder="Tulis Nama Perusahaan">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Bidang Usaha</label>
@@ -43,7 +43,7 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Telepon Kantor</label>
-                <input type="text" name="officeTelephone" id="officeTelephone" value="{{ old('officeTelephone', $employmentData['officeTelephone'] ?? '') }}" class="form-control form-global numeric-only" minlength="9" placeholder="Tulis Telepon Kantor">
+                <input type="text" name="officeTelephone" id="officeTelephone" value="{{ old('officeTelephone', $employmentData['officeTelephone'] ?? '') }}" class="form-control form-global numeric-only" minlength="13" placeholder="Tulis Telepon Kantor">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Lama Berkerja</label>

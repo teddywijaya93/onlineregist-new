@@ -14,9 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 this.value = "";
             }
 
-            // max 11 digit setelah +62
-            if (this.value.length > 11) {
-                this.value = this.value.slice(0, 11);
+            // max 15 digit setelah +62
+            if (this.value.length > 15) {
+                this.value = this.value.slice(0, 15);
             }
         });
     }
@@ -506,12 +506,20 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!val) {
                 Swal.fire({
                     icon: "warning",
-                    title: "Nomor wajib diisi"
+                    title: "Nomor Telepon Wajib Diisi"
                 });
                 return;
             }
-            const full = "+62" + val;
 
+            if (val.length < 9) {
+                Swal.fire({
+                    icon: "warning",
+                    title: "Nomor Telepon Minimal 9 Digit"
+                });
+                return;
+            }
+
+            const full = "+62" + val;
             try {
                 await fetch( "/save-phone",{
                     method: "POST",

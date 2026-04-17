@@ -23,14 +23,14 @@
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Bank Tujuan Penarikan</label>
                 <div class="select-wrapper">
-                    <select name="bankName" id="bankSelect" data-selected="{{ old('bankName', $bankData['bankName'] ?? '') }}"     class="form-control form-global">
+                    <select name="bankName" id="bankSelect" data-selected="{{ old('bankName', $bankData['bankName'] ?? '') }}" class="form-control form-global">
                         <option value="">Pilih Bank</option>
                     </select>
                 </div>
             </div> 
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nomor Rekening</label>
-                <input type="text" name="bankAccountNumber" id="bankAccountNumber" value="{{ old('bankAccountNumber', $bankData['bankAccountNumber'] ?? '') }}" class="form-control form-global" placeholder="Tulis Nomor Rekening">
+                <input type="text" name="bankAccountNumber" id="bankAccountNumber" value="{{ old('bankAccountNumber', $bankData['bankAccountNumber'] ?? '') }}" class="form-control form-global numeric-only" maxlength="50" placeholder="Tulis Nomor Rekening">
             </div>
             <div class="alert alert-warning d-flex align-items-start gap-3 mb-5 alert-bank">
                 <div style="font-size:20px; color:#E6D112;"><i class="fa fa-circle-exclamation"></i></div>

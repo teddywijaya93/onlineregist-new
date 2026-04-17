@@ -31,7 +31,7 @@
                 <img id="resultImage" class="w-100 rounded border">
             </div>
             <div class="row">
-                <div class="col-12 col-lg-6"><button type="button" id="btnRetake" class="btn btn-warning btn-regist w-100 mb-2 text-white d-none">Ambil Ulang</button></div>
+                <div class="col-12 col-lg-6"><button type="button" id="btnRetake" class="btn btn-warning btn-retake w-100 mb-2 d-none">Ambil Ulang</button></div>
                 <div class="col-12 col-lg-6"><button type="submit" id="btnSubmit" class="btn btn-success btn-regist w-100 mb-3 d-none">Lanjutkan</button></div>
             </div>
         </form>

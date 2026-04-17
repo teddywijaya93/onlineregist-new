@@ -12,8 +12,8 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <section class="auth-wrapper">
     <div class="container">
-        <div class="text-end mb-5">
-            <a href="{{ url()->previous() }}" class="btn-back"><i class="fa-solid fa-headset text-white" style="font-size:24px;"></i></a>
+        <div class="d-flex justify-content-end mb-5">
+            <a href="#" class="btn-headset"><i class="fa-solid fa-headset text-white step-headset"></i></a>
         </div>
         <h3 class="head-lanjut text-white mb-5">Selesaikan Proses Registrasi Anda</h3>  
         @foreach($groups as $group)

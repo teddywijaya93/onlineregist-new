@@ -64,7 +64,26 @@ body{
     font-weight: 500;
 }
 .btn-take:hover{background:#3898FF;}
-#btnRetake{background:#22C55E;}
+.btn-retake{
+    background:#22C55E;
+    border-color: transparent;
+    color:#FFFFFF;
+    border-radius: 4px;
+    min-height: 24px;
+    padding: 12px 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+.btn-retake:hover{
+    background: transparent;
+    border: 1px solid#22C55E;
+    color:#22C55E;
+}
+.btn-upload{border: 1px solid#3898FF;}
+.btn-upload:hover{
+    background:#3898FF;
+    color:#FFF;
+}
 .atau-text{
     color:#7A8699;
     font-size: 12px;

@@ -22,7 +22,7 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Universitas</label>
-                <textarea rows="3" name="officeAddress" id="officeAddress" class="form-control form-global alphabet-only" placeholder="Masukan Alamat Universitas">{{ old('officeAddress', $universitasData['officeAddress'] ?? '') }}</textarea>
+                <textarea rows="3" name="officeAddress" id="officeAddress" class="form-control form-global" placeholder="Masukan Alamat Universitas">{{ old('officeAddress', $universitasData['officeAddress'] ?? '') }}</textarea>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Lama Kuliah</label>

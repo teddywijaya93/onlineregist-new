@@ -14,7 +14,7 @@
         <div class="form-group text-start mb-5">
            <div class="d-flex phone-input">
                 <div class="phone-prefix">+62</div>
-                <input type="text" id="phone" name="phone" class="form-control form-global phone-number" placeholder="Masukkan Nomor Ponsel" maxlength="11" autocomplete="off">
+                <input type="text" id="phone" name="phone" class="form-control form-global phone-number" placeholder="Masukkan Nomor Ponsel" autocomplete="off">
             </div>
         </div>
        <button type="button" id="btnNext" class="btn btn-primary btn-regist w-100 mb-3">Lanjutkan</button>
