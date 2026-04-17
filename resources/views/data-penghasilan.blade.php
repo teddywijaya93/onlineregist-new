@@ -19,33 +19,43 @@
             <input type="hidden" name="gender" value="{{ old('gender', $data['gender'] ?? '') }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Pekerjaan Nasabah</label>
-                <select name="employmentType" id="employmentSelect" data-selected="{{ old('employmentType', $financialData['employmentType'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Pekerjaan</option>
-                </select>
+                <div class="select-wrapper">
+                    <select name="employmentType" id="employmentSelect" data-selected="{{ old('employmentType', $financialData['employmentType'] ?? '') }}" class="form-control form-global">
+                        <option value="">Pilih Pekerjaan</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Pendidikan Terakhir</label>
-                <select name="education" id="educationSelect" data-selected="{{ old('education', $financialData['education'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Pendidikan</option>
-                </select>
+                <div class="select-wrapper">
+                    <select name="education" id="educationSelect" data-selected="{{ old('education', $financialData['education'] ?? '') }}" class="form-control form-global">
+                        <option value="">Pilih Pendidikan</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Penghasilan Per bulan</label>
-                <select name="mainIncomeRange" id="incomeRangeSelect" data-selected="{{ old('mainIncomeRange', $financialData['mainIncomeRange'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Penghasilan Per Bulan</option>
-                </select>
+                <div class="select-wrapper">
+                    <select name="mainIncomeRange" id="incomeRangeSelect" data-selected="{{ old('mainIncomeRange', $financialData['mainIncomeRange'] ?? '') }}" class="form-control form-global">
+                        <option value="">Pilih Penghasilan Per Bulan</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Sumber Dana</label>
-                <select name="primaryFundSources" id="primaryFundSelect" data-selected="{{ old('primaryFundSources', $financialData['primaryFundSources'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Sumber Dana</option>
-                </select>
+                <div class="select-wrapper">
+                    <select name="primaryFundSources" id="primaryFundSelect" data-selected="{{ old('primaryFundSources', $financialData['primaryFundSources'] ?? '') }}" class="form-control form-global">
+                        <option value="">Pilih Sumber Dana</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Tujuan Investasi</label>
-                <select name="investmentObjective" id="investmentObjectiveSelect" data-selected="{{ old('investmentObjective', $financialData['investmentObjective'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Tujuan Investasi</option>
-                </select>
+                <div class="select-wrapper">
+                    <select name="investmentObjective" id="investmentObjectiveSelect" data-selected="{{ old('investmentObjective', $financialData['investmentObjective'] ?? '') }}" class="form-control form-global">
+                        <option value="">Pilih Tujuan Investasi</option>
+                    </select>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary btn-regist w-100">
                 {{ $isUpdate ? 'Ubah' : 'Lanjutkan' }}

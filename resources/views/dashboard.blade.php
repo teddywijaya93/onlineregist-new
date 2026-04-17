@@ -12,7 +12,10 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <section class="auth-wrapper">
     <div class="container">
-        <h3 class="text-white congrats-text text-start mb-5">Selesaikan Proses Registrasi Anda</h3>
+        <div class="text-end mb-5">
+            <a href="{{ url()->previous() }}" class="btn-back"><i class="fa-solid fa-headset text-white" style="font-size:24px;"></i></a>
+        </div>
+        <h3 class="head-lanjut text-white mb-5">Selesaikan Proses Registrasi Anda</h3>  
         @foreach($groups as $group)
             @php
                 $isDone   = $currentIndex > $group['maxIndex'];

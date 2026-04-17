@@ -232,6 +232,33 @@ body{
     color:#7A8699;
     opacity: 1;
 }
+.select-wrapper{position: relative;}
+.select-wrapper::after{
+    content: "\f107";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    pointer-events: none;
+}
+/* .select-wrapper:focus-within::after{transform: translateY(-50%) rotate(180deg);} */
+.date-wrapper{position: relative;}
+.date-wrapper::after {
+    content: "\f073";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 14px;
+    pointer-events: none;
+}
+.date-wrapper input{padding-right: 40px;}
 .lewati-text{
     min-height: 24px;
     padding: 12px 8px;
@@ -356,7 +383,7 @@ body{
     align-items: center;
     margin-bottom: 16px;
 }
-.step-back, .step-callcenter{
+.step-back, .step-callcenter, .step-headset{
     color:#FFF;
     font-size: 24px;
     text-decoration: none;

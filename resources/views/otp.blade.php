@@ -5,10 +5,14 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <section class="auth-wrapper">
     <div class="container">
-        <input type="hidden" id="email" value="{{ session('reg_email') }}">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <a href="{{ url()->previous() }}" class="btn-back"><i class="fa-solid fa-arrow-left text-white step-back"></i></a>
+            <a href="#" class="btn-headset"><i class="fa-solid fa-headset text-white step-headset"></i></a>
+        </div>
         <div class="text-start mb-4"><img class="icon-regist" src="{{ asset('storage/email.svg') }}"></div>
         <h3 class="text-white congrats-text text-start mb-2">Verifikasi Email</h3>
         <p class="silahkan-cek-text text-start mb-5">Masukkan 6 digit OTP yang dikirimkan ke email. {{ Str::mask(session('reg_email'), '*', 3, 6) }}</p>
+        <input type="hidden" id="email" value="{{ session('reg_email') }}">
         <div class="d-flex gap-2 mb-4">
             @for ($i = 0; $i < 6; $i++)
                 <input type="text" maxlength="1" class="form-control text-center otp-box" style="width:50px;height:55px;font-size:20px;">

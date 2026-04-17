@@ -35,7 +35,6 @@ function normalizeText(str) {
         .trim();
 }
 
-
 function extractArray(res) {
     if (Array.isArray(res?.data)) return res.data;
     if (Array.isArray(res?.datas)) return res.datas;
@@ -118,6 +117,7 @@ function initValidation() {
         isValid &= validateRequired("positionSelect", "Jabatan Wajib Diisi");
         isValid &= validateRequired("officeAddress", "Alamat Perusahaan Wajib Diisi");
         isValid &= validateRequired("officeTelephone", "Telepon Kantor Wajib Diisi");
+        isValid &= validateMinLength("officeTelephone", 9, "Minimal Telepon Kantor 9 Digit");
         isValid &= validateRequired("employmentDurationYear", "Tahun Bekerja Wajib Diisi");
         isValid &= validateRequired("employmentDurationMonth", "Bulan Bekerja Wajib Diisi");
 
@@ -147,4 +147,27 @@ function initValidation() {
         el.addEventListener("input", () => clearFieldError(el));
         el.addEventListener("change", () => clearFieldError(el));
     });
+}
+
+function validateMinLength(id, min, message) {
+    const el = document.getElementById(id);
+    if (!el) return true;
+
+    const val = el.value.replace(/\D/g, ""); // ambil angka saja
+
+    if (val.length < min) {
+        el.classList.add("is-invalid");
+
+        let error = el.parentElement.querySelector(".invalid-feedback");
+
+        if (!error) {
+            error = document.createElement("div");
+            error.className = "invalid-feedback";
+            el.parentElement.appendChild(error);
+        }
+
+        error.innerText = message;
+        return false;
+    }
+    return true;
 }

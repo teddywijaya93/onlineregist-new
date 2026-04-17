@@ -23,15 +23,19 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Bidang Usaha</label>
-                <select name="businessLine" id="businesslineSelect" data-selected="{{ old('businessLine', $employmentData['businessLine'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Bidang Usaha</option>
-                </select>
+                <div class="select-wrapper">
+                    <select name="businessLine" id="businesslineSelect" data-selected="{{ old('businessLine', $employmentData['businessLine'] ?? '') }}" class="form-control form-global">
+                        <option value="">Pilih Bidang Usaha</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Jabatan</label>
-                <select name="employmentPosition" id="positionSelect" data-selected="{{ old('employmentPosition', $employmentData['employmentPosition'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Jabatan</option>
-                </select>
+                <div class="select-wrapper">
+                    <select name="employmentPosition" id="positionSelect" data-selected="{{ old('employmentPosition', $employmentData['employmentPosition'] ?? '') }}" class="form-control form-global">
+                        <option value="">Pilih Jabatan</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Perusahaan</label>

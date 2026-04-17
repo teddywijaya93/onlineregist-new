@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
     await initSelects();
+    initDatePicker();
     initSameAddress();
     initValidation();
     restrictMaritalByGender();
@@ -25,7 +26,7 @@ async function loadSelect(id, url, placeholder = "Pilih") {
             opt.value = value;
             opt.textContent = text;
 
-            // ✅ ONLY MATCH BY ID
+            // ONLY MATCH BY ID
             if (String(value) === String(selected)) {
                 opt.selected = true;
             }
@@ -40,7 +41,20 @@ async function loadSelect(id, url, placeholder = "Pilih") {
 // INIT MASTER DROPDOWNS
 async function initSelects() {
     await loadSelect("maritalSelect", window.routes.marital, "Pilih Status Perkawinan");
+    await loadSelect("religionSelect", window.routes.religion, "Pilih Status Agama");
     restrictMaritalByGender();
+}
+
+function initDatePicker() {
+    if (typeof flatpickr === "undefined") return;
+
+    flatpickr("#dateOfBirth", {
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "d-m-Y",
+        maxDate: new Date().fp_incr(-365 * 17), // min umur 17
+        disableMobile: true
+    });
 }
 
 function initSameAddress() {
@@ -83,6 +97,63 @@ function initSameAddress() {
                 target.value = source.value;
             }
         });
+    });
+}
+
+function initValidation() {
+    const form = document.getElementById("personalForm");
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        clearErrors();
+
+        let isValid = true;
+
+        isValid &= validateRequired("name", "Nama Lengkap Wajib Diisi");
+        isValid &= validateRequired("identificationNumber", "NIK Wajib Diisi");
+        isValid &= validateRequired("dateOfBirth", "Tanggal Lahir Wajib Diisi");
+        isValid &= validateAge("dateOfBirth", " Umur Minimal 17 Tahun");
+        isValid &= validateRequired("maritalSelect", "Status Perkawinan Wajib Diisi");
+        isValid &= validateRequired("religionSelect", "Agama Wajib Diisi");
+        isValid &= validateRequired("motherMaidenName", "Nama Gadis Ibu Kandung Wajib Diisi");
+        isValid &= validateRequired("address", "Alama Wajib Diisi");
+        isValid &= validateRequired("kelurahanSearch", "Kelurahan Wajib Diisi");
+        isValid &= validateRequired("postalCode", "Postal Kode Wajib Diisi");
+        isValid &= validateRequired("residenceAddress", "Residence Alamat Wajib Diisi");
+        isValid &= validateRequired("residenceKelurahan", "Residence Kelurahan Wajib Diisi");
+        isValid &= validateRequired("residencePostalCode", "Residence Postal Kode Wajib Diisi");
+
+        if (!isValid) {
+            scrollToFirstError();
+            return;
+        }
+
+        form.submit();
+    });
+
+    // realtime clear error
+    const fields = [
+        "name",
+        "identificationNumber",
+        "dateOfBirth",
+        "maritalStatus",
+        "motherMaidenName",
+        "address",
+        "kelurahan",
+        "postalCode",
+        "residenceAddress",
+        "residenceKelurahan",
+        "residencePostalCode"
+    ];
+
+    fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        el.addEventListener("input", () => clearFieldError(el));
+        el.addEventListener("change", () => clearFieldError(el));
     });
 }
 
@@ -142,60 +213,4 @@ function validateAge(id, message) {
         return false;
     }
     return true;
-}
-
-function initValidation() {
-    const form = document.getElementById("personalForm");
-    if (!form) return;
-
-    form.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        clearErrors();
-
-        let isValid = true;
-
-        isValid &= validateRequired("name", "Nama Lengkap Wajib Diisi");
-        isValid &= validateRequired("identificationNumber", "NIK Wajib Diisi");
-        isValid &= validateRequired("dateOfBirth", "Tanggal Lahir Wajib Diisi");
-        isValid &= validateAge("dateOfBirth", " Umur Minimal 17 Tahun");
-        isValid &= validateRequired("maritalSelect", "Status Perkawinan Wajib Diisi");
-        isValid &= validateRequired("motherMaidenName", "Nama Gadis Ibu Kandung Wajib Diisi");
-        isValid &= validateRequired("address", "Alama Wajib Diisi");
-        isValid &= validateRequired("kelurahanSearch", "Kelurahan Wajib Diisi");
-        isValid &= validateRequired("postalCode", "Postal Kode Wajib Diisi");
-        isValid &= validateRequired("residenceAddress", "Residence Alamat Wajib Diisi");
-        isValid &= validateRequired("residenceKelurahan", "Residence Kelurahan Wajib Diisi");
-        isValid &= validateRequired("residencePostalCode", "Residence Postal Kode Wajib Diisi");
-
-        if (!isValid) {
-            scrollToFirstError();
-            return;
-        }
-
-        form.submit();
-    });
-
-    // realtime clear error
-    const fields = [
-        "name",
-        "identificationNumber",
-        "dateOfBirth",
-        "maritalStatus",
-        "motherMaidenName",
-        "address",
-        "kelurahan",
-        "postalCode",
-        "residenceAddress",
-        "residenceKelurahan",
-        "residencePostalCode"
-    ];
-
-    fields.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-
-        el.addEventListener("input", () => clearFieldError(el));
-        el.addEventListener("change", () => clearFieldError(el));
-    });
 }

@@ -15,10 +15,9 @@
         </div>
         <form id="personalForm" method="POST" action="{{ route('data.personal.submit') }}">
             @csrf
-            <!-- <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}"> -->
+            <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
             <input type="hidden" name="birthLocation" value="{{ old('birthLocation', $data['birthLocation'] ?? '') }}">
             <input type="hidden" name="gender" value="{{ old('gender', $data['gender'] ?? '') }}">
-            <input type="hidden" name="religion" value="{{ old('religion', $data['religion'] ?? '') }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Sesuai e-KTP</label>
                 <input type="text" name="name" id="name" class="form-control form-global alphabet-only" value="{{ old('name', $data['name'] ?? '') }}" placeholder="Nama Sesuai e-KTP">
@@ -29,13 +28,25 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Tanggal Lahir</label>
-                <input type="date" name="dateOfBirth" id="dateOfBirth" class="form-control form-global" value="{{ old('dateOfBirth', $data['dateOfBirth'] ?? '') }}" placeholder="Tanggal Lahir">
+                <div class="date-wrapper">
+                    <input type="text" name="dateOfBirth" id="dateOfBirth" class="form-control form-global" placeholder="Pilih Tanggal Lahir" value="{{ old('dateOfBirth', $data['dateOfBirth'] ?? '') }}">
+                </div>
+            </div>
+            <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Agama</label>
+                <div class="select-wrapper">
+                    <select name="religion" id="religionSelect" class="form-control form-global" data-selected="{{ $data['religion'] ?? '' }}">
+                        <option value="">Pilih Agama</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Status Perkawinan</label>
-                <select name="maritalStatus" id="maritalSelect" class="form-control form-global" data-selected="{{ $data['maritalStatus'] ?? '' }}">
-                    <option value="">Pilih Status Perkawinan</option>
-                </select>
+                <div class="select-wrapper">
+                    <select name="maritalStatus" id="maritalSelect" class="form-control form-global" data-selected="{{ $data['maritalStatus'] ?? '' }}">
+                        <option value="">Pilih Status Perkawinan</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Gadis Ibu Kandung</label>
@@ -50,8 +61,10 @@
                 <input type="hidden" name="city" id="citySelect" class="form-control form-global" readonly>
                 <input type="hidden" name="kecamatan" id="kecamatanSelect" class="form-control form-global" readonly>
                 <div class="custom-select-wrapper">
-                    <input type="text" name="kelurahan" id="kelurahanSearch" class="form-control form-global" value="{{ old('kelurahan', $data['kelurahan'] ?? '') }}" placeholder="Cari Kelurahan">
-                    <div id="kelurahanDropdown" class="dropdown-list"></div>
+                    <div class="select-wrapper">
+                        <input type="text" name="kelurahan" id="kelurahanSearch" class="form-control form-global" value="{{ old('kelurahan', $data['kelurahan'] ?? '') }}" placeholder="Cari Kelurahan">
+                        <div id="kelurahanDropdown" class="dropdown-list"></div>
+                    </div>
                 </div>
             </div>
             <div class="form-group mb-4">  
@@ -73,8 +86,10 @@
                 <input type="hidden" name="residenceCity" id="residenceCity" class="form-control form-global" readonly>
                 <input type="hidden" name="residenceKecamatan" id="residenceKecamatan" class="form-control form-global" readonly>
                 <div class="custom-select-wrapper">
-                    <input type="text" name="residenceKelurahan" id="residenceKelurahan" class="form-control form-global" value="{{ old('residenceKelurahan', $data['residenceKelurahan'] ?? '') }}" placeholder="Kelurahan Domisili">
-                    <div id="residenceKelurahanDropdown" class="dropdown-list"></div>
+                    <div class="select-wrapper">
+                        <input type="text" name="residenceKelurahan" id="residenceKelurahan" class="form-control form-global" value="{{ old('residenceKelurahan', $data['residenceKelurahan'] ?? '') }}" placeholder="Kelurahan Domisili">
+                        <div id="residenceKelurahanDropdown" class="dropdown-list"></div>
+                    </div>
                 </div>
             </div>
             <div class="form-group mb-4">  
@@ -91,9 +106,11 @@
 <script>
 window.routes = {
     marital     : "{{ route('master.marital') }}",
+    religion    : "{{ route('master.religion') }}",
     kelurahan   : "{{ route('master.all.kelurahan') }}"
 };
 </script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="{{ asset('js/personal.js') }}"></script>
 <script src="{{ asset('js/kelurahanAjax.js') }}"></script>
 

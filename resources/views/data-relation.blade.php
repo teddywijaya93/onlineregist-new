@@ -24,9 +24,11 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Hubungan dengan Nasabah</label>
-                <select name="beneficiaryRelation" id="beneficiaryRelationSelect" data-selected="{{ old('beneficiaryRelation', $relationData['beneficiaryRelation'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Hubungan</option>
-                </select>
+                <div class="select-wrapper">
+                    <select name="beneficiaryRelation" id="beneficiaryRelationSelect" data-selected="{{ old('beneficiaryRelation', $relationData['beneficiaryRelation'] ?? '') }}" class="form-control form-global">
+                        <option value="">Pilih Hubungan</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Upload KTP Referensi Perorangan</label>
@@ -47,15 +49,19 @@
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Pekerjaan Referensi Perorangan</label>
-                <select name="beneficiaryEmploymentPosition" id="employmentSelect" data-selected="{{ old('beneficiaryEmploymentPosition', $relationData['beneficiaryEmploymentPosition'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Pekerjaan</option>
-                </select>
+                <div class="select-wrapper">
+                    <select name="beneficiaryEmploymentPosition" id="employmentSelect" data-selected="{{ old('beneficiaryEmploymentPosition', $relationData['beneficiaryEmploymentPosition'] ?? '') }}" class="form-control form-global">
+                        <option value="">Pilih Pekerjaan</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Bidang Usaha Referensi Perorangan</label>
-                <select name="beneficiaryOwnerBusinessLine" id="businesslineSelect" data-selected="{{ old('beneficiaryOwnerBusinessLine', $relationData['beneficiaryOwnerBusinessLine'] ?? '') }}" class="form-control form-global">
-                    <option value="">Pilih Bidang Usaha</option>
-                </select>
+                <div class="select-wrapper">
+                    <select name="beneficiaryOwnerBusinessLine" id="businesslineSelect" data-selected="{{ old('beneficiaryOwnerBusinessLine', $relationData['beneficiaryOwnerBusinessLine'] ?? '') }}" class="form-control form-global">
+                        <option value="">Pilih Bidang Usaha</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Perusahaan/Institusi/Pendidikan</label>

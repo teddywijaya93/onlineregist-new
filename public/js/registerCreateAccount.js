@@ -239,11 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         return;
                     }
 
-                    if (redirect && redirect !== "null") {
-                        window.location.href = redirect;
-                    } else {
-                        window.location.href = "/dashboard";
-                    }
+                    window.location.href = "/mobile";
 
                 } catch {
 

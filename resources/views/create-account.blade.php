@@ -5,8 +5,9 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <section class="auth-wrapper">
     <div class="container">
-        <div class="text-start mb-5">
-            <a href="{{ url()->previous() }}" class="btn-back"><i class="fa-solid fa-arrow-left text-white"></i></a>
+        <div class="d-flex justify-content-end align-items-center mb-5">
+            <!-- <a href="{{ url()->previous() }}" class="btn-back"><i class="fa-solid fa-arrow-left text-white step-back"></i></a> -->
+            <a href="#" class="btn-headset"><i class="fa-solid fa-headset text-white step-headset"></i></a>
         </div>
         <h3 class="text-white congrats-text text-start mb-2">Buat Akun Profits</h3>
         <p class="silahkan-cek-text text-start mb-5">Tentukan Username dan Password untuk akun Profits Anda.</p>
