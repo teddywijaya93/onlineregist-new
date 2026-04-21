@@ -6,12 +6,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadEmployment();
     const employmentSelect = document.getElementById("employmentSelect");
 
-    // 🔥 FORCE LOAD BUSINESSLINE SETELAH EMPLOYMENT KE-SET
+    // FORCE LOAD BUSINESSLINE SETELAH EMPLOYMENT KE-SET
     if (employmentSelect && employmentSelect.value) {
         loadBusinessline(employmentSelect.value);
     }
 
-    // 🔥 ON CHANGE
     employmentSelect?.addEventListener("change", function () {
         loadBusinessline(this.value);
     });
@@ -133,7 +132,6 @@ async function loadEmployment() {
             select.appendChild(opt);
         });
 
-        // 🔥 PENTING: FORCE VALUE
         if (selected) {
             select.value = selected;
         }
@@ -213,7 +211,7 @@ function initKtpUpload() {
             preview.src = e.target.result;
             wrapper.classList.remove("d-none");
 
-            // 🔥 SET KE INPUT (BASE64)
+            // SET KE INPUT (BASE64)
             imageInput.value = e.target.result;
             fileNameInput.value = file.name;
         };

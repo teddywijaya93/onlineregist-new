@@ -748,7 +748,7 @@ class CreateAccountController extends Controller
                 ]);
                 $nextStep = $result['registrationStep'] ?? null;
 
-                return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
+                return redirect()->route('success')->with('success', $result['message'] ?? 'Berhasil');
             }
 
             return back()->with('error', $result['message'] ?? 'Gagal');

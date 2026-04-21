@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // SUBMIT
     function submit(base64) {
-        imageInput.value = base64; // ✅ penting
+        imageInput.value = base64;
         form.submit();
     }
 });
@@ -130,7 +130,6 @@ function convertToBlack(signaturePad) {
     canvas.width = originalCanvas.width;
     canvas.height = originalCanvas.height;
 
-    // ✅ background putih
     ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -146,7 +145,6 @@ function convertToBlack(signaturePad) {
 
         const alpha = src[i + 3]; // ambil dari canvas asli
 
-        // 👉 kalau ada stroke
         if (alpha > 0) {
             data[i] = 0;     // R
             data[i + 1] = 0; // G

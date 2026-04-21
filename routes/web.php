@@ -107,4 +107,6 @@ Route::middleware(['step.guard'])->group(function () {
 
     Route::get('/data-signature', [CreateAccountController::class, 'showSignature'])->name('data.signature');
     Route::post('/data-signature/submit', [CreateAccountController::class, 'saveSignature'])->name('data.signature.submit');
+
+    Route::view('/sukses', 'success')->name('success');
 });
