@@ -16,32 +16,17 @@
 
 <script>
 document.getElementById("btnOpenApp").addEventListener("click", function () {
-
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
-
+    const ua = navigator.userAgent;
     const isAndroid = /android/i.test(ua);
-    const isIOS = /iPad|iPhone|iPod/.test(ua);
-    const isDesktop = !isAndroid && !isIOS;
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
 
-    // GANTI INI dengan deep link app lo
-    const deepLink = "profits://home"; 
-    const playStore = "https://play.google.com/store/apps/details?id=com.pt.sekuritas.profits.anywhere&pli=1";
-    const appStore = "https://apps.apple.com/id/app/profits-anywhere/id1417870013";
-
-    if (isAndroid || isIOS) {
-        // coba buka app
-        window.location.href = deepLink;
-
-        // fallback kalau app tidak terinstall
-        setTimeout(() => {
-            if (isAndroid) {
-                window.location.href = playStore;
-            } else if (isIOS) {
-                window.location.href = appStore;
-            }
-        }, 1500);
-    } else {
-        // desktop → arahkan ke web app
+    if (isAndroid) {
+        window.location.href = "https://play.google.com/store/apps/details?id=com.pt.sekuritas.profits.anywhere";
+    } 
+    else if (isIOS) {
+        window.location.href = "https://apps.apple.com/id/app/profits-anywhere/id1417870013";
+    } 
+    else {
         window.location.href = "https://www.profits.co.id/file/download/profits-setup.exe";
     }
 });

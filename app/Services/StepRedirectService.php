@@ -18,7 +18,7 @@ class StepRedirectService
         'uploadSignature'       => 'data.signature',
     ];
 
-    // FLOW DINAMIS
+    // Flow Dinamis
     public static function getFlow(): array
     {
         $employmentData = session('financialData') ?? [];
@@ -38,10 +38,7 @@ class StepRedirectService
             $flow[] = 'universityInformation';
             $flow[] = 'relation';
 
-        } elseif (
-            str_contains(strtolower($employmentType), 'pensiunan') ||
-            str_contains(strtolower($employmentType), 'ibu rumah tangga')
-        ) {
+        } elseif (str_contains(strtolower($employmentType), 'pensiunan') || str_contains(strtolower($employmentType), 'ibu rumah tangga')) {
             // IRT & Pensiunan
             $flow[] = 'relation';
 
@@ -56,7 +53,6 @@ class StepRedirectService
         return $flow;
     }
 
-    // NEXT STEP
     public static function nextStep(string $currentStep): ?string
     {
         $flow  = self::getFlow();
@@ -65,21 +61,46 @@ class StepRedirectService
         return $flow[$index + 1] ?? null;
     }
 
-    // STEP NUMBER (UI)
-    public static function stepNumber(?string $step): int
+    public static function prevStep(string $currentStep): ?string
     {
         $flow  = self::getFlow();
-        $index = array_search($step, $flow);
+
+        $index = array_search($currentStep, $flow);
+        if ($index === false || $index === 0) {
+            return null;
+        }
+        
+        return $flow[$index - 1];
+    }
+
+    public static function stepNumber(?string $step): int
+    {
+        $flow = self::getFlow();
+
+        $filtered = array_values(array_filter($flow, function ($s) {
+            return !in_array($s, ['createPIN', 'accountType', 'uploadSelfie']);
+        }));
+
+        if ($step === 'uploadSelfie') {
+            $step = 'uploadKtp';
+        }
+        $index = array_search($step, $filtered);
 
         return $index !== false ? $index + 1 : 1;
     }
 
     public static function totalStep(): int
     {
-        return count(self::getFlow());
+        $flow = self::getFlow();
+
+        $filtered = array_filter($flow, function ($s) {
+            return !in_array($s, ['createPIN', 'accountType', 'uploadSelfie']);
+        });
+
+        return count($filtered);
     }
 
-    // ROUTE HELPER
+    // Helper    
     public static function routeByStep(?string $step): ?string
     {
         if (!$step) {
@@ -91,7 +112,6 @@ class StepRedirectService
             : null;
     }
 
-    // PROCESS TYPE
     public static function getProcessType(string $targetStep): string
     {
         $sessionStep = session('registrationStep');
@@ -113,17 +133,6 @@ class StepRedirectService
             'uploadKtp',
             'uploadSelfie',
         ]);
-    }
-
-    public static function prevStep(string $currentStep): ?string
-    {
-        $flow  = self::getFlow();
-        $index = array_search($currentStep, $flow);
-
-        if ($index === false || $index === 0) {
-            return null;
-        }
-        return $flow[$index - 1];
     }
 
     // Dashboard

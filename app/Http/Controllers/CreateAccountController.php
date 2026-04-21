@@ -24,7 +24,7 @@ class CreateAccountController extends Controller
         // dd([
         //     'session_registrationStep' => session('registrationStep'),
         //     'currentStep' => $currentStep,
-        //     // 'all_session' => session()->all(),
+        //     'all_session' => session()->all(),
         // ]);
         return view('dashboard', compact('flow', 'groups', 'currentStep'));
     }
