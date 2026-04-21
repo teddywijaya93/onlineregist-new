@@ -18,7 +18,7 @@
             <!-- <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}"> -->
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Universitas</label>
-                <input type="text" name="employer" id="employer" class="form-control form-global alphabet-only" value="{{ old('employer', $universitasData['employer'] ?? '') }}" placeholder="Tulis Nama Universitas">
+                <input type="text" name="employer" id="employer" class="form-control form-global" value="{{ old('employer', $universitasData['employer'] ?? '') }}" placeholder="Tulis Nama Universitas">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Universitas</label>
@@ -28,10 +28,10 @@
                 <label class="form-label text-white text-form-global mb-2">Lama Kuliah</label>
                 <div class="row">
                     <div class="col-6">
-                        <input type="text" name="employmentDurationYear" id="employmentDurationYear" class="form-control form-global numeric-only" value="{{ old('employmentDurationYear', $universitasData['employmentDurationYear'] ?? '') }}" maxlength="2" placeholder="Tahun">
+                        <input type="text" name="employmentDurationYear" id="employmentDurationYear" class="form-control form-global numeric-only" value="{{ old('employmentDurationYear', ($universitasData['employmentDurationYear'] ?? '') ?: '') }}" maxlength="2" placeholder="Tahun">
                     </div>
                     <div class="col-6">
-                        <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" class="form-control form-global numeric-only" value="{{ old('employmentDurationMonth', $universitasData['employmentDurationMonth'] ?? '') }}" maxlength="2" placeholder="Bulan">
+                        <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" class="form-control form-global numeric-only" value="{{ old('employmentDurationMonth', ($universitasData['employmentDurationMonth'] ?? '') ?: '') }}" maxlength="2" placeholder="Bulan">
                     </div>
                 </div>
             </div>

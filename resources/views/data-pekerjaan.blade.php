@@ -49,10 +49,10 @@
                 <label class="form-label text-white text-form-global mb-2">Lama Berkerja</label>
                 <div class="row">
                     <div class="col-6">
-                        <input type="text" name="employmentDurationYear" id="employmentDurationYear" value="{{ old('employmentDurationYear', $employmentData['employmentDurationYear'] ?? '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Tahun">
+                        <input type="text" name="employmentDurationYear" id="employmentDurationYear" value="{{ old('employmentDurationYear', ($employmentData['employmentDurationYear'] ?? '') ?: '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Tahun">
                     </div>
                     <div class="col-6">
-                        <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" value="{{ old('employmentDurationMonth', $employmentData['employmentDurationMonth'] ?? '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Bulan">
+                        <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" value="{{ old('employmentDurationMonth', ($employmentData['employmentDurationMonth'] ?? '') ?: '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Bulan">
                     </div>
                 </div>
             </div>

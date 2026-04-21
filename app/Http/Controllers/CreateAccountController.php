@@ -17,6 +17,15 @@ class CreateAccountController extends Controller
         $groups = StepRedirectService::getGroupedFlow();
         $currentStep = session('registrationStep');
 
+        if (!$currentStep) {
+            $currentStep = $flow[0] ?? 'createPIN';
+        }
+
+        // dd([
+        //     'session_registrationStep' => session('registrationStep'),
+        //     'currentStep' => $currentStep,
+        //     // 'all_session' => session()->all(),
+        // ]);
         return view('dashboard', compact('flow', 'groups', 'currentStep'));
     }
 
@@ -133,10 +142,6 @@ class CreateAccountController extends Controller
 
     public function showPersonal()
     {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
         $step = session('registrationStep');
         $ocr = session('ocr_result');
 
@@ -214,10 +219,6 @@ class CreateAccountController extends Controller
 
     public function savePersonal(Request $request)
     {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
         if ($request->tanggalLahir) {
             try {
                 $request->merge([
@@ -295,10 +296,6 @@ class CreateAccountController extends Controller
 
     public function showFinancial()
     {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
         $this->getRegistration();
 
         $step = session('registrationStep');
@@ -322,10 +319,6 @@ class CreateAccountController extends Controller
 
     public function saveFinancial(Request $request)
     {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
         $financialData = $request->validate([
             'employmentType'      => 'required|string',
             'education'           => 'required|string',
@@ -382,10 +375,6 @@ class CreateAccountController extends Controller
 
     public function showRelation()
     {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
         $this->getRegistration();
 
         $step = session('registrationStep');
@@ -424,10 +413,6 @@ class CreateAccountController extends Controller
 
     public function saveRelation(Request $request)
     {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
         $relationData = $request->validate([
             'beneficiaryName'               => 'required|string|max:100',
             'beneficiaryRelation'           => 'required|string',
@@ -485,10 +470,6 @@ class CreateAccountController extends Controller
 
     public function showEmployment()
     {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
         $this->getRegistration();
 
         $step = session('registrationStep');
@@ -507,10 +488,6 @@ class CreateAccountController extends Controller
 
     public function saveEmployment(Request $request)
     {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
         $employmentData = $request->validate([
             'employer'                => 'required|string|max:100',
             'employmentPosition'      => 'required|string',
@@ -569,10 +546,6 @@ class CreateAccountController extends Controller
 
     public function showUniversitas()
     {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
         $this->getRegistration();
 
         $step = session('registrationStep');
@@ -591,10 +564,6 @@ class CreateAccountController extends Controller
 
     public function saveUniversitas(Request $request)
     {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
         $universitasData = $request->validate([
             'employer'                => 'required|string|max:100',
             'employmentDurationYear'  => 'required|integer',
@@ -650,10 +619,6 @@ class CreateAccountController extends Controller
 
     public function showbank()
     {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
         $this->getRegistration();
 
         $step = session('registrationStep');
@@ -672,10 +637,6 @@ class CreateAccountController extends Controller
 
     public function saveBank(Request $request)
     {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
         $bankData = $request->validate([
             'bankName'          => 'required|string',
             'bankAccountOwner'  => 'required|string',
@@ -738,10 +699,6 @@ class CreateAccountController extends Controller
 
     public function showSignature()
     {
-        if (!session()->has('registrationId')) {
-            return redirect()->route('email');
-        }
-
         if (!session('isAgreementApproved')) {
             return redirect()->route('syarat.ketentuan');
         }
@@ -759,10 +716,6 @@ class CreateAccountController extends Controller
     public function saveSignature(Request $request)
     {
         try {
-            if (!session()->has('registrationId')) {
-                return redirect()->route('email');
-            }
-
             $request->validate([
                 'image' => 'required|string'
             ]);

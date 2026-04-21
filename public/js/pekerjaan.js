@@ -1,14 +1,33 @@
 document.addEventListener('DOMContentLoaded', async () => {
     let employmentType = document.getElementById("employmentType")?.value;
+    if (employmentType) {
+        const employmentId = await getEmploymentId(employmentType);
 
-    if (!employmentType) return;
-    const employmentId = await getEmploymentId(employmentType);
+        if (employmentId) {
+            loadBusinessline(employmentId);
+            loadPosition(employmentId);
+        }
+    }
 
-    if (!employmentId) return;
-
-    loadBusinessline(employmentId);
-    loadPosition(employmentId);
     initValidation();
+
+    const monthInput = document.getElementById("employmentDurationMonth");
+    if (monthInput) {
+        monthInput.addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, "");
+
+            // 0 tidak boleh
+            if (this.value === "0") {
+                this.value = "";
+                return;
+            }
+
+            // max 12
+            if (parseInt(this.value) > 12) {
+                this.value = "12";
+            }
+        });
+    }
 });
 
 async function getEmploymentId(text) {

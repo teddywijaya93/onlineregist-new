@@ -1,5 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
     initValidation();
+
+    const monthInput = document.getElementById("employmentDurationMonth");
+    if (monthInput) {
+        monthInput.addEventListener("input", function () {
+            // hanya angka
+            this.value = this.value.replace(/\D/g, "");
+
+            // kalau 0 → kosongkan
+            if (this.value === "0") {
+                this.value = "";
+                return;
+            }
+
+            // max 12
+            if (parseInt(this.value) > 12) {
+                this.value = "12";
+            }
+        });
+    }
 });
 
 function initValidation() {
