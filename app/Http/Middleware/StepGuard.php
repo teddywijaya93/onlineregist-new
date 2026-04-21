@@ -16,10 +16,7 @@ class StepGuard
         }
         $currentRoute = $request->route()->getName();
         $flow = StepRedirectService::getFlow();
-        $currentStep = array_search(
-            $currentRoute,
-            StepRedirectService::STEP_ROUTE
-        );
+        $currentStep = array_search($currentRoute,StepRedirectService::STEP_ROUTE);
 
         if ($currentStep === false) {
             return $next($request);
@@ -30,6 +27,13 @@ class StepGuard
         // Block hanya kalau lompat ke depan
         if ($currentIndex > $sessionIndex) {
             return redirect()->route(StepRedirectService::STEP_ROUTE[$sessionStep]);
+        }
+
+        // Block kalau ke create pin, account type (HANYA BISA 1x)
+        if (in_array($currentStep, ['createPIN', 'accountType', 'uploadSelfie'])) { 
+            if ($sessionIndex !== false && $sessionIndex > $currentIndex) { 
+                return redirect(\App\Services\StepRedirectService::routeByStep($sessionStep)); 
+            } 
         }
         return $next($request);
     }

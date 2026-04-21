@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use Carbon\Carbon;
 
 class OcrNormalizer
 {
@@ -24,7 +25,11 @@ class OcrNormalizer
         $blood_type     = self::cleanWilayah($data['blood_type'] ?? '');
         $dob            = null;
         if (!empty($data['date_of_birth'])) {
-            $dob = date('Y-m-d', strtotime(str_replace('-', '/', $data['date_of_birth'])));
+            try {
+                $dob = Carbon::createFromFormat('d-m-Y', $data['date_of_birth'])->format('Y-m-d');
+            } catch (\Exception $e) {
+                $dob = null;
+            }
         }
 
         return [

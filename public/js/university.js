@@ -19,6 +19,17 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    const yearInput = document.getElementById("employmentDurationYear");
+    if (yearInput) {
+        yearInput.addEventListener("input", function () {
+            this.value = this.value.replace(/\D/g, "");
+
+            if (this.value === "0") {
+                this.value = "";
+            }
+        });
+    }
 });
 
 function initValidation() {
