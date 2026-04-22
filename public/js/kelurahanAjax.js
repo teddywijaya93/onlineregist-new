@@ -1,3 +1,6 @@
+const kelurahanCache = {};
+let lastResult = [];
+
 document.addEventListener("DOMContentLoaded", () => {
     initKelurahanSearch();
 });
@@ -16,17 +19,35 @@ function initKelurahanSearch() {
         return (text || '').toLowerCase().replace(/[^a-z]/g, '');
     }
 
-    async function fetchKelurahan(keyword, dropdown) {
+    async function fetchKelurahan(keyword, dropdown, silent = false) {
         try {
-            dropdown.style.display = "block";
-            dropdown.innerHTML = `<div class="dropdown-loading">Mencari Data Kelurahan</div>`;
+            const key = keyword.toLowerCase();
+
+            // Kalau sudah pernah fetch → pakai cache
+            if (kelurahanCache[key]) {
+                return kelurahanCache[key];
+            }
+
+            if (!silent) {
+                dropdown.style.display = "block";
+                dropdown.innerHTML = `<div class="dropdown-loading">Mencari Data Kelurahan</div>`;
+            }
 
             const res = await fetch(`${window.routes.kelurahan}?q=${keyword}`);
             const json = await res.json();
 
-            return json.data || [];
+            const data = json.data || [];
+
+            // simpan ke cache
+            kelurahanCache[key] = data;
+            lastResult = data;
+
+            return data;
+
         } catch (err) {
-            dropdown.innerHTML = `<div class="dropdown-error">Gagal Load Data</div>`;
+            if (!silent) {
+                dropdown.innerHTML = `<div class="dropdown-error">Gagal Load Data</div>`;
+            }
             return [];
         }
     }
@@ -62,8 +83,8 @@ function initKelurahanSearch() {
                 div.className = "dropdown-item";
 
                 div.innerHTML = `
-                    <div class="item-main">${item.kelurahan}</div>
-                    <div class="item-sub">${item.kecamatan}, ${item.city}</div>
+                    <div class="item-main">${item.kelurahan}, ${item.kecamatan}, ${item.city}</div>
+                    <div class="item-sub">Kode Pos: ${item.postalCode}</div>
                 `;
 
                 div.addEventListener("click", () => {
@@ -113,9 +134,12 @@ function initKelurahanSearch() {
             const val = input.value.trim();
             if (!val) return;
 
-            const list = await fetchKelurahan(val, dropdown);
-            if (!list.length) return;
+            let list = lastResult;
+            if (!list.length) {
+                list = await fetchKelurahan(val, dropdown, true);
+            }
 
+            if (!list.length) return;
             const match = list.find(i =>
                 normalize(i.kelurahan) === normalize(val)
             ) || list[0];

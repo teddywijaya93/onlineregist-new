@@ -10,7 +10,7 @@
             'hideBack' => $hideBack
         ])
         <div class="mb-5">
-            <h3 class="head-lanjut text-white mb-2">Data Unversitas</h3>
+            <h3 class="head-lanjut text-white mb-2">Data Universitas</h3>
             <p class="desc-lanjut mb-0"></p>
         </div>
         <form id="universityForm" method="POST" action="{{ route('data.universitas.submit') }}">
@@ -28,10 +28,16 @@
                 <label class="form-label text-white text-form-global mb-2">Lama Kuliah</label>
                 <div class="row">
                     <div class="col-6">
-                        <input type="text" name="employmentDurationYear" id="employmentDurationYear" class="form-control form-global numeric-only" value="{{ old('employmentDurationYear', ($universitasData['employmentDurationYear'] ?? '') ?: '') }}" maxlength="2" placeholder="Tahun">
+                        <div class="input-group">
+                            <input type="text" name="employmentDurationYear" id="employmentDurationYear" class="form-control form-global numeric-only" value="{{ old('employmentDurationYear', ($universitasData['employmentDurationYear'] ?? '') ?: '') }}" maxlength="2" placeholder="Tahun">
+                            <span class="input-group-text">Tahun</span>
+                        </div>
                     </div>
                     <div class="col-6">
-                        <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" class="form-control form-global numeric-only" value="{{ old('employmentDurationMonth', ($universitasData['employmentDurationMonth'] ?? '') ?: '') }}" maxlength="2" placeholder="Bulan">
+                        <div class="input-group">
+                            <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" class="form-control form-global numeric-only" value="{{ old('employmentDurationMonth', ($universitasData['employmentDurationMonth'] ?? '') ?: '') }}" maxlength="2" placeholder="Bulan">
+                            <span class="input-group-text">Bulan</span>
+                        </div>
                     </div>
                 </div>
             </div>

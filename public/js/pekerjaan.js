@@ -14,29 +14,41 @@ document.addEventListener('DOMContentLoaded', async () => {
     const monthInput = document.getElementById("employmentDurationMonth");
     if (monthInput) {
         monthInput.addEventListener("input", function () {
-            this.value = this.value.replace(/\D/g, "");
+            let val = this.value.replace(/\D/g, "");
+            if (val.length > 1 && val.startsWith("0")) {
+                val = val.replace(/^0+/, "");
+            }
 
-            // 0 tidak boleh
-            if (this.value === "0") {
+            // allow "0"
+            if (val === "") {
                 this.value = "";
                 return;
             }
 
             // max 12
-            if (parseInt(this.value) > 12) {
-                this.value = "12";
+            if (parseInt(val) > 12) {
+                val = "12";
             }
+
+            this.value = val;
         });
     }
 
     const yearInput = document.getElementById("employmentDurationYear");
     if (yearInput) {
         yearInput.addEventListener("input", function () {
-            this.value = this.value.replace(/\D/g, "");
-
-            if (this.value === "0") {
-                this.value = "";
+            let val = this.value.replace(/\D/g, "");
+            if (val.length > 1 && val.startsWith("0")) {
+                val = val.replace(/^0+/, "");
             }
+
+            // allow "0"
+            if (val === "") {
+                this.value = "";
+                return;
+            }
+
+            this.value = val;
         });
     }
 });

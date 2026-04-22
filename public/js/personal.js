@@ -40,6 +40,7 @@ async function loadSelect(id, url, placeholder = "Pilih") {
 
 // INIT MASTER DROPDOWNS
 async function initSelects() {
+    await loadSelect("genderSelect", window.routes.gender, "Pilih Jenis Kelamin");
     await loadSelect("maritalSelect", window.routes.marital, "Pilih Status Perkawinan");
     await loadSelect("religionSelect", window.routes.religion, "Pilih Status Agama");
     restrictMaritalByGender();
@@ -115,6 +116,7 @@ function initValidation() {
         isValid &= validateRequired("identificationNumber", "NIK Wajib Diisi");
         isValid &= validateRequired("dateOfBirth", "Tanggal Lahir Wajib Diisi");
         isValid &= validateAge("dateOfBirth", " Umur Minimal 17 Tahun");
+        isValid &= validateRequired("genderSelect", "Jenis Kelamin Wajib Diisi");
         isValid &= validateRequired("maritalSelect", "Status Perkawinan Wajib Diisi");
         isValid &= validateRequired("religionSelect", "Agama Wajib Diisi");
         isValid &= validateRequired("motherMaidenName", "Nama Gadis Ibu Kandung Wajib Diisi");
@@ -138,7 +140,9 @@ function initValidation() {
         "name",
         "identificationNumber",
         "dateOfBirth",
+        "gender",
         "maritalStatus",
+        "religion",
         "motherMaidenName",
         "address",
         "kelurahan",

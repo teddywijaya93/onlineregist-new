@@ -48,11 +48,17 @@
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Lama Berkerja</label>
                 <div class="row">
-                    <div class="col-6">
-                        <input type="text" name="employmentDurationYear" id="employmentDurationYear" value="{{ old('employmentDurationYear', ($employmentData['employmentDurationYear'] ?? '') ?: '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Tahun">
+                    <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                        <div class="input-group">
+                            <input type="text" name="employmentDurationYear" id="employmentDurationYear" value="{{ old('employmentDurationYear', ($employmentData['employmentDurationYear'] ?? '') ?: '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Tahun">
+                            <span class="input-group-text">Tahun</span>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" value="{{ old('employmentDurationMonth', ($employmentData['employmentDurationMonth'] ?? '') ?: '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Bulan">
+                    <div class="col-12 col-lg-6">
+                        <div class="input-group">
+                            <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" value="{{ old('employmentDurationMonth', ($employmentData['employmentDurationMonth'] ?? '') ?: '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Bulan">
+                            <span class="input-group-text">Bulan</span>
+                        </div>
                     </div>
                 </div>
             </div>

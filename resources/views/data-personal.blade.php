@@ -33,6 +33,14 @@
                 </div>
             </div>
             <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Jenis Kelamin</label>
+                <div class="select-wrapper">
+                    <select name="gender" id="genderSelect" class="form-control form-global" data-selected="{{ $data['gender'] ?? '' }}">
+                        <option value="">Pilih Jenis Kelamin</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Agama</label>
                 <div class="select-wrapper">
                     <select name="religion" id="religionSelect" class="form-control form-global" data-selected="{{ $data['religion'] ?? '' }}">
@@ -76,7 +84,6 @@
                 <input class="form-check-input me-2" type="checkbox" id="sameAddress">
                 <label class="form-label text-white text-form-global mb-0" for="sameAddress">Alamat tinggal sesuai e-KTP</label>
             </div>
-            <!-- Checklist -->
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Alamat Domisili Sesuai e-KTP</label>
                 <textarea rows="3" name="residenceAddress" id="residenceAddress" class="form-control form-global" placeholder="Alamat Sesuai e-KTP Domisili">{{ old('residenceAddress', $data['residenceAddress'] ?? '') }}</textarea>
@@ -105,6 +112,7 @@
 
 <script>
 window.routes = {
+    gender      : "{{ route('master.gender') }}",
     marital     : "{{ route('master.marital') }}",
     religion    : "{{ route('master.religion') }}",
     kelurahan   : "{{ route('master.all.kelurahan') }}"

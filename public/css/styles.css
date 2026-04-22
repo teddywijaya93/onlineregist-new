@@ -251,6 +251,13 @@ body{
     color:#7A8699;
     opacity: 1;
 }
+.input-group-text{
+    background: transparent;
+    border:1px solid#3898FF;
+    color:#FFF;
+    font-size: 14px;
+    font-weight: 400;
+}
 .select-wrapper{position: relative;}
 .select-wrapper::after{
     content: "\f107";
@@ -539,13 +546,12 @@ body{
 }
 
 /*  */
-.input-error{
-    border: 1px solid#EA5D5F !important;
-}
+.input-error{border: 1px solid#EA5D5F !important;}
 .error-text{
     color:#EA5D5F;
     font-size: 14PX;
     margin-top: 4px;
+    width: 100%;
 }
 .alert-bank{
     background:#1c2a44;
