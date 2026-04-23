@@ -27,15 +27,15 @@
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Lama Kuliah</label>
                 <div class="row">
-                    <div class="col-6">
+                    <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                         <div class="input-group">
-                            <input type="text" name="employmentDurationYear" id="employmentDurationYear" class="form-control form-global numeric-only" value="{{ old('employmentDurationYear', ($universitasData['employmentDurationYear'] ?? '') ?: '') }}" maxlength="2" placeholder="Tahun">
+                            <input type="text" name="employmentDurationYear" id="employmentDurationYear" class="form-control form-global numeric-only" value="{{ old('employmentDurationYear', $universitasData['employmentDurationYear'] ?? '') }}" maxlength="2" placeholder="Tahun">
                             <span class="input-group-text">Tahun</span>
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-12 col-lg-6">
                         <div class="input-group">
-                            <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" class="form-control form-global numeric-only" value="{{ old('employmentDurationMonth', ($universitasData['employmentDurationMonth'] ?? '') ?: '') }}" maxlength="2" placeholder="Bulan">
+                            <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" class="form-control form-global numeric-only" value="{{ old('employmentDurationMonth', $universitasData['employmentDurationMonth'] ?? '') }}" maxlength="2" placeholder="Bulan">
                             <span class="input-group-text">Bulan</span>
                         </div>
                     </div>

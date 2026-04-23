@@ -10,8 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // allow "0"
-            if (val === "") {
-                this.value = "";
+            if (val === "0") {
+                this.value = "0";
                 return;
             }
 
@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // allow "0"
-            if (val === "") {
-                this.value = "";
+            if (val === "0") {
+                this.value = "0";
                 return;
             }
 

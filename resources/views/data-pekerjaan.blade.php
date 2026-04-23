@@ -50,13 +50,13 @@
                 <div class="row">
                     <div class="col-12 col-lg-6 mb-3 mb-lg-0">
                         <div class="input-group">
-                            <input type="text" name="employmentDurationYear" id="employmentDurationYear" value="{{ old('employmentDurationYear', ($employmentData['employmentDurationYear'] ?? '') ?: '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Tahun">
+                            <input type="text" name="employmentDurationYear" id="employmentDurationYear" class="form-control form-global numeric-only" value="{{ old('employmentDurationYear', $employmentData['employmentDurationYear'] ?? '') }}" maxlength="2" placeholder="Tahun">
                             <span class="input-group-text">Tahun</span>
                         </div>
                     </div>
                     <div class="col-12 col-lg-6">
                         <div class="input-group">
-                            <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" value="{{ old('employmentDurationMonth', ($employmentData['employmentDurationMonth'] ?? '') ?: '') }}" class="form-control form-global numeric-only" maxlength="2" placeholder="Bulan">
+                            <input type="text" name="employmentDurationMonth" id="employmentDurationMonth" class="form-control form-global numeric-only" value="{{ old('employmentDurationMonth', $employmentData['employmentDurationMonth'] ?? '') }}" maxlength="2" placeholder="Bulan">
                             <span class="input-group-text">Bulan</span>
                         </div>
                     </div>

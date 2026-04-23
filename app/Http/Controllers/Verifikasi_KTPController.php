@@ -27,12 +27,13 @@ class Verifikasi_KTPController extends Controller
         ]);
     }
 
-    private function sendOtpResult($status, $message, $referenceId = "", $extra = [])
+    private function sendOtpResult($status, $message, $referenceId = "", $extra = [], $typeOcr = "KTP")
     {
         $payload = [
             "registrationId" => session('registrationId'),
             "status"        => $status,
             "message"       => $message,
+            "typeOcr"       => $typeOcr,
             "referenceId"   => $referenceId
         ];
 
@@ -180,6 +181,31 @@ class Verifikasi_KTPController extends Controller
                 ]);
 
                 return back()->with('error', $message);
+            }
+
+            // VALIDASI IMAGE QUALITY
+            $imageQuality = $ocrResult['data']['image_quality'] ?? [];
+            $forgeries    = $ocrResult['data']['forgeries'] ?? false;
+            $isInvalid = ($imageQuality['blur'] ?? false) || ($imageQuality['dark'] ?? false) || ($imageQuality['grayscale'] ?? false) || ($imageQuality['flashlight'] ?? false) || $forgeries;
+            
+            if ($isInvalid) {
+                $reasons = [];
+
+                if (!empty($imageQuality['blur'])) $reasons[] = 'Blur';
+                if (!empty($imageQuality['dark'])) $reasons[] = 'Terlalu Gelap';
+                if (!empty($imageQuality['grayscale'])) $reasons[] = 'Grayscale';
+                if (!empty($imageQuality['flashlight'])) $reasons[] = 'Flash Terlalu Terang';
+                if ($forgeries) $reasons[] = 'Terindikasi manipulasi';
+
+                $messageReject = 'Foto KTP tidak valid: ' . implode(', ', $reasons);
+
+                // kirim ke BO
+                $this->sendOtpResult(false, $messageReject, $referenceId, [
+                    'image_quality' => $imageQuality,
+                    'forgeries'     => $forgeries
+                ]);
+
+                return back()->with('error', $messageReject);
             }
 
             // 6. VALIDASI KTP (FIX TANPA is_ktp)

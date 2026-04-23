@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // allow "0"
-            if (val === "") {
-                this.value = "";
+            if (val === "0") {
+                this.value = "0";
                 return;
             }
 
@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // allow "0"
-            if (val === "") {
-                this.value = "";
+            if (val === "0") {
+                this.value = "0";
                 return;
             }
 
