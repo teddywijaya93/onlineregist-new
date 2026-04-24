@@ -51,6 +51,23 @@ document.addEventListener('DOMContentLoaded', async () => {
             this.value = val;
         });
     }
+
+    const phoneInput = document.getElementById("officeTelephone");
+    if (phoneInput) {
+        phoneInput.addEventListener("input", function (e) {
+            let val = e.target.value;
+
+            // hanya angka
+            val = val.replace(/[^\d]/g, "");
+
+            // optional: max 13 digit
+            if (val.length > 13) {
+                val = val.slice(0, 13);
+            }
+
+            e.target.value = val;
+        });
+    }
 });
 
 async function getEmploymentId(text) {

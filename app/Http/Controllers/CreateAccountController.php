@@ -21,11 +21,6 @@ class CreateAccountController extends Controller
             $currentStep = $flow[0] ?? 'createPIN';
         }
 
-        // dd([
-        //     'session_registrationStep' => session('registrationStep'),
-        //     'currentStep' => $currentStep,
-        //     'all_session' => session()->all(),
-        // ]);
         return view('dashboard', compact('flow', 'groups', 'currentStep'));
     }
 
@@ -155,6 +150,10 @@ class CreateAccountController extends Controller
             : [];
         // dd($ocrData);
 
+        if (request()->get('from') === 'dashboard') {
+            session(['from_dashboard' => true]);
+        }
+
         $this->getRegistration();
         $personalData = session('personalData', []);
 
@@ -248,8 +247,8 @@ class CreateAccountController extends Controller
         $personalData['kecamatan'] = $request->kecamatan ?? '';
         $personalData['residenceKecamatan'] = $request->residenceKecamatan ?? '';
 
-        // dd($personalData);
         $currentStep = session('registrationStep');
+        $userDashboard = session('from_dashboard', false);
         $processType = $currentStep === 'personalInformation'
             ? 'CREATE'
             : 'UPDATE';
@@ -257,6 +256,7 @@ class CreateAccountController extends Controller
         $payload = [
             "registrationId" => session('registrationId'),
             "step" => "personalInformation",
+            "userUpdates" => $userDashboard,
             "process" => $processType,
             "datas" => $personalData
         ];
@@ -282,6 +282,15 @@ class CreateAccountController extends Controller
                     'personalData' => $personalData,
                     'registrationStep' => $result['registrationStep']
                 ]);
+
+                if ($userDashboard) {
+                    $nextStep = $result['registrationStep'] ?? null;
+
+                    session()->forget('from_dashboard');
+
+                    return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
+                }
+
                 $nextStep = StepRedirectService::nextStep('personalInformation');
 
                 return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
@@ -296,6 +305,10 @@ class CreateAccountController extends Controller
 
     public function showFinancial()
     {
+        if (request()->get('from') === 'dashboard') {
+            session(['from_dashboard' => true]);
+        }
+
         $this->getRegistration();
 
         $step = session('registrationStep');
@@ -329,6 +342,7 @@ class CreateAccountController extends Controller
         // dd($financialData);
 
         $currentStep = session('registrationStep');
+        $userDashboard = session('from_dashboard', false);
         $processType = $currentStep === 'financialProfile'
             ? 'CREATE'
             : 'UPDATE';
@@ -336,6 +350,7 @@ class CreateAccountController extends Controller
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "financialProfile",
+            "userUpdates"    => $userDashboard,
             "process"        => $processType,
             "datas"          => $financialData
         ];
@@ -361,6 +376,15 @@ class CreateAccountController extends Controller
                     'financialData' => $financialData,
                     'registrationStep' => $result['registrationStep']
                 ]);
+
+                if ($userDashboard) {
+                    $nextStep = $result['registrationStep'] ?? null;
+
+                    session()->forget('from_dashboard');
+
+                    return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
+                }
+
                 $nextStep = StepRedirectService::nextStep('financialProfile');
 
                 return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
@@ -375,6 +399,10 @@ class CreateAccountController extends Controller
 
     public function showRelation()
     {
+        if (request()->get('from') === 'dashboard') {
+            session(['from_dashboard' => true]);
+        }
+
         $this->getRegistration();
 
         $step = session('registrationStep');
@@ -426,11 +454,13 @@ class CreateAccountController extends Controller
         // dd($relationData);
         
         $currentStep = session('registrationStep');
+        $userDashboard = session('from_dashboard', false);
         $processType = 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "relation",
+            "userUpdates"    => $userDashboard,
             "process"        => $processType,
             "datas"          => $relationData
         ];
@@ -456,6 +486,15 @@ class CreateAccountController extends Controller
                     'relationData' => $relationData,
                     'registrationStep' => $result['registrationStep']
                 ]);
+
+                if ($userDashboard) {
+                    $nextStep = $result['registrationStep'] ?? null;
+
+                    session()->forget('from_dashboard');
+
+                    return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
+                }
+
                 $nextStep = StepRedirectService::nextStep('relation');
 
                 return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
@@ -470,6 +509,10 @@ class CreateAccountController extends Controller
 
     public function showEmployment()
     {
+        if (request()->get('from') === 'dashboard') {
+            session(['from_dashboard' => true]);
+        }
+
         $this->getRegistration();
 
         $step = session('registrationStep');
@@ -502,11 +545,13 @@ class CreateAccountController extends Controller
         // dd($employmentData);
 
         $currentStep = session('registrationStep');
+        $userDashboard = session('from_dashboard', false);
         $processType = 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "employmentInformation",
+            "userUpdates"    => $userDashboard,
             "process"        => $processType,
             "datas"          => $employmentData
         ];
@@ -532,6 +577,15 @@ class CreateAccountController extends Controller
                     'employmentData' => $employmentData,
                     'registrationStep' => $result['registrationStep']
                 ]);
+
+                if ($userDashboard) {
+                    $nextStep = $result['registrationStep'] ?? null;
+
+                    session()->forget('from_dashboard');
+
+                    return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
+                }
+
                 $nextStep = StepRedirectService::nextStep('employmentInformation');
 
                 return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
@@ -546,6 +600,10 @@ class CreateAccountController extends Controller
 
     public function showUniversitas()
     {
+        if (request()->get('from') === 'dashboard') {
+            session(['from_dashboard' => true]);
+        }
+
         $this->getRegistration();
 
         $step = session('registrationStep');
@@ -575,11 +633,13 @@ class CreateAccountController extends Controller
         // dd($universitasData);
 
         $currentStep = session('registrationStep');
+        $userDashboard = session('from_dashboard', false);
         $processType = 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "universityInformation",
+            "userUpdates"    => $userDashboard,
             "process"        => $processType,
             "datas"          => $universitasData
         ];
@@ -605,6 +665,15 @@ class CreateAccountController extends Controller
                     'universitasData' => $universitasData,
                     'registrationStep' => $result['registrationStep']
                 ]);
+
+                if ($userDashboard) {
+                    $nextStep = $result['registrationStep'] ?? null;
+
+                    session()->forget('from_dashboard');
+
+                    return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
+                }
+
                 $nextStep = StepRedirectService::nextStep('universityInformation');
 
                 return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
@@ -619,6 +688,10 @@ class CreateAccountController extends Controller
 
     public function showbank()
     {
+        if (request()->get('from') === 'dashboard') {
+            session(['from_dashboard' => true]);
+        }
+
         $this->getRegistration();
 
         $step = session('registrationStep');
@@ -645,11 +718,13 @@ class CreateAccountController extends Controller
         // dd($bankData);
 
         $currentStep = session('registrationStep');
+        $userDashboard = session('from_dashboard', false);
         $processType = 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "financialInformation",
+            "userUpdates"    => $userDashboard,
             "process"        => $processType,
             "datas"          => $bankData
         ];
@@ -675,6 +750,14 @@ class CreateAccountController extends Controller
                     'bankData' => $bankData,
                     'registrationStep' => $result['registrationStep']
                 ]);
+
+                if ($userDashboard) {
+                    $nextStep = $result['registrationStep'] ?? null;
+
+                    session()->forget('from_dashboard');
+
+                    return redirect()->route(StepRedirectService::STEP_ROUTE[$nextStep])->with('success', $result['message'] ?? 'Berhasil');
+                }
                 $nextStep = StepRedirectService::nextStep('financialInformation');
 
                 return redirect()->route('syarat.ketentuan')->with('success', $result['message'] ?? 'Berhasil');

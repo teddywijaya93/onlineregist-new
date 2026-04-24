@@ -6,12 +6,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadEmployment();
     const employmentSelect = document.getElementById("employmentSelect");
 
-    // FORCE LOAD BUSINESSLINE SETELAH EMPLOYMENT KE-SET
     if (employmentSelect && employmentSelect.value) {
         loadBusinessline(employmentSelect.value);
     }
 
     employmentSelect?.addEventListener("change", function () {
+        const businessSelect = document.getElementById('businesslineSelect');
+
+        if (businessSelect) {
+            businessSelect.dataset.selected = '';
+        }
         loadBusinessline(this.value);
     });
 });
@@ -88,7 +92,8 @@ function initReferenceRelation() {
         opt.value = optData.id;
         opt.textContent = optData.label;
 
-        if (String(optData.id) === String(selected)) {
+        const selectedValue = (selected || '').toLowerCase().trim();
+        if (String(optData.id) === String(selected) || optData.label.toLowerCase().trim() === selectedValue) {
             opt.selected = true;
         }
 
@@ -111,7 +116,8 @@ async function loadEmployment() {
     const select = document.getElementById("employmentSelect");
     if (!select) return;
 
-    const selected = select.dataset.selected || '';
+    const selectedRaw = select.dataset.selected || '';
+    const selected = selectedRaw.toLowerCase().trim();
 
     try {
         const res = await fetch(window.routes.employment);
@@ -119,21 +125,29 @@ async function loadEmployment() {
         const list = json.data || json.datas || [];
 
         select.innerHTML = `<option value="">Pilih Pekerjaan</option>`;
+        let selectedId = null;
 
         list.forEach(item => {
             const opt = document.createElement("option");
             opt.value = item.id;
             opt.textContent = item.description;
 
-            if (String(item.id) === String(selected)) {
+            const itemId   = String(item.id);
+            const itemDesc = (item.description || '').toLowerCase().trim();
+
+            if (itemId === selectedRaw || itemDesc === selected) {
+                selectedId = itemId;
                 opt.selected = true;
             }
 
             select.appendChild(opt);
         });
 
-        if (selected) {
-            select.value = selected;
+        if (selectedId) {
+            select.value = selectedId;
+
+            // auto load businessline
+            loadBusinessline(selectedId);
         }
 
     } catch (err) {
@@ -146,7 +160,13 @@ function loadBusinessline(employmentId) {
     const select = document.getElementById("businesslineSelect");
     if (!select) return;
 
-    const selected = select.dataset.selected || '';
+    const selectedRaw = select.dataset.selected || '';
+    const selected = selectedRaw.toLowerCase().trim();
+
+    if (!employmentId) {
+        select.innerHTML = `<option value="">Pilih Bidang Usaha</option>`;
+        return;
+    }
 
     select.innerHTML = `<option value="">Pilih Bidang Usaha</option>`;
 
@@ -155,19 +175,28 @@ function loadBusinessline(employmentId) {
         .then(res => {
             const list = res.data || res.datas || [];
 
+            let selectedId = null;
+
             list.forEach(item => {
                 if (!item.businessLineId) return;
 
+                const itemId   = String(item.businessLineId);
+                const itemDesc = (item.description || '').toLowerCase().trim();
                 const opt = document.createElement("option");
-                opt.value = item.businessLineId;
+                opt.value = itemId;
                 opt.textContent = item.description;
 
-                if (String(item.businessLineId) === String(selected)) {
+                if (itemId === selectedRaw || itemDesc === selected) {
+                    selectedId = itemId;
                     opt.selected = true;
                 }
 
                 select.appendChild(opt);
             });
+
+            if (selectedId) {
+                select.value = selectedId;
+            }
         })
         .catch(err => console.error("BusinessLine Error:", err));
 }

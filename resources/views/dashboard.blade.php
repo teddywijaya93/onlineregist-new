@@ -30,7 +30,7 @@
 
             <div class="step-item mb-3"
                  @if($canClick)
-                    onclick="window.location='{{ $route }}'"
+                    onclick="window.location='{{ $route }}?from=dashboard'"
                     style="cursor:pointer;"
                  @endif>
 
