@@ -225,11 +225,6 @@ body{
 
 /* Referral Blade */
 .btn-back{font-size: 20px;}
-.referral-text{
-    color:#3898FF;
-    font-size: 14px;
-    font-weight: 500;
-}
 .text-form-global{
     color:#FDFDFD;
     font-size: 14px;
@@ -270,7 +265,6 @@ body{
     color: #fff;
     pointer-events: none;
 }
-/* .select-wrapper:focus-within::after{transform: translateY(-50%) rotate(180deg);} */
 .date-wrapper{position: relative;}
 .date-wrapper::after {
     content: "\f073";
@@ -291,6 +285,21 @@ body{
     color:#3898FF;
     font-size: 14px;
     font-weight: 500;
+}
+.card-referral{
+    background:#0D1D33;
+    border-radius: 16px;
+    padding: 20px 15px
+}
+.title-referral{
+    font-size: 14px;
+    font-weight: 600;
+    color:#B3B9C4;
+}
+.text-referral{
+    font-size: 16px;
+    font-weight: 600;
+    color:#FAFBFB;
 }
 
 /* Customer Type */

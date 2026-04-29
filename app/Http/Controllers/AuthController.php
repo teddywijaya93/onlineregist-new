@@ -169,12 +169,26 @@ class AuthController extends Controller
             ]);
             $email = session('reg_email');
             $phone = session('reg_phone');
+            $referral = session('referral');
 
             if (!$email || !$phone) {
                 return response()->json([
                     "status" => false,
                     "message" => "Session tidak lengkap"
                 ]);
+            }
+
+            $payload = [
+                "username" => $request->username,
+                "password" => $request->password,
+                "email"    => $email,
+                "phone"    => $phone,
+            ];
+
+            if ($referral) {
+                $payload['aoCode']       = $referral['aoCode'] ?? null;
+                $payload['idLinkCode']   = $referral['idLinkCode'] ?? null;
+                $payload['referralCode'] = $referral['referralCode'] ?? null;
             }
 
             $response = Http::withHeaders([
@@ -200,6 +214,7 @@ class AuthController extends Controller
                     'registrationId' => $data['registrationId'],
                     'registrationStep' => $data['registrationStep']
                 ]);
+                session()->forget('referral');
             }
             return response()->json($data);
 

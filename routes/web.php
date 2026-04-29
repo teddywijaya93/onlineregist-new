@@ -1,13 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use App\Http\Controllers\NIK_UsernameCheckController;
 use App\Http\Controllers\CreateAccountController;
 use App\Http\Controllers\MasterDataController;
 use App\Http\Controllers\Verifikasi_KTPController;
 use App\Http\Controllers\Verifikasi_WajahController;
-// use App\Http\Controllers\ProfilResikoController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ReferralController;
 
 // API Master Data
 Route::get('/master/gender',[MasterDataController::class, 'getGenderMaster'])->name('master.gender');
@@ -32,7 +33,15 @@ Route::post('/check-nik',[NIK_UsernameCheckController::class, 'nikCheck'])->name
 Route::post('/check-username',[NIK_UsernameCheckController::class, 'usernameCheck'])->name('check.username');
 
 // Home
-Route::view('/', 'auth.home');
+Route::get('/', function (Request $request) {
+    // refferal code
+    if ($request->has('idLinkCode') || $request->has('referralCode')) {
+        return app(ReferralController::class)->index($request);
+    }
+
+    // home
+    return view('auth.home');
+});
 
 // Verifikasi Email
 Route::view('/email', 'email')->name('email');

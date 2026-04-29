@@ -47,7 +47,7 @@ class CreateAccountController extends Controller
             );
             $result = $response->json();
 
-            \Log::info('Create PIN - API Response', $result);
+            Log::info('Create PIN - API Response', $result);
             if (!empty($result['status']) && $result['status'] === true) {
                 session([
                     'registrationStep' => $result['registrationStep']
@@ -83,7 +83,7 @@ class CreateAccountController extends Controller
             );
             $result = $response->json();
             
-            \Log::info('Account Type - API Response', $result);
+            Log::info('Account Type - API Response', $result);
             if (!empty($result['status']) && $result['status'] === true) {
                 session([
                     'registrationStep' => $result['registrationStep']
@@ -104,7 +104,7 @@ class CreateAccountController extends Controller
         if (!$registrationId) return;
 
         try {
-            $response = \Http::withHeaders([
+            $response = Http::withHeaders([
                 'Accept'        => 'application/json',
                 'Content-Type'  => 'application/json',
             ])
@@ -260,10 +260,10 @@ class CreateAccountController extends Controller
             "process" => $processType,
             "datas" => $personalData
         ];
-        \Log::info('Step Personal Information - Payload', $payload);
+        Log::info('Step Personal Information - Payload', $payload);
 
         try {
-            $response = \Http::withHeaders([
+            $response = Http::withHeaders([
                 'Accept'        => 'application/json',
                 'Content-Type'  => 'application/json',
             ])
@@ -276,7 +276,7 @@ class CreateAccountController extends Controller
             );
             $result = $response->json();
 
-            \Log::info('Step Personal Information - API Response', $result);
+            Log::info('Step Personal Information - API Response', $result);
             if (!empty($result['status']) && $result['status'] === true) {
                 session([
                     'personalData' => $personalData,
@@ -354,10 +354,10 @@ class CreateAccountController extends Controller
             "process"        => $processType,
             "datas"          => $financialData
         ];
-        \Log::info('Step Financial Profile - Payload', $payload);
+        Log::info('Step Financial Profile - Payload', $payload);
 
         try {
-            $response = \Http::withHeaders([
+            $response = Http::withHeaders([
                 'Accept'        => 'application/json',
                 'Content-Type'  => 'application/json',
             ])
@@ -370,7 +370,7 @@ class CreateAccountController extends Controller
             );
             $result = $response->json();
 
-            \Log::info('Step Financial Profile - API Response', $result);
+            Log::info('Step Financial Profile - API Response', $result);
             if (!empty($result['status']) && $result['status'] === true) {
                 session([
                     'financialData' => $financialData,
@@ -464,10 +464,10 @@ class CreateAccountController extends Controller
             "process"        => $processType,
             "datas"          => $relationData
         ];
-        \Log::info('Step Relation - Payload', $payload);
+        Log::info('Step Relation - Payload', $payload);
 
         try {
-            $response = \Http::withHeaders([
+            $response = Http::withHeaders([
                 'Accept'        => 'application/json',
                 'Content-Type'  => 'application/json',
             ])
@@ -480,7 +480,7 @@ class CreateAccountController extends Controller
             );
             $result = $response->json();
 
-            \Log::info('Step Relation - API Response', $result);
+            Log::info('Step Relation - API Response', $result);
             if (!empty($result['status']) && $result['status'] === true) {
                 session([
                     'relationData' => $relationData,
@@ -555,10 +555,10 @@ class CreateAccountController extends Controller
             "process"        => $processType,
             "datas"          => $employmentData
         ];
-        \Log::info('Step Employment Information - Payload', $payload);
+        Log::info('Step Employment Information - Payload', $payload);
 
         try {
-            $response = \Http::withHeaders([
+            $response = Http::withHeaders([
                 'Accept'        => 'application/json',
                 'Content-Type'  => 'application/json',
             ])
@@ -571,7 +571,7 @@ class CreateAccountController extends Controller
             );
             $result = $response->json();
 
-            \Log::info('Step Employment Information - API Response', $result);
+            Log::info('Step Employment Information - API Response', $result);
             if (!empty($result['status']) && $result['status'] === true) {
                 session([
                     'employmentData' => $employmentData,
@@ -643,10 +643,10 @@ class CreateAccountController extends Controller
             "process"        => $processType,
             "datas"          => $universitasData
         ];
-        \Log::info('Step University Information - Payload', $payload);
+        Log::info('Step University Information - Payload', $payload);
 
         try {
-            $response = \Http::withHeaders([
+            $response = Http::withHeaders([
                 'Accept'        => 'application/json',
                 'Content-Type'  => 'application/json',
             ])
@@ -659,7 +659,7 @@ class CreateAccountController extends Controller
             );
             $result = $response->json();
 
-            \Log::info('Step University Information - API Response', $result);
+            Log::info('Step University Information - API Response', $result);
             if (!empty($result['status']) && $result['status'] === true) {
                 session([
                     'universitasData' => $universitasData,
@@ -728,10 +728,10 @@ class CreateAccountController extends Controller
             "process"        => $processType,
             "datas"          => $bankData
         ];
-        \Log::info('Step Financial Information - Payload', $payload);
+        Log::info('Step Financial Information - Payload', $payload);
 
         try {
-            $response = \Http::withHeaders([
+            $response = Http::withHeaders([
                 'Accept'        => 'application/json',
                 'Content-Type'  => 'application/json',
             ])
@@ -744,7 +744,7 @@ class CreateAccountController extends Controller
             );
             $result = $response->json();
 
-            \Log::info('Step Financial Information - API Response', $result);
+            Log::info('Step Financial Information - API Response', $result);
             if (!empty($result['status']) && $result['status'] === true) {
                 session([
                     'bankData' => $bankData,
@@ -807,7 +807,7 @@ class CreateAccountController extends Controller
             $hash = md5($imageBase64);
             $namaFile = 'Signature_' . $hash . '.png';
 
-            $response = \Http::withHeaders([
+            $response = Http::withHeaders([
                 'Accept'        => 'application/json',
                 'Content-Type'  => 'application/json',
             ])
@@ -824,7 +824,7 @@ class CreateAccountController extends Controller
             );
             $result = $response->json();
 
-            \Log::info('Upload Signature', $result);
+            Log::info('Upload Signature', $result);
             if (!empty($result['status']) && $result['status'] === true) {
                 session([
                     'registrationStep' => $result['registrationStep']
