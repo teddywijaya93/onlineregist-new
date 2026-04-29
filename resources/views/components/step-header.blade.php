@@ -16,7 +16,11 @@
             <i class="fa fa-arrow-left"></i>
         </a>
         @endif
-        <div class="step-callcenter ms-auto"><i class="fa fa-headset"></i></div>
+        <div class="step-callcenter ms-auto">
+            <a href="https://api.whatsapp.com/send/?phone=628119560188&text=Hi+Profits+Saya+ada+Kendala.+Apakah+bisa+dibantu&type=phone_number&app_absent=0">
+                <i class="fa fa-headset text-white"></i>
+            </a>
+        </div>
     </div>
     <!-- <div class="step-progress">
         <div class="step-progress-fill" style="width: {{ $progressPercent }}%"></div>

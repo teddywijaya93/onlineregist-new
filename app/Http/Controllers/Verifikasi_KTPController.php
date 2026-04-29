@@ -163,7 +163,7 @@ class Verifikasi_KTPController extends Controller
                 //     'response'       => $ocrResult
                 // ]);
 
-                return back()->with('error', 'OCR request gagal');
+                return back()->with('error', 'Foto KTP Tidak Valid, Terindikasi Manipulasi');
             }
 
             // SEND KE OTP RESULT
@@ -195,7 +195,7 @@ class Verifikasi_KTPController extends Controller
                 if (!empty($imageQuality['dark'])) $reasons[] = 'Terlalu Gelap';
                 if (!empty($imageQuality['grayscale'])) $reasons[] = 'Grayscale';
                 if (!empty($imageQuality['flashlight'])) $reasons[] = 'Flash Terlalu Terang';
-                if ($forgeries) $reasons[] = 'Terindikasi manipulasi';
+                if ($forgeries) $reasons[] = 'Terindikasi Manipulasi';
 
                 $messageReject = 'Foto KTP tidak valid: ' . implode(', ', $reasons);
 

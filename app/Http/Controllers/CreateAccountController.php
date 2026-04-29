@@ -444,7 +444,7 @@ class CreateAccountController extends Controller
         $relationData = $request->validate([
             'beneficiaryName'               => 'required|string|max:100',
             'beneficiaryRelation'           => 'required|string',
-            'beneficiaryEmploymentPosition' => 'required|string',
+            'beneficiaryEmploymentType'     => 'required|string',
             'beneficiaryOwnerBusinessLine'  => 'required|string',
             'beneficiaryOwnerEmployerName'  => 'required|string',
             'beneficiaryOwnerOfficeAddress' => 'required|string',

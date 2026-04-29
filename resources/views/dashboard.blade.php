@@ -13,7 +13,7 @@
 <section class="auth-wrapper">
     <div class="container">
         <div class="d-flex justify-content-end mb-5">
-            <a href="#" class="btn-headset"><i class="fa-solid fa-headset text-white step-headset"></i></a>
+            <a href="https://api.whatsapp.com/send/?phone=628119560188&text=Hi+Profits+Saya+ada+Kendala.+Apakah+bisa+dibantu&type=phone_number&app_absent=0" class="btn-headset"><i class="fa-solid fa-headset text-white step-headset"></i></a>
         </div>
         <h3 class="head-lanjut text-white mb-5">Selesaikan Proses Registrasi Anda</h3>  
         @foreach($groups as $group)

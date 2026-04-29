@@ -50,7 +50,7 @@
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Pekerjaan Referensi Perorangan</label>
                 <div class="select-wrapper">
-                    <select name="beneficiaryEmploymentPosition" id="employmentSelect" data-selected="{{ old('beneficiaryEmploymentPosition', $relationData['beneficiaryEmploymentPosition'] ?? '') }}" class="form-control form-global">
+                    <select name="beneficiaryEmploymentType" id="employmentSelect" data-selected="{{ old('beneficiaryEmploymentType', $relationData['beneficiaryEmploymentType'] ?? '') }}" class="form-control form-global">
                         <option value="">Pilih Pekerjaan</option>
                     </select>
                 </div>
