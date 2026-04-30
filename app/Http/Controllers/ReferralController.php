@@ -47,6 +47,7 @@ class ReferralController extends Controller
                         'eventDisplayName' => $data['eventDisplayName'] ?? null,
                         'aoCode'           => $data['aoCode'] ?? null,
                         'aoName'           => $data['aoName'] ?? null,
+                        'rdnBank'          => $data['rdnBank'] ?? null,
                     ]
                 ]);
 
@@ -55,9 +56,7 @@ class ReferralController extends Controller
                     'aoName'           => $data['aoName'] ?? '-',
                 ]);
             }
-        } catch (\Exception $e) {
-            // silent fail
-        }
+        } catch (\Exception $e) {}
 
         return view('referral-code', [
             'eventDisplayName' => '-',

@@ -186,10 +186,15 @@ class AuthController extends Controller
             ];
 
             if ($referral) {
-                $payload['aoCode']       = $referral['aoCode'] ?? null;
-                $payload['idLinkCode']   = $referral['idLinkCode'] ?? null;
-                $payload['referralCode'] = $referral['referralCode'] ?? null;
+                if (!empty($referral['aoCode'])) {
+                    $payload['aoCode'] = $referral['aoCode'];
+                }
+
+                if (!empty($referral['rdnBank'])) {
+                    $payload['rdnBankName'] = $referral['rdnBank'];
+                }
             }
+            Log::info('FINAL PAYLOAD', $payload);
 
             $response = Http::withHeaders([
                 'Content-Type' => 'application/json',
@@ -199,13 +204,13 @@ class AuthController extends Controller
             ->retry(1, 200)
             ->post(
                 'https://dev.profits.co.id:8283/registration/createAccount',
-                [
-                    "username" => $request->username,
-                    "password" => $request->password,
-                    "email" => $email,
-                    "phone" => $phone
-                ]
+                $payload,
             );
+
+            Log::info('CREATE ACCOUNT RESPONSE', [
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
 
             $data = $response->json();
             if ($data['status']) {
