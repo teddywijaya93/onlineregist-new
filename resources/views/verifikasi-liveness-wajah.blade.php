@@ -22,7 +22,7 @@
             <canvas id="canvas" class="d-none"></canvas>
 
             <!-- BUTTON -->
-            <button type="button" id="btnCamera" class="btn btn-primary btn-regist w-100 mb-2">Aktifkan Kamera</button>
+            <button type="button" id="btnCamera" class="btn btn-primary btn-regist w-100 mb-2">Gunakan Kamera</button>
             <button type="button" id="btnCapture" class="btn btn-primary btn-regist w-100 mb-2 d-none">Capture Foto</button>
 
             <!-- PREVIEW IMAGE -->

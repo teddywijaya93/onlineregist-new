@@ -16,12 +16,12 @@
         <form method="POST" action="{{ route('verifikasi.ktp.process') }}" enctype="multipart/form-data">
             @csrf
             <div class="row mb-3">
-                <div class="col-12 col-lg-6 mobile-only mb-3 mb-lg-0">
+                <div class="col-12 mobile-only mb-3">
                     <button type="button" id="btnCamera" class="btn btn-primary btn-regist w-100">Gunakan Kamera</button>
                 </div>
-                <div class="col-12 col-lg-6 mb-3 mb-lg-0">
+                <div class="col-12 mb-3">
                     <label class="btn btn-primary btn-regist w-100 m-0 text-center">
-                        Upload Dari Gallery
+                        Upload Dari Galeri
                         <input type="file" name="ktp_image" id="fileInput" accept="image/*" hidden required>
                     </label>
                 </div>

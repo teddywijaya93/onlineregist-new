@@ -27,14 +27,19 @@ class Verifikasi_KTPController extends Controller
         ]);
     }
 
-    private function sendOtpResult($status, $message, $referenceId = "", $extra = [], $typeOcr = "KTP")
+    private function sendOcrResult($status, $message, $ocrResponse, $typeOcr = "KTP")
     {
+        $data = isset($ocrResponse['data'])
+            ? $ocrResponse['data']
+            : $ocrResponse;
+
         $payload = [
             "registrationId" => session('registrationId'),
             "status"        => $status,
             "message"       => $message,
-            "typeOcr"       => $typeOcr,
-            "referenceId"   => $referenceId
+            "typeOcr"       => "KTP",
+            "referenceId"   => $data['reference_id'] ?? null,
+            "raw"           => $data,
         ];
 
         // HIT API
@@ -45,12 +50,7 @@ class Verifikasi_KTPController extends Controller
             'https://dev.profits.co.id:8283/registration/otpResult',$payload
         );
 
-        Log::info('OTP RESULT SENT', array_merge([
-            'registrationId' => session('registrationId'),
-            'status' => $status,
-            'message' => $message,
-            'referenceId' => $referenceId
-        ], $extra));
+        Log::info('OCR RESULT SENT', $payload);
     }
 
     public function process(Request $request)
@@ -69,23 +69,14 @@ class Verifikasi_KTPController extends Controller
             if ($validator->fails()) {
                 $errorMsg = $validator->errors()->first();
 
-                $this->sendOtpResult(false, "[VALIDATION] ".$errorMsg);
-
-                // Log::warning('KTP VALIDATION ERROR', [
-                //     'registrationId' => session('registrationId'),
-                //     'error' => $errorMsg
-                // ]);
+                $this->sendOcrResult(false, "[VALIDATION] ".$errorMsg);
 
                 return back()->with('error', $errorMsg);
             }
 
             $file = $request->file('ktp_image');
             if (!$file->isValid()) {
-                $this->sendOtpResult(false, "[FILE INVALID] File upload tidak valid");
-
-                // Log::warning('KTP FILE INVALID', [
-                //     'registrationId' => session('registrationId')
-                // ]);
+                $this->sendOcrResult(false, "[FILE INVALID] File upload tidak valid");
 
                 return back()->with('error', 'File upload tidak valid');
             }
@@ -93,11 +84,7 @@ class Verifikasi_KTPController extends Controller
             // 3. CONVERT KE BASE64 (CLEAN)
             $binary = file_get_contents($file->getRealPath());
             if ($binary === false) {
-                $this->sendOtpResult(false, "[READ ERROR] Gagal membaca file");
-
-                // Log::error('KTP READ ERROR', [
-                //     'registrationId' => session('registrationId')
-                // ]);
+                $this->sendOcrResult(false, "[READ ERROR] Gagal membaca file");
 
                 return back()->with('error', 'Gagal membaca file');
             }
@@ -143,43 +130,17 @@ class Verifikasi_KTPController extends Controller
             $message       = $ocrResult['message'] ?? 'Unknown error';
             $referenceId   = $ocrResult['data']['reference_id'] ?? "";
 
-            Log::info('OCR ANTIFORGERY RESPONSE', [
-                'registrationId' => session('registrationId'),
-                'status_code'    => $statusCode,
-                'success'        => $tilakaSuccess,
-                'message'        => $message,
-                'referenceId'    => $referenceId,
-                'raw'            => $ocrResult
-            ]);
-
             if ($ocr->failed()) {
-                $this->sendOtpResult(false, "[OCR HTTP ERROR {$statusCode}] " . $message, $referenceId,[
-                    'raw' => $ocrResult
-                ]);
-
-                // Log::error('OCR HTTP FAILED', [
-                //     'registrationId' => session('registrationId'),
-                //     'status_code'    => $statusCode,
-                //     'response'       => $ocrResult
-                // ]);
+                $this->sendOcrResult(false, "[OCR HTTP ERROR {$statusCode}] " . $message, $ocrResult);
 
                 return back()->with('error', 'Foto KTP Tidak Valid, Terindikasi Manipulasi');
             }
 
             // SEND KE OTP RESULT
-            $this->sendOtpResult($tilakaSuccess, "[{$statusCode}] " . $message, $referenceId,[
-                'raw' => $ocrResult
-            ]);
+            $this->sendOcrResult(false, $message, $ocrResult);
 
             // HANDLE OCR FAIL
             if (!$tilakaSuccess) {
-
-                Log::warning('OCR FAILED', [
-                    'registrationId' => session('registrationId'),
-                    'status_code'    => $statusCode,
-                    'message'        => $message
-                ]);
-
                 return back()->with('error', $message);
             }
 
@@ -200,7 +161,7 @@ class Verifikasi_KTPController extends Controller
                 $messageReject = 'Foto KTP tidak valid: ' . implode(', ', $reasons);
 
                 // kirim ke BO
-                $this->sendOtpResult(false, $messageReject, $referenceId, [
+                $this->sendOcrResult(false, $messageReject, $referenceId, [
                     'image_quality' => $imageQuality,
                     'forgeries'     => $forgeries
                 ]);
@@ -256,10 +217,9 @@ class Verifikasi_KTPController extends Controller
             );
             $resultUpload = $response->json();
 
-            // Log::info('UPLOAD RESPONSE', [$resultUpload]);
-            if ($response->failed()) {
-                return back()->with('error', $resultUpload['message'] ?? 'Upload gagal');
-            }
+            // if ($response->failed()) {
+            //     return back()->with('error', $resultUpload['message'] ?? 'Upload gagal');
+            // }
 
             // 10. NEXT STEP
             session([

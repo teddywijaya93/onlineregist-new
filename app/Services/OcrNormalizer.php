@@ -91,11 +91,11 @@ class OcrNormalizer
         $v = strtoupper($v);
 
         if (str_contains($v, 'BELUM')) {
-            return 'Belum Menikah';
+            return '2';
         }
 
         if (str_contains($v, 'KAWIN')) {
-            return 'Menikah';
+            return '1';
         }
 
         if (str_contains($v, 'CERAI')) {

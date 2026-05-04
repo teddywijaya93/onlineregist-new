@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use App\Services\StepRedirectService;
 
 class Verifikasi_WajahController extends Controller
@@ -23,6 +25,33 @@ class Verifikasi_WajahController extends Controller
             'step' => StepRedirectService::stepNumber($step),
             'hideBack' => StepRedirectService::hideBack()
         ]);
+    }
+
+    private function sendlivenessResult($status, $message, $ocrResponse, $typeOcr = "LIVENESS")
+    {
+        $data = isset($ocrResponse['data'])
+            ? $ocrResponse['data']
+            : $ocrResponse;
+
+
+        $payload = [
+            "registrationId" => session('registrationId'),
+            "status"        => $status,
+            "message"       => $message,
+            "typeOcr"       => "LIVENESS",
+            "referenceId"   => $data['reference_id'] ?? null,
+            "raw"           => $data,
+        ];
+
+        // HIT API
+        Http::withHeaders([
+            'Content-Type' => 'application/json'
+        ])
+        ->post(
+            'https://dev.profits.co.id:8283/registration/otpResult',$payload
+        );
+
+        Log::info('Liveness RESULT SENT', $payload);
     }
 
     public function process(Request $request)
