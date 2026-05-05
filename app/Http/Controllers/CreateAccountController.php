@@ -249,6 +249,8 @@ class CreateAccountController extends Controller
 
         $currentStep = session('registrationStep');
         $userDashboard = session('from_dashboard', false);
+
+        $userUpdates = $userDashboard && $currentStep !== 'personalInformation';
         $processType = $currentStep === 'personalInformation'
             ? 'CREATE'
             : 'UPDATE';
@@ -256,7 +258,7 @@ class CreateAccountController extends Controller
         $payload = [
             "registrationId" => session('registrationId'),
             "step" => "personalInformation",
-            "userUpdates" => $userDashboard,
+            "userUpdates" => $userUpdates,
             "process" => $processType,
             "datas" => $personalData
         ];
@@ -317,6 +319,13 @@ class CreateAccountController extends Controller
         $currentStep = session('registrationStep');
         $isUpdate = $currentStep !== 'financialProfile';
 
+        // gender
+        $genderMap = [
+            'Pria' => '1',
+            'Wanita' => '2',
+        ];
+        $genderId = $genderMap[$personalData['gender'] ?? ''] ?? '';
+
         return view('data-penghasilan', [
             'financialData' => $financialData,
             'isUpdate' => $isUpdate,
@@ -324,9 +333,7 @@ class CreateAccountController extends Controller
             'totalStep' => StepRedirectService::totalStep(),
             'hideBack' => StepRedirectService::hideBack(),
 
-            'data' => [
-                'gender' => $personalData['gender'] ?? null
-            ],
+            'genderId' => $genderId,
         ]);
     }
 
@@ -343,6 +350,8 @@ class CreateAccountController extends Controller
 
         $currentStep = session('registrationStep');
         $userDashboard = session('from_dashboard', false);
+
+        $userUpdates = $userDashboard && $currentStep !== 'financialProfile';
         $processType = $currentStep === 'financialProfile'
             ? 'CREATE'
             : 'UPDATE';
@@ -350,7 +359,7 @@ class CreateAccountController extends Controller
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "financialProfile",
-            "userUpdates"    => $userDashboard,
+            "userUpdates"    => $userUpdates,
             "process"        => $processType,
             "datas"          => $financialData
         ];
@@ -455,12 +464,14 @@ class CreateAccountController extends Controller
         
         $currentStep = session('registrationStep');
         $userDashboard = session('from_dashboard', false);
+
+        $userUpdates = $userDashboard && $currentStep !== 'relation';
         $processType = 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "relation",
-            "userUpdates"    => $userDashboard,
+            "userUpdates"    => $userUpdates,
             "process"        => $processType,
             "datas"          => $relationData
         ];
@@ -546,12 +557,14 @@ class CreateAccountController extends Controller
 
         $currentStep = session('registrationStep');
         $userDashboard = session('from_dashboard', false);
+
+        $userUpdates = $userDashboard && $currentStep !== 'employmentInformation';
         $processType = 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "employmentInformation",
-            "userUpdates"    => $userDashboard,
+            "userUpdates"    => $userUpdates,
             "process"        => $processType,
             "datas"          => $employmentData
         ];
@@ -634,12 +647,14 @@ class CreateAccountController extends Controller
 
         $currentStep = session('registrationStep');
         $userDashboard = session('from_dashboard', false);
+
+        $userUpdates = $userDashboard && $currentStep !== 'universityInformation';
         $processType = 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "universityInformation",
-            "userUpdates"    => $userDashboard,
+            "userUpdates"    => $userUpdates,
             "process"        => $processType,
             "datas"          => $universitasData
         ];
@@ -719,12 +734,14 @@ class CreateAccountController extends Controller
 
         $currentStep = session('registrationStep');
         $userDashboard = session('from_dashboard', false);
+
+        $userUpdates = $userDashboard && $currentStep !== 'financialInformation';
         $processType = 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "financialInformation",
-            "userUpdates"    => $userDashboard,
+            "userUpdates"    => $userUpdates,
             "process"        => $processType,
             "datas"          => $bankData
         ];

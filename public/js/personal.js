@@ -1,9 +1,12 @@
+document.getElementById('genderSelect')?.addEventListener('change', function () {
+    restrictMaritalByGender();
+});
+
 document.addEventListener("DOMContentLoaded", async () => {
     await initSelects();
     initDatePicker();
     initSameAddress();
     initValidation();
-    restrictMaritalByGender();
 });
 
 async function loadSelect(id, url, placeholder = "Pilih") {
@@ -43,7 +46,6 @@ async function initSelects() {
     await loadSelect("genderSelect", window.routes.gender, "Pilih Jenis Kelamin");
     await loadSelect("maritalSelect", window.routes.marital, "Pilih Status Perkawinan");
     await loadSelect("religionSelect", window.routes.religion, "Pilih Status Agama");
-    restrictMaritalByGender();
 }
 
 function initDatePicker() {
@@ -162,7 +164,7 @@ function initValidation() {
 }
 
 function restrictMaritalByGender() {
-    const gender = document.querySelector('input[name="gender"]')?.value;
+    const gender = document.getElementById('genderSelect')?.value;
     const maritalSelect = document.getElementById("maritalSelect");
 
     if (!gender || !maritalSelect) return;

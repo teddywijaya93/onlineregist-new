@@ -16,7 +16,7 @@
         <form id="financialForm" method="POST" action="{{ route('data.penghasilan.submit') }}">
             @csrf
             <!-- <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}"> -->
-            <input type="hidden" name="gender" value="{{ old('gender', $data['gender'] ?? '') }}">
+            <input type="hidden" name="gender" id="gender" value="{{ $genderId }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Pekerjaan Nasabah</label>
                 <div class="select-wrapper">
