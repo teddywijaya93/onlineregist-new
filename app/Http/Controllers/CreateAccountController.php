@@ -33,7 +33,6 @@ class CreateAccountController extends Controller
                 "message" => "AccountId Kosong"
             ]);
         }
-
         try {
             $response = Http::timeout(15)
             ->connectTimeout(5)
@@ -56,7 +55,7 @@ class CreateAccountController extends Controller
 
             return response()->json($result);
 
-        }  catch (\Throwable $e) {
+        } catch (\Throwable $e) {
             return back()->with('error', $e->getMessage());
         }
     }
@@ -251,9 +250,7 @@ class CreateAccountController extends Controller
         $userDashboard = session('from_dashboard', false);
 
         $userUpdates = $userDashboard && $currentStep !== 'personalInformation';
-        $processType = $currentStep === 'personalInformation'
-            ? 'CREATE'
-            : 'UPDATE';
+        $processType = 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),

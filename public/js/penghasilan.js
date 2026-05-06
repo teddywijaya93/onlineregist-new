@@ -72,13 +72,17 @@ function loadMasterDropdown(selectId, url, placeholder) {
                 select.appendChild(opt);
             });
 
-            if (selectedValue && !select.value) {
-                Array.from(select.options).forEach(opt => {
-                    if (normalize(opt.text).includes(normalize(selectedValue))) {
-                        select.value = opt.value;
-                    }
-                });
-            }
+            $('#employmentSelect').select2({
+                placeholder: 'Pilih Pekerjaan',
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumResultsForSearch: 0,
+               
+            });
+
+            $(document).on('select2:open', function () {
+                document.querySelector('.select2-search__field').placeholder = 'Cari Pekerjaan';
+            });
         });
 }
 

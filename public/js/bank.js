@@ -19,6 +19,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 bankSelect.innerHTML += `<option value="${itemId}" ${isSelected}>${item.description}</option>`;
             });
+
+            $('#bankSelect').select2({
+                placeholder: 'Pilih Bank',
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumResultsForSearch: 0,
+               
+            });
+
+            $(document).on('select2:open', function () {
+                document.querySelector('.select2-search__field').placeholder = 'Cari Bank';
+            });
         });
 });
 
