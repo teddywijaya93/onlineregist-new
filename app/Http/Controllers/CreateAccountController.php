@@ -346,9 +346,6 @@ class CreateAccountController extends Controller
         // dd($financialData);
 
         $currentStep = session('registrationStep');
-        $userDashboard = session('from_dashboard', false);
-
-        $userUpdates = $userDashboard && $currentStep !== 'financialProfile';
         $processType = $currentStep === 'financialProfile'
             ? 'CREATE'
             : 'UPDATE';
@@ -356,7 +353,7 @@ class CreateAccountController extends Controller
         $payload = [
             "registrationId" => session('registrationId'),
             "step"           => "financialProfile",
-            "userUpdates"    => $userUpdates,
+            "userUpdates"    => false,
             "process"        => $processType,
             "datas"          => $financialData
         ];
@@ -383,7 +380,7 @@ class CreateAccountController extends Controller
                     'registrationStep' => $result['registrationStep']
                 ]);
 
-                if ($userDashboard) {
+                if (session('from_dashboard', false)) {
                     $nextStep = $result['registrationStep'] ?? null;
 
                     session()->forget('from_dashboard');
