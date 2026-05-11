@@ -33,7 +33,6 @@ class Verifikasi_WajahController extends Controller
             ? $ocrResponse['data']
             : $ocrResponse;
 
-
         $payload = [
             "registrationId" => session('registrationId'),
             "status"        => $status,
@@ -87,6 +86,8 @@ class Verifikasi_WajahController extends Controller
             );
 
             if ($auth->failed()) {
+                $this->sendlivenessResult(false, "[HTTP ".$auth->status()."] Auth Tilaka gagal", []);
+
                 return back()->with('error', 'Auth Tilaka Gagal!');
             }
             $accessToken = $auth->json('access_token');
@@ -108,15 +109,26 @@ class Verifikasi_WajahController extends Controller
                 ]
             );
 
-            $livenessResult = $liveness->json();
-            Log::info('LIVENESS RESULT', [$livenessResult]);
+            $statusCode = $liveness->status();
+            $livenessResult = $liveness->json() ?? [];
 
+            Log::info('LIVENESS RESULT', [
+                'status_code' => $statusCode,
+                'body' => $livenessResult
+            ]);
+
+            $message = $livenessResult['message'] ?? 'Unknown Error';
+
+            $this->sendlivenessResult($statusCode === 200, "[HTTP {$statusCode}] ".$message, $livenessResult);
+
+            // HANDLE HTTP ERROR
             if (!$liveness->successful()) {
                 Log::error('LIVENESS ERROR', [
                     'status' => $liveness->status(),
                     'body' => $liveness->body()
                 ]);
-                return back()->with('error', 'Gagal memproses wajah. Pastikan wajah terlihat jelas.');
+
+                return back()->with('error', $message ?? 'Gagal memproses wajah.');
             }
 
             // 6. VALIDASI LIVENESS
@@ -133,47 +145,74 @@ class Verifikasi_WajahController extends Controller
             $eyeglasses = $attr['eyeglasses_on'] ?? false;
             $hat = $attr['hat_on'] ?? false;
             $faceBlocker = $attr['face_blocker_on'] ?? false;
-    
+
             // VALIDASI lebih dari 1 wajah
             if ($nface > 1) {
-                return back()->with('error', 'Terdeteksi lebih dari 1 wajah. Harap ambil foto sendiri.');
+                $msg = 'Terdeteksi lebih dari 1 wajah.';
+                $this->sendlivenessResult(false, $msg, $livenessResult);
+
+                return back()->with('error', $msg);
             }
             // VALIDASI DEEPFAKE
             if ($deepfake === true) {
-                return back()->with('error', 'Terdeteksi penggunaan deepfake / manipulasi wajah.');
+                $msg = 'Terdeteksi penggunaan deepfake / manipulasi wajah.';
+                $this->sendlivenessResult(false, $msg, $livenessResult);
+
+                return back()->with('error', $msg);
             }
 
             // VALIDASI Liveness False
             if (!$livenessStatus) {
-                return back()->with('error', 'Wajah tidak terdeteksi sebagai live (spoofing terindikasi).');
+                $msg = 'Wajah tidak terdeteksi sebagai live.';
+                $this->sendlivenessResult(false, $msg, $livenessResult);
+
+                return back()->with('error', $msg);
             }
 
             // VALIDASI Probability < 60%
             if ($probability < 60) {
-                return back()->with('error', 'Kualitas liveness rendah. Silakan ulangi foto wajah.');
+                $msg = 'Kualitas liveness rendah.';
+                $this->sendlivenessResult(false, $msg, $livenessResult);
+
+                return back()->with('error', $msg);
             }
 
             // VALIDASI Masker
             if ($mask) {
-                return back()->with('error', 'Harap lepas masker saat verifikasi.');
+                $msg = 'Harap lepas masker saat verifikasi.';
+                $this->sendlivenessResult(false, $msg, $livenessResult);
+
+                return back()->with('error', $msg);
             }
 
             // VALIDASI Kacamata Hitam & Kacamata Biasa
             if ($sunglasses || $eyeglasses) {
-                return back()->with('error', 'Harap lepas kacamata saat verifikasi.');
+                $msg = 'Harap lepas kacamata saat verifikasi.';
+                $this->sendlivenessResult(false, $msg, $livenessResult);
+
+                return back()->with('error', $msg);
             }
 
             // VALIDASI Topi
             if ($hat) {
-                return back()->with('error', 'Harap lepas topi saat verifikasi.');
+                $msg = 'Harap lepas topi saat verifikasi.';
+                $this->sendlivenessResult(false, $msg, $livenessResult);
+
+                return back()->with('error', $msg);
             }
 
             // VALIDASI Penutup Wajah
             if ($faceBlocker) {
-                return back()->with('error', 'Wajah tidak terlihat jelas.');
+                $msg = 'Wajah tidak terlihat jelas.';
+                $this->sendlivenessResult(false, $msg, $livenessResult);
+
+                return back()->with('error', $msg);
             }
 
-            // 7. SIMPAN FILE LOKAL
+            // SUCCESS JUGA KIRIM
+            $this->sendlivenessResult(true, 'Liveness Success', $livenessResult);
+
+            // 7. SIMPAN FILE
             $hash = md5($imageBase64);
             $namaFile = 'Selfie_' . $hash . '.jpg';
 
@@ -207,12 +246,15 @@ class Verifikasi_WajahController extends Controller
                 'registrationStep' => 'personalInformation'
             ]);
 
-            if ($resultUpload['status'] ?? true) {
-                return redirect()->route('data.personal')->with('success', $resultUpload['message'] ?? 'Berhasil');
-            }
-            return redirect()->route('data.personal')->with('error', $resultUpload['message'] ?? 'Gagal');
+            return redirect()->route('data.personal')->with(
+                ($resultUpload['status'] ?? true)
+                    ? ['success' => $resultUpload['message'] ?? 'Berhasil']
+                    : ['error'   => $resultUpload['message'] ?? 'Gagal']
+            );
 
         } catch (\Throwable $e) {
+            $this->sendlivenessResult(false, '[EXCEPTION] '.$e->getMessage(), []);
+
             return back()->with('error', $e->getMessage());
         }
     }

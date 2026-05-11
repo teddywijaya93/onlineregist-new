@@ -18,26 +18,26 @@
         </div>
         <div class="verification-list shadow-lg mb-5">
             <div class="step-verification shadow-lg mb-4">
-                <div class="step-wrapper">
-                    <div class="step-item active">
-                        <div class="step-circle done">
+                <div class="step-verification-wrapper">
+                    <div class="step-verification-item active">
+                        <div class="step-verification-circle done">
                             <i class="fa-solid fa-check"></i>
                         </div>
-                        <div class="step-label mt-2">Pengajuan</div>
+                        <div class="step-verification-label mt-2">Pengajuan</div>
                     </div>
 
                     <!-- Line -->
-                    <div class="step-line active"></div>
-                    <div class="step-item active">
-                        <div class="step-circle current"></div>
-                        <div class="step-label mt-2">Verifikasi</div>
+                    <div class="step-verification-line active"></div>
+                    <div class="step-verification-item active">
+                        <div class="step-verification-circle current"></div>
+                        <div class="step-verification-label mt-2">Verifikasi</div>
                     </div>
 
                     <!-- Line -->
-                    <div class="step-line"></div>
-                    <div class="step-item">
-                        <div class="step-circle"></div>
-                        <div class="step-label mt-2">Selesai</div>
+                    <div class="step-verification-line"></div>
+                    <div class="step-verification-item">
+                        <div class="step-verification-circle"></div>
+                        <div class="step-verification-label mt-2">Selesai</div>
                     </div>
                 </div>
             </div>
