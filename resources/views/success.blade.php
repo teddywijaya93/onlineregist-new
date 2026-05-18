@@ -89,16 +89,21 @@ document.addEventListener("DOMContentLoaded", function () {
     const isIOS = /iPhone|iPad|iPod/i.test(ua);
     const isSmallScreen = window.innerWidth <= 768;
     const isMobile = isAndroid || isIOS || isSmallScreen;
-    const storeButtons = document.getElementById("storeButtons");
+    // const storeButtons = document.getElementById("storeButtons");
     const loginBtn = document.getElementById("btnOpenApp");
 
-    if (isMobile) {
-        storeButtons.style.display = "none";
-        loginBtn.style.display = "block";
-    } else {
-        storeButtons.style.display = "block";
-        loginBtn.style.display = "none";
+    if (!isMobile) {
+        window.location.replace("https://next-dev.profits.co.id/");
+        return;
     }
+
+    // if (isMobile) {
+    //     storeButtons.style.display = "none";
+    //     loginBtn.style.display = "block";
+    // } else {
+    //     storeButtons.style.display = "block";
+    //     loginBtn.style.display = "none";
+    // }
 
     loginBtn.addEventListener("click", function () {
         // ANDROID
