@@ -45,7 +45,7 @@ async function loadSelect(id, url, placeholder = "Pilih") {
 async function initSelects() {
     await loadSelect("genderSelect", window.routes.gender, "Pilih Jenis Kelamin");
     await loadSelect("maritalSelect", window.routes.marital, "Pilih Status Perkawinan");
-    await loadSelect("religionSelect", window.routes.religion, "Pilih Status Agama");
+    await loadSelect("religionSelect", window.routes.religion, "Pilih Agama");
 }
 
 function initDatePicker() {

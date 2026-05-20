@@ -49,6 +49,15 @@ function initValidation() {
         isValid &= validateRequired("bankAccountOwner", "Nomor Pemilik Rekening Wajib Diisi");
         isValid &= validateRequired("bankAccountNumber", "Nomor Rekening Wajib Diisi");
 
+        const bankNumber = document.getElementById("bankAccountNumber").value.trim();
+        if (bankNumber.length < 10) {
+            showError(
+                document.getElementById("bankAccountNumber"),
+                "Nomor Rekening Min 10 Digit"
+            );
+            isValid = false;
+        }
+
         if (!isValid) {
             scrollToFirstError();
             return;

@@ -26,7 +26,7 @@ class OcrNormalizer
         $dob            = null;
         if (!empty($data['date_of_birth'])) {
             try {
-                $dob = Carbon::createFromFormat('d-m-Y', $data['date_of_birth'])->format('Y-m-d');
+                $dob = Carbon::createFromFormat('d-m-Y', $data['date_of_birth'])->format('d-m-Y');
             } catch (\Exception $e) {
                 $dob = null;
             }
@@ -68,9 +68,9 @@ class OcrNormalizer
         return match ($v) {
             'ISLAM' => '1',
             'KRISTEN' => '2',
-            'BUDDHA' => '3',
-            'KATOLIK' => '4',
-            'KONGHUCU' => '5',
+            'BUDHA' => '3',
+            'KATHOLIK' => '4',
+            'KHONGHUCU' => '5',
             'HINDU' => '6',
             default => null
         };

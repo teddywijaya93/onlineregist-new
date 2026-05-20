@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             val = val.replace(/[^\d]/g, "");
 
             // optional: max 13 digit
-            if (val.length > 13) {
-                val = val.slice(0, 13);
+            if (val.length > 14) {
+                val = val.slice(0, 14);
             }
 
             e.target.value = val;
@@ -176,9 +176,27 @@ function initValidation() {
         isValid &= validateRequired("positionSelect", "Jabatan Wajib Diisi");
         isValid &= validateRequired("officeAddress", "Alamat Perusahaan Wajib Diisi");
         isValid &= validateRequired("officeTelephone", "Telepon Kantor Wajib Diisi");
-        isValid &= validateMinLength("officeTelephone", 9, "Minimal Telepon Kantor 9 Digit");
         isValid &= validateRequired("employmentDurationYear", "Tahun Bekerja Wajib Diisi");
         isValid &= validateRequired("employmentDurationMonth", "Bulan Bekerja Wajib Diisi");
+
+        const year  = parseInt(document.getElementById("employmentDurationYear").value || 0);
+        const month = parseInt(document.getElementById("employmentDurationMonth").value || 0);
+        if (year === 0 && month === 0) {
+            showError(
+                document.getElementById("employmentDurationMonth"),
+                "Lama Bekerja Min 1 Bulan"
+            );
+            isValid = false;
+        }
+
+        const telpNumber = document.getElementById("officeTelephone").value.trim();
+        if (telpNumber.length < 9 ) {
+            showError(
+                document.getElementById("officeTelephone"),
+                "Telepon Kantor Min 9 Digit"
+            );
+            isValid = false;
+        }
 
         if (!isValid) {
             scrollToFirstError();
@@ -206,27 +224,4 @@ function initValidation() {
         el.addEventListener("input", () => clearFieldError(el));
         el.addEventListener("change", () => clearFieldError(el));
     });
-}
-
-function validateMinLength(id, min, message) {
-    const el = document.getElementById(id);
-    if (!el) return true;
-
-    const val = el.value.replace(/\D/g, ""); // ambil angka saja
-
-    if (val.length < min) {
-        el.classList.add("is-invalid");
-
-        let error = el.parentElement.querySelector(".invalid-feedback");
-
-        if (!error) {
-            error = document.createElement("div");
-            error.className = "invalid-feedback";
-            el.parentElement.appendChild(error);
-        }
-
-        error.innerText = message;
-        return false;
-    }
-    return true;
 }

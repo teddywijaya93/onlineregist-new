@@ -164,12 +164,12 @@ class CreateAccountController extends Controller
         // Change religion from OCR to API
         if (!empty($personalData['religion'])) {
             $religionMap = [
-                'Islam' => '1',
-                'Kristen' => '2',
-                'Buddha' => '3',
-                'Katolik' => '4',
-                'Kong Hu Cu' => '5',
-                'Hindu' => '6',
+                'ISLAM' => '1',
+                'KRISTEN' => '2',
+                'BUDHA' => '3',
+                'KATHOLIK' => '4',
+                'KHONGHUCU' => '5',
+                'HINDU' => '6',
             ];
             $personalData['religion'] = $religionMap[$personalData['religion']] ?? $personalData['religion'];
         }

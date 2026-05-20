@@ -59,6 +59,16 @@ function initValidation() {
         isValid &= validateRequired("employmentDurationYear", "Tahun Wajib Diisi");
         isValid &= validateRequired("employmentDurationMonth", "Bulan Wajib Diisi");
 
+        const year  = parseInt(document.getElementById("employmentDurationYear").value || 0);
+        const month = parseInt(document.getElementById("employmentDurationMonth").value || 0);
+        if (year === 0 && month === 0) {
+            showError(
+                document.getElementById("employmentDurationMonth"),
+                "Lama Kuliah Min 1 Bulan"
+            );
+            isValid = false;
+        }
+
         if (!isValid) {
             scrollToFirstError();
             return;

@@ -109,7 +109,10 @@ class Verifikasi_KTPController extends Controller
             $accessToken = $auth->json('access_token');
 
             // 5. HIT OCR
-            $ocr = Http::timeout(60)
+            $ocr = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $accessToken,
+            ])
+            ->timeout(60)
             ->connectTimeout(10)
             ->retry(3, 1000)
             ->post(

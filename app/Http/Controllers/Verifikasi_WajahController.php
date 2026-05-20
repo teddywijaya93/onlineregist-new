@@ -93,7 +93,10 @@ class Verifikasi_WajahController extends Controller
             $accessToken = $auth->json('access_token');
 
             // 5. HIT LIVENESS
-            $liveness = Http::timeout(60)
+            $liveness = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $accessToken,
+            ])
+            ->timeout(60)
             ->connectTimeout(10)
             ->retry(3, 1000)
             ->post(

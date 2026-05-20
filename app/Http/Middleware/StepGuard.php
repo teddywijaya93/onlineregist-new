@@ -30,7 +30,7 @@ class StepGuard
         }
 
         // Block kalau ke create pin, account type (HANYA BISA 1x)
-        if (in_array($currentStep, ['createPIN', 'accountType', 'uploadKtp', 'uploadSelfie'])) { 
+        if (in_array($currentStep, ['createPIN', 'accountType', 'uploadSelfie'])) { 
             if ($sessionIndex !== false && $sessionIndex > $currentIndex) { 
                 return redirect(\App\Services\StepRedirectService::routeByStep($sessionStep)); 
             } 
