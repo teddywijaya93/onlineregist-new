@@ -34,9 +34,9 @@ class CreateAccountController extends Controller
             ]);
         }
         try {
-            $response = Http::timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/createPin',
                 [
@@ -70,9 +70,9 @@ class CreateAccountController extends Controller
             ]);
         }
         try {
-            $response = Http::timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/createAccountType',
                 [
@@ -103,13 +103,9 @@ class CreateAccountController extends Controller
         if (!$registrationId) return;
 
         try {
-            $response = Http::withHeaders([
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
-            ])
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post('https://dev.profits.co.id:8283/registration/getRegistration', 
             [
                 "registrationId" => $registrationId
@@ -159,8 +155,8 @@ class CreateAccountController extends Controller
         // Change gender from OCR to API
         if (!empty($personalData['gender'])) {
             $genderMap = [
-                'Pria' => '1',
-                'Wanita' => '2',
+                'Laki' => '1',
+                'Perempuan' => '2',
             ];
             $personalData['gender'] = $genderMap[$personalData['gender']] ?? $personalData['gender'];
         }
@@ -262,13 +258,9 @@ class CreateAccountController extends Controller
         Log::info('Step Personal Information - Payload', $payload);
 
         try {
-            $response = Http::withHeaders([
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
-            ])
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/saveRegistration',
                 $payload
@@ -360,13 +352,9 @@ class CreateAccountController extends Controller
         Log::info('Step Financial Profile - Payload', $payload);
 
         try {
-            $response = Http::withHeaders([
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
-            ])
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/saveRegistration',
                 $payload
@@ -472,13 +460,9 @@ class CreateAccountController extends Controller
         Log::info('Step Relation - Payload', $payload);
 
         try {
-            $response = Http::withHeaders([
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
-            ])
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/saveRegistration',
                 $payload
@@ -565,13 +549,9 @@ class CreateAccountController extends Controller
         Log::info('Step Employment Information - Payload', $payload);
 
         try {
-            $response = Http::withHeaders([
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
-            ])
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/saveRegistration',
                 $payload
@@ -655,13 +635,9 @@ class CreateAccountController extends Controller
         Log::info('Step University Information - Payload', $payload);
 
         try {
-            $response = Http::withHeaders([
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
-            ])
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/saveRegistration',
                 $payload
@@ -742,13 +718,9 @@ class CreateAccountController extends Controller
         Log::info('Step Financial Information - Payload', $payload);
 
         try {
-            $response = Http::withHeaders([
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
-            ])
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/saveRegistration',
                 $payload
@@ -818,10 +790,9 @@ class CreateAccountController extends Controller
             $hash = md5($imageBase64);
             $namaFile = 'Signature_' . $hash . '.png';
 
-            $response = Http::withHeaders([
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
-            ])
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/uploadAttachment',
                 [

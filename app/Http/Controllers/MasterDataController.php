@@ -9,17 +9,17 @@ use Illuminate\Support\Facades\Log;
 class MasterDataController extends Controller
 {
     public function getGenderMaster() {
-       $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'text/plain'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/masterData',
-                [
-                    'body' => json_encode([
-                        'type' => 'gender'
-                    ])
-                ]
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/masterData',
+            [
+                'body' => json_encode([
+                    'type' => 'gender'
+                ])
+            ]
+        );
 
         return response()->json([
             'status' => true,
@@ -28,17 +28,17 @@ class MasterDataController extends Controller
     }
 
     public function getReligionMaster() {
-        $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'text/plain'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/masterData',
-                [
-                    'body' => json_encode([
-                        'type' => 'religion'
-                    ])
-                ]
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/masterData',
+            [
+                'body' => json_encode([
+                    'type' => 'religion'
+                ])
+            ]
+        );
 
         return response()->json([
             'status' => true,
@@ -47,17 +47,17 @@ class MasterDataController extends Controller
     }
 
     public function getMaritalMaster() {
-       $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'text/plain'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/masterData',
-                [
-                    'body' => json_encode([
-                        'type' => 'marital_status'
-                    ])
-                ]
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/masterData',
+            [
+                'body' => json_encode([
+                    'type' => 'marital_status'
+                ])
+            ]
+        );
 
         return response()->json([
             'status' => true,
@@ -66,17 +66,17 @@ class MasterDataController extends Controller
     }
 
     public function getEducationMaster() {
-        $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'text/plain'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/masterData',
-                [
-                    'body' => json_encode([
-                        'type' => 'education'
-                    ])
-                ]
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/masterData',
+            [
+                'body' => json_encode([
+                    'type' => 'education'
+                ])
+            ]
+        );
 
         return response()->json([
             'status' => true,
@@ -85,17 +85,17 @@ class MasterDataController extends Controller
     }
 
     public function getEmploymentMaster() {
-        $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'text/plain'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/masterData',
-                [
-                    'body' => json_encode([
-                        'type' => 'employment'
-                    ])
-                ]
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/masterData',
+            [
+                'body' => json_encode([
+                    'type' => 'employment'
+                ])
+            ]
+        );
 
         return response()->json([
             'status' => true,
@@ -111,12 +111,12 @@ class MasterDataController extends Controller
             ]);
         }
 
-        $response =Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'text/plain'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/getEmploymentPosition'
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/getEmploymentPosition'
+        );
 
         $datas = $response->json()['datas'] ?? [];
         $filtered = array_values(array_filter($datas, function ($item) use ($request) {
@@ -137,12 +137,12 @@ class MasterDataController extends Controller
             ]);
         }
 
-        $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'text/plain'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/getEmploymentBusinessline'
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/getEmploymentBusinessline'
+        );
 
         $datas = $response->json()['datas'] ?? [];
         $filtered = array_values(array_filter($datas, function ($item) use ($request) {
@@ -156,17 +156,17 @@ class MasterDataController extends Controller
     }
 
     public function getIncomeRangeMaster() {
-        $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'text/plain'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/masterData',
-                [
-                    'body' => json_encode([
-                        'type' => 'income_range'
-                    ])
-                ]
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/masterData',
+            [
+                'body' => json_encode([
+                    'type' => 'income_range'
+                ])
+            ]
+        );
 
         return response()->json([
             'status' => true,
@@ -175,17 +175,17 @@ class MasterDataController extends Controller
     }
 
     public function getPrimaryFundMaster() {
-        $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'text/plain'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/masterData',
-                [
-                    'body' => json_encode([
-                        'type' => 'primary_fund_sources'
-                    ])
-                ]
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/masterData',
+            [
+                'body' => json_encode([
+                    'type' => 'primary_fund_sources'
+                ])
+            ]
+        );
 
         return response()->json([
             'status' => true,
@@ -194,17 +194,17 @@ class MasterDataController extends Controller
     }
 
     public function getInvestmentObjective() {
-        $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'text/plain'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/masterData',
-                [
-                    'body' => json_encode([
-                        'type' => 'investment_objective'
-                    ])
-                ]
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/masterData',
+            [
+                'body' => json_encode([
+                    'type' => 'investment_objective'
+                ])
+            ]
+        );
 
         return response()->json([
             'status' => true,
@@ -213,17 +213,17 @@ class MasterDataController extends Controller
     }
 
     public function getBankMaster() {
-        $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'text/plain'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/masterData',
-                [
-                    'body' => json_encode([
-                        'type' => 'bank'
-                    ])
-                ]
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/masterData',
+            [
+                'body' => json_encode([
+                    'type' => 'bank'
+                ])
+            ]
+        );
 
         return response()->json([
             'status' => true,
@@ -232,17 +232,18 @@ class MasterDataController extends Controller
     }
 
     public function getCityMaster() {
-        $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'text/plain'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/masterData',
-                [
-                    'body' => json_encode([
-                        'type' => 'city'
-                    ])
-                ]
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->retry(3, 1000)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/masterData',
+            [
+                'body' => json_encode([
+                    'type' => 'city'
+                ])
+            ]
+        );
 
         return response()->json([
             'status' => true,
@@ -259,17 +260,18 @@ class MasterDataController extends Controller
             ]);
         }
 
-        $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'application/json'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/getKecamatan',
-                [
-                    'body' => json_encode([
-                        'cityId' => (string)$request->city_id
-                    ]),
-                ]
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->retry(3, 1000)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/getKecamatan',
+            [
+                'body' => json_encode([
+                    'cityId' => (string)$request->city_id
+                ]),
+            ]
+        );
 
         return response()->json([
             'status' => true,
@@ -286,17 +288,18 @@ class MasterDataController extends Controller
             ]);
         }
 
-        $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'application/json'])
-            ->send(
-                'GET',
-                'https://dev.profits.co.id:8283/registration/getKelurahan',
-                [
-                    'body' => json_encode([
-                        'kecamatanId' => (string)$request->kecamatan_id
-                    ]),
-                ]
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->retry(3, 1000)
+        ->send(
+            'GET',
+            'https://dev.profits.co.id:8283/registration/getKelurahan',
+            [
+                'body' => json_encode([
+                    'kecamatanId' => (string)$request->kecamatan_id
+                ]),
+            ]
+        );
 
         return response()->json([
             'status' => true,
@@ -308,14 +311,15 @@ class MasterDataController extends Controller
     {
         $search = strtolower($request->input('q', ''));
 
-        $response = Http::timeout(10)
-            ->withHeaders(['Content-Type' => 'application/json'])
-            ->post(
-                'https://dev.profits.co.id:8283/registration/getKelurahan',
-                [
-                    'type' => 'kelurahan'
-                ]
-            );
+        $response = Http::timeout(60)
+        ->connectTimeout(10)
+        ->retry(3, 1000)
+        ->post(
+            'https://dev.profits.co.id:8283/registration/getKelurahan',
+            [
+                'type' => 'kelurahan'
+            ]
+        );
 
         $raw = $response->json()['data'] ?? [];
         $data = collect($raw)->map(function ($item) {

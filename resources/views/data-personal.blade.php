@@ -17,7 +17,6 @@
             @csrf
             <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}">
             <input type="hidden" name="birthLocation" value="{{ old('birthLocation', $data['birthLocation'] ?? '') }}">
-            <input type="hidden" name="gender" value="{{ old('gender', $data['gender'] ?? '') }}">
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Sesuai e-KTP</label>
                 <input type="text" name="name" id="name" class="form-control form-global alphabet-only" value="{{ old('name', $data['name'] ?? '') }}" placeholder="Nama Sesuai e-KTP">

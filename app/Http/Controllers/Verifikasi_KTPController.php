@@ -43,9 +43,9 @@ class Verifikasi_KTPController extends Controller
         ];
 
         // HIT API
-        Http::withHeaders([
-            'Content-Type' => 'application/json'
-        ])
+        Http::timeout(60)
+        ->connectTimeout(10)
+        ->retry(3, 1000)
         ->post(
             'https://dev.profits.co.id:8283/registration/otpResult',$payload
         );
@@ -109,10 +109,9 @@ class Verifikasi_KTPController extends Controller
             $accessToken = $auth->json('access_token');
 
             // 5. HIT OCR
-            $ocr = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $accessToken,
-                'Content-Type'  => 'application/json'
-            ])
+            $ocr = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://sb-api.tilaka.id/ocr/v2/ktp/antiforgery',
                 [
@@ -197,13 +196,10 @@ class Verifikasi_KTPController extends Controller
             // );
 
             // 9. UPLOAD KE API PROFITS
-            $response = Http::withHeaders([
-                'Accept' => 'application/json',
-            ])
-            ->asJson()
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::asJson()
+            ->timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/uploadAttachment',
                 [

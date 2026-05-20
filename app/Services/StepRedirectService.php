@@ -78,7 +78,7 @@ class StepRedirectService
         $flow = self::getFlow();
 
         $filtered = array_values(array_filter($flow, function ($s) {
-            return !in_array($s, ['createPIN', 'accountType', 'uploadSelfie']);
+            return !in_array($s, ['createPIN', 'accountType', 'uploadKtp', 'uploadSelfie']);
         }));
 
         if ($step === 'uploadSelfie') {
@@ -94,7 +94,7 @@ class StepRedirectService
         $flow = self::getFlow();
 
         $filtered = array_filter($flow, function ($s) {
-            return !in_array($s, ['createPIN', 'accountType', 'uploadSelfie']);
+            return !in_array($s, ['createPIN', 'accountType', 'uploadKtp', 'uploadSelfie']);
         });
 
         return count($filtered);

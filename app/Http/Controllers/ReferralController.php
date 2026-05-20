@@ -29,10 +29,9 @@ class ReferralController extends Controller
         }
 
         try {
-            $response = Http::withHeaders([
-                'Accept'        => 'application/json',
-                'Content-Type'  => 'application/json',
-            ])
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/referralCheck',
                 $payload

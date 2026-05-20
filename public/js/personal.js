@@ -53,8 +53,9 @@ function initDatePicker() {
 
     flatpickr("#dateOfBirth", {
         dateFormat: "Y-m-d",
-        altInput: true,
+        altInput: false,
         altFormat: "d-m-Y",
+        defaultDate: document.getElementById("dateOfBirth").value,
         maxDate: new Date().fp_incr(-365 * 17), // min umur 17
         disableMobile: true
     });

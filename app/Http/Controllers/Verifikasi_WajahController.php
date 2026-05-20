@@ -43,9 +43,9 @@ class Verifikasi_WajahController extends Controller
         ];
 
         // HIT API
-        Http::withHeaders([
-            'Content-Type' => 'application/json'
-        ])
+        Http::timeout(60)
+        ->connectTimeout(10)
+        ->retry(3, 1000)
         ->post(
             'https://dev.profits.co.id:8283/registration/otpResult',$payload
         );
@@ -93,10 +93,9 @@ class Verifikasi_WajahController extends Controller
             $accessToken = $auth->json('access_token');
 
             // 5. HIT LIVENESS
-            $liveness = Http::withHeaders([
-                'Authorization' => 'Bearer ' . $accessToken,
-                'Content-Type'  => 'application/json'
-            ])
+            $liveness = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://sb-api.tilaka.id/passive-liveness',
                 [
@@ -217,13 +216,10 @@ class Verifikasi_WajahController extends Controller
             $namaFile = 'Selfie_' . $hash . '.jpg';
 
             // 8. UPLOAD KE PROFITS
-            $response = Http::withHeaders([
-                'Accept' => 'application/json',
-            ])
-            ->asJson()
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::asJson()
+            ->timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/uploadAttachment',
                 [

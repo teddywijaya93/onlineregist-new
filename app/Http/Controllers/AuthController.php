@@ -17,12 +17,9 @@ class AuthController extends Controller
                 'email' => 'required|email'
             ]);
 
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/checkEmail',
                 [
@@ -70,12 +67,9 @@ class AuthController extends Controller
                 'email' => 'required|email'
             ]);
 
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/sendOtpMail',
                 [
@@ -104,12 +98,9 @@ class AuthController extends Controller
     public function verifyOtp(Request $request)
     {
         try {
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/verificationOtp',
                 [
@@ -196,12 +187,9 @@ class AuthController extends Controller
             }
             Log::info('FINAL PAYLOAD', $payload);
 
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])
-            ->timeout(15)
-            ->connectTimeout(5)
-            ->retry(1, 200)
+            $response = Http::timeout(60)
+            ->connectTimeout(10)
+            ->retry(3, 1000)
             ->post(
                 'https://dev.profits.co.id:8283/registration/createAccount',
                 $payload,
