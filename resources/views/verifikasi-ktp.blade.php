@@ -106,10 +106,33 @@ btnCamera.onclick = async () => {
 
 /* CAPTURE */
 btnCapture.onclick = () => {
-    canvas.width  = video.videoWidth;
-    canvas.height = video.videoHeight;
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
 
-    ctx.drawImage(video, 0, 0);
+    // ukuran frame merah (persentase)
+    const frameWidth  = vw * 0.85;
+    const frameHeight = frameWidth / 1.58; // rasio KTP
+
+    // posisi tengah
+    const sx = (vw - frameWidth) / 2;
+    const sy = (vh - frameHeight) / 2;
+
+    // canvas hasil crop
+    canvas.width  = frameWidth;
+    canvas.height = frameHeight;
+
+    // crop sesuai frame merah
+    ctx.drawImage(
+        video,
+        sx,
+        sy,
+        frameWidth,
+        frameHeight,
+        0,
+        0,
+        frameWidth,
+        frameHeight
+    );
 
     canvas.toBlob(blob => {
         const file = new File([blob], "ktp.jpg", { type: "image/jpeg" });

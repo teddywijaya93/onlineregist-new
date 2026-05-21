@@ -6,7 +6,7 @@
 <section class="auth-wrapper">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-5">
-            <a href="{{ url()->previous() }}" class="btn-back"><i class="fa-solid fa-arrow-left text-white step-back"></i></a>
+            <a href="{{ request()->routeIs('email') ? url('/') : url()->previous() }}" class="btn-back"><i class="fa-solid fa-arrow-left text-white step-back"></i></a>
             <a href="https://api.whatsapp.com/send/?phone=628119560188&text=Hi+Profits+Saya+ada+Kendala.+Apakah+bisa+dibantu&type=phone_number&app_absent=0" class="btn-headset"><i class="fa-solid fa-headset text-white step-headset"></i></a>
         </div>
         <div class="text-start mb-4"><img class="icon-regist" src="{{ asset('storage/email.svg') }}"></div>

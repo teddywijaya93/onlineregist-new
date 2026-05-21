@@ -50,10 +50,10 @@ function initValidation() {
         isValid &= validateRequired("bankAccountNumber", "Nomor Rekening Wajib Diisi");
 
         const bankNumber = document.getElementById("bankAccountNumber").value.trim();
-        if (bankNumber.length < 10) {
+        if (bankNumber.length < 8) {
             showError(
                 document.getElementById("bankAccountNumber"),
-                "Nomor Rekening Min 10 Digit"
+                "Nomor Rekening Min 8 Digit"
             );
             isValid = false;
         }

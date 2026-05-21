@@ -130,6 +130,15 @@ function initValidation() {
         isValid &= validateRequired("residenceKelurahan", "Residence Kelurahan Wajib Diisi");
         isValid &= validateRequired("residencePostalCode", "Residence Postal Kode Wajib Diisi");
 
+        const ibuKandung = document.getElementById("motherMaidenName").value.trim();
+        if (ibuKandung.length < 3) {
+            showError(
+                document.getElementById("motherMaidenName"),
+                "Nama Ibu Kandung Min 3 Huruf"
+            );
+            isValid = false;
+        }
+
         if (!isValid) {
             scrollToFirstError();
             return;

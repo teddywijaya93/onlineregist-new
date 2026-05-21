@@ -155,7 +155,9 @@ class CreateAccountController extends Controller
         // Change gender from OCR to API
         if (!empty($personalData['gender'])) {
             $genderMap = [
-                'Laki' => '1',
+                'Pria' => '1',
+                'Wanita' => '2',
+                'Laki-Laki' => '1',
                 'Perempuan' => '2',
             ];
             $personalData['gender'] = $genderMap[$personalData['gender']] ?? $personalData['gender'];
@@ -164,12 +166,15 @@ class CreateAccountController extends Controller
         // Change religion from OCR to API
         if (!empty($personalData['religion'])) {
             $religionMap = [
-                'ISLAM' => '1',
-                'KRISTEN' => '2',
-                'BUDHA' => '3',
-                'KATHOLIK' => '4',
-                'KHONGHUCU' => '5',
-                'HINDU' => '6',
+                'Islam' => '1',
+                'Kristen' => '2',
+                'Budha' => '3',
+                'Buddha' => '3',
+                'Katolik' => '3',
+                'Katholik' => '4',
+                'Khonghucu' => '5',
+                'Kong Hu Cu' => '5',
+                'Hindu' => '6',
             ];
             $personalData['religion'] = $religionMap[$personalData['religion']] ?? $personalData['religion'];
         }
