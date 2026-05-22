@@ -17,15 +17,16 @@ class AuthController extends Controller
                 'email' => 'required|email'
             ]);
 
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/checkEmail',
-                [
-                    "email" => $request->email
-                ]
-            );
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.checkEmail'),
+            [
+                "email" => $request->email
+            ]);
 
             if (!$response->ok()) {
                 return response()->json([
@@ -67,15 +68,16 @@ class AuthController extends Controller
                 'email' => 'required|email'
             ]);
 
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/sendOtpMail',
-                [
-                    "email" => $request->email
-                ]
-            );
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.sendOtpMail'),
+            [
+                "email" => $request->email
+            ]);
 
             $data = $response->json();
             if (!$data['status']) {
@@ -98,17 +100,18 @@ class AuthController extends Controller
     public function verifyOtp(Request $request)
     {
         try {
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/verificationOtp',
-                [
-                    "type"  => "EMAIL",
-                    "value" => $request->email,
-                    "otp"   => (int)$request->otp
-                ]
-            );
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.verificationOtp'),
+            [
+                "type"  => "EMAIL",
+                "value" => $request->email,
+                "otp"   => (int)$request->otp
+            ]);
 
             return response()->json(
                 $response->json()
@@ -187,13 +190,13 @@ class AuthController extends Controller
             }
             Log::info('FINAL PAYLOAD', $payload);
 
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/createAccount',
-                $payload,
-            );
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.createAccount'), $payload);
 
             Log::info('CREATE ACCOUNT RESPONSE', [
                 'status' => $response->status(),

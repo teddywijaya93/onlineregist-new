@@ -29,13 +29,13 @@ class ReferralController extends Controller
         }
 
         try {
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/referralCheck',
-                $payload
-            );
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.referralCheck'), $payload);
 
             if ($response->successful()) {
                 $data = $response->json();

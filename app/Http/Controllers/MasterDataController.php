@@ -9,11 +9,11 @@ use Illuminate\Support\Facades\Log;
 class MasterDataController extends Controller
 {
     public function getGenderMaster() {
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/masterData',
+            config('api.masterData'),
             [
                 'body' => json_encode([
                     'type' => 'gender'
@@ -28,11 +28,11 @@ class MasterDataController extends Controller
     }
 
     public function getReligionMaster() {
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/masterData',
+            config('api.masterData'),
             [
                 'body' => json_encode([
                     'type' => 'religion'
@@ -47,11 +47,11 @@ class MasterDataController extends Controller
     }
 
     public function getMaritalMaster() {
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/masterData',
+            config('api.masterData'),
             [
                 'body' => json_encode([
                     'type' => 'marital_status'
@@ -66,11 +66,11 @@ class MasterDataController extends Controller
     }
 
     public function getEducationMaster() {
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/masterData',
+            config('api.masterData'),
             [
                 'body' => json_encode([
                     'type' => 'education'
@@ -85,11 +85,11 @@ class MasterDataController extends Controller
     }
 
     public function getEmploymentMaster() {
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/masterData',
+            config('api.masterData'),
             [
                 'body' => json_encode([
                     'type' => 'employment'
@@ -111,11 +111,11 @@ class MasterDataController extends Controller
             ]);
         }
 
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/getEmploymentPosition'
+            config('api.getEmploymentPosition'),
         );
 
         $datas = $response->json()['datas'] ?? [];
@@ -137,11 +137,11 @@ class MasterDataController extends Controller
             ]);
         }
 
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/getEmploymentBusinessline'
+            config('api.getEmploymentBusinessline'),
         );
 
         $datas = $response->json()['datas'] ?? [];
@@ -156,11 +156,11 @@ class MasterDataController extends Controller
     }
 
     public function getIncomeRangeMaster() {
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/masterData',
+            config('api.masterData'),
             [
                 'body' => json_encode([
                     'type' => 'income_range'
@@ -175,11 +175,11 @@ class MasterDataController extends Controller
     }
 
     public function getPrimaryFundMaster() {
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/masterData',
+            config('api.masterData'),
             [
                 'body' => json_encode([
                     'type' => 'primary_fund_sources'
@@ -194,11 +194,11 @@ class MasterDataController extends Controller
     }
 
     public function getInvestmentObjective() {
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/masterData',
+            config('api.masterData'),
             [
                 'body' => json_encode([
                     'type' => 'investment_objective'
@@ -213,11 +213,11 @@ class MasterDataController extends Controller
     }
 
     public function getBankMaster() {
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/masterData',
+            config('api.masterData'),
             [
                 'body' => json_encode([
                     'type' => 'bank'
@@ -232,12 +232,15 @@ class MasterDataController extends Controller
     }
 
     public function getCityMaster() {
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
-        ->retry(3, 1000)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
+        ->retry(
+            config('api.retry'),
+            config('api.retry_sleep')
+        )
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/masterData',
+            config('api.masterData'),
             [
                 'body' => json_encode([
                     'type' => 'city'
@@ -260,12 +263,15 @@ class MasterDataController extends Controller
             ]);
         }
 
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
-        ->retry(3, 1000)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
+        ->retry(
+            config('api.retry'),
+            config('api.retry_sleep')
+        )
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/getKecamatan',
+            config('api.getKecamatan'),
             [
                 'body' => json_encode([
                     'cityId' => (string)$request->city_id
@@ -288,12 +294,15 @@ class MasterDataController extends Controller
             ]);
         }
 
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
-        ->retry(3, 1000)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
+        ->retry(
+            config('api.retry'),
+            config('api.retry_sleep')
+        )
         ->send(
             'GET',
-            'https://dev.profits.co.id:8283/registration/getKelurahan',
+            config('api.getKelurahan'),
             [
                 'body' => json_encode([
                     'kecamatanId' => (string)$request->kecamatan_id
@@ -311,11 +320,14 @@ class MasterDataController extends Controller
     {
         $search = strtolower($request->input('q', ''));
 
-        $response = Http::timeout(60)
-        ->connectTimeout(10)
-        ->retry(3, 1000)
+        $response = Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
+        ->retry(
+            config('api.retry'),
+            config('api.retry_sleep')
+        )
         ->post(
-            'https://dev.profits.co.id:8283/registration/getKelurahan',
+            config('api.getAllKelurahan'),
             [
                 'type' => 'kelurahan'
             ]

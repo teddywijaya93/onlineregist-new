@@ -34,16 +34,17 @@ class CreateAccountController extends Controller
             ]);
         }
         try {
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/createPin',
-                [
-                    "accountId" => $accountId,
-                    "pin" => $request->pin
-                ]
-            );
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.createPin'),
+            [
+                "accountId" => $accountId,
+                "pin" => $request->pin
+            ]);
             $result = $response->json();
 
             Log::info('Create PIN - API Response', $result);
@@ -70,16 +71,17 @@ class CreateAccountController extends Controller
             ]);
         }
         try {
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/createAccountType',
-                [
-                    "registrationId" => $registrationId,
-                    "accountType" => $request->accountType
-                ]
-            );
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.createAccountType'),
+            [
+                "registrationId" => $registrationId,
+                "accountType" => $request->accountType
+            ]);
             $result = $response->json();
             
             Log::info('Account Type - API Response', $result);
@@ -103,10 +105,13 @@ class CreateAccountController extends Controller
         if (!$registrationId) return;
 
         try {
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post('https://dev.profits.co.id:8283/registration/getRegistration', 
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.getRegistration'),
             [
                 "registrationId" => $registrationId
             ]);
@@ -158,6 +163,7 @@ class CreateAccountController extends Controller
                 'Pria' => '1',
                 'Wanita' => '2',
                 'Laki-Laki' => '1',
+                'Laki-laki' => '1',
                 'Perempuan' => '2',
             ];
             $personalData['gender'] = $genderMap[$personalData['gender']] ?? $personalData['gender'];
@@ -183,7 +189,9 @@ class CreateAccountController extends Controller
         if (!empty($personalData['maritalStatus'])) {
             $maritalMap = [
                 'Menikah' => '1',
+                'Kawin' => '1',
                 'Belum Menikah' => '2',
+                'Belum Kawin' => '2',
                 'Janda' => '3',
                 'Duda' => '4',
             ];
@@ -263,13 +271,13 @@ class CreateAccountController extends Controller
         Log::info('Step Personal Information - Payload', $payload);
 
         try {
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/saveRegistration',
-                $payload
-            );
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.saveRegistration'), $payload);
             $result = $response->json();
 
             Log::info('Step Personal Information - API Response', $result);
@@ -357,13 +365,13 @@ class CreateAccountController extends Controller
         Log::info('Step Financial Profile - Payload', $payload);
 
         try {
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/saveRegistration',
-                $payload
-            );
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.saveRegistration'), $payload);
             $result = $response->json();
 
             Log::info('Step Financial Profile - API Response', $result);
@@ -465,13 +473,13 @@ class CreateAccountController extends Controller
         Log::info('Step Relation - Payload', $payload);
 
         try {
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/saveRegistration',
-                $payload
-            );
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.saveRegistration'), $payload);
             $result = $response->json();
 
             Log::info('Step Relation - API Response', $result);
@@ -554,13 +562,13 @@ class CreateAccountController extends Controller
         Log::info('Step Employment Information - Payload', $payload);
 
         try {
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/saveRegistration',
-                $payload
-            );
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.saveRegistration'), $payload);
             $result = $response->json();
 
             Log::info('Step Employment Information - API Response', $result);
@@ -640,13 +648,13 @@ class CreateAccountController extends Controller
         Log::info('Step University Information - Payload', $payload);
 
         try {
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/saveRegistration',
-                $payload
-            );
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.saveRegistration'), $payload);
             $result = $response->json();
 
             Log::info('Step University Information - API Response', $result);
@@ -723,13 +731,13 @@ class CreateAccountController extends Controller
         Log::info('Step Financial Information - Payload', $payload);
 
         try {
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/saveRegistration',
-                $payload
-            );
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.saveRegistration'), $payload);
             $result = $response->json();
 
             Log::info('Step Financial Information - API Response', $result);
@@ -795,20 +803,21 @@ class CreateAccountController extends Controller
             $hash = md5($imageBase64);
             $namaFile = 'Signature_' . $hash . '.png';
 
-            $response = Http::timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/uploadAttachment',
-                [
-                    "registrationId" => session('registrationId'),
-                    "datas" => [
-                        "fileType"  => "signature",
-                        "fileName"  => $namaFile,
-                        "fileImage" => $imageBase64
-                    ]
+            $response = Http::timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.uploadAttachment'),
+            [
+                "registrationId" => session('registrationId'),
+                "datas" => [
+                    "fileType"  => "signature",
+                    "fileName"  => $namaFile,
+                    "fileImage" => $imageBase64
                 ]
-            );
+            ]);
             $result = $response->json();
 
             Log::info('Upload Signature', $result);

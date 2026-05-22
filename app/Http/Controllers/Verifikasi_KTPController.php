@@ -43,12 +43,13 @@ class Verifikasi_KTPController extends Controller
         ];
 
         // HIT API
-        Http::timeout(60)
-        ->connectTimeout(10)
-        ->retry(3, 1000)
-        ->post(
-            'https://dev.profits.co.id:8283/registration/otpResult',$payload
-        );
+        Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
+        ->retry(
+            config('api.retry'),
+            config('api.retry_sleep')
+        )
+        ->post(config('api.ocrResult'), $payload);
 
         Log::info('OCR RESULT SENT', $payload);
     }
@@ -94,14 +95,18 @@ class Verifikasi_KTPController extends Controller
 
             // 4. AUTH TILAKA
             $auth = Http::asForm()
-            ->post(
-                'https://sb-api.tilaka.id/auth',
-                [
-                    'client_id'     => env('TILAKA_CLIENT_ID'),
-                    'client_secret' => env('TILAKA_CLIENT_SECRET'),
-                    'grant_type'    => 'client_credentials'
-                ]
-            );
+            ->timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.authTilaka'),
+            [
+                'client_id'     => config('api.tilaka_client_id'),
+                'client_secret' => config('api.tilaka_client_secret'),
+                'grant_type'    => 'client_credentials'
+            ]);
 
             if ($auth->failed()) {
                 return back()->with('error', 'Auth Tilaka Gagal!');
@@ -112,16 +117,17 @@ class Verifikasi_KTPController extends Controller
             $ocr = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $accessToken,
             ])
-            ->timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://sb-api.tilaka.id/ocr/v2/ktp/antiforgery',
-                [
-                    'image' => $imageBase64,
-                    'validate_quality' => true
-                ]
-            );
+            ->timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.antiForgery'),
+            [
+                'image' => $imageBase64,
+                'validate_quality' => true
+            ]);
 
             // Get ALL Response
             $statusCode = $ocr->status();
@@ -200,20 +206,21 @@ class Verifikasi_KTPController extends Controller
 
             // 9. UPLOAD KE API PROFITS
             $response = Http::asJson()
-            ->timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/uploadAttachment',
-                [
-                    "registrationId" => session('registrationId'),
-                    "datas" => [
-                        "fileType"  => "ktp",
-                        "fileName"  => $namaFile,
-                        "fileImage" => $imageBase64
-                    ]
+            ->timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.uploadAttachment'),
+            [
+                "registrationId" => session('registrationId'),
+                "datas" => [
+                    "fileType"  => "ktp",
+                    "fileName"  => $namaFile,
+                    "fileImage" => $imageBase64
                 ]
-            );
+            ]);
             $resultUpload = $response->json();
 
             // if ($response->failed()) {

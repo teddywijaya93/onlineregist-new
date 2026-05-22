@@ -1,41 +1,35 @@
 <?php
 
-return[
-   // ========== Dev
-   'refferalEndpoint'               => 'https://dev.profits.co.id:8283/onlineRegistrationV1/checkReferralCode',
-   'emailmobileEndpoint'            => 'https://dev.profits.co.id:8283/onlineRegistrationV1/checkEmail',
-   'verifyOtp'                      => 'https://dev.profits.co.id:8283/onlineRegistrationV1/verifyEmailOtp',
-   'masterDataEndpoint'             => 'https://dev.profits.co.id:8283/onlineRegistrationV1/masterData',
-   'masterDataSchedule'             => 'https://dev.profits.co.id:8283/campaignEducation/getSchedules',
-   'masterdataCreateEducation'      => 'https://dev.profits.co.id:8283/campaignEducation/createEducation',
-   'masterdataEmploymentPosition'   => 'https://dev.profits.co.id:8283/onlineRegistrationV1/getEmploymentPosition',
-   'masterdataEmploymentBusiness'   => 'https://dev.profits.co.id:8283/onlineRegistrationV1/getEmploymentBusinessline',
-   'masterCheckKelurahan'           => 'https://dev.profits.co.id:8283/onlineRegistrationV1/checkKelurahan/',
-   'masterNewRegistration'          => 'https://dev.profits.co.id:8283/onlineRegistrationV1/createNewRegistration',
-   'masterAccountRegistration'      => 'https://dev.profits.co.id:8283/onlineRegistrationV1/createAccountRegistration',
-   'masterReferralCode'             => 'https://dev.profits.co.id:8283/onlineRegistrationV1/checkReference/',
-   'uploadImage'                    => 'https://dev.profits.co.id:8283/onlineRegistrationV1/upload',
+$baseUrl = env('API_BASE_URL_DEV');
+return [
+    'timeout'                   => env('API_TIMEOUT'),
+    'connect_timeout'           => env('API_CONNECT_TIMEOUT'),
+    'retry'                     => env('API_RETRY'),
+    'retry_sleep'               => env('API_RETRY_SLEEP'),
+    'tilaka_client_id'          => env('TILAKA_CLIENT_ID'),
+    'tilaka_client_secret'      => env('TILAKA_CLIENT_SECRET'),
 
-   // ========== Token
-   'dataSchedule'                   => 'ffdf140dcfb011eeb6ebd4f5ef5025c0',
-   'createedukasi'                  => 'ffdf140dcfb011eeb6ebd4f5ef5025c0',
+    // HIT Endpoint Profits
+    'referralCheck'             => $baseUrl . '/registration/referralCheck',
+    'checkEmail'                => $baseUrl . '/registration/checkEmail',
+    'sendOtpMail'               => $baseUrl . '/registration/sendOtpMail',
+    'verificationOtp'           => $baseUrl . '/registration/verificationOtp',
+    'createAccount'             => $baseUrl . '/registration/createAccount',
+    'masterData'                => $baseUrl . '/registration/masterData',
+    'getEmploymentPosition'     => $baseUrl . '/registration/getEmploymentPosition',
+    'getEmploymentBusinessline' => $baseUrl . '/registration/getEmploymentBusinessline',
+    'getKecamatan'              => $baseUrl . '/registration/getKecamatan',
+    'getKelurahan'              => $baseUrl . '/registration/getKelurahan',
+    'getAllKelurahan'           => $baseUrl . '/registration/getKelurahan',
+    'createPin'                 => $baseUrl . '/registration/createPin',
+    'createAccountType'         => $baseUrl . '/registration/createAccountType',
+    'saveRegistration'          => $baseUrl . '/registration/saveRegistration',
+    'getRegistration'           => $baseUrl . '/registration/getRegistration',
+    'ocrResult'                 => $baseUrl . '/registration/otpResult',
+    'uploadAttachment'          => $baseUrl . '/registration/uploadAttachment',
 
-   // ========== Prod
-   // 'refferalEndpoint'               => 'https://reg.profits.co.id/onlineRegistrationV1/checkReferralCode',
-   // 'emailmobileEndpoint'            => 'https://reg.profits.co.id/onlineRegistrationV1/checkEmail',
-   // 'verifyOtp'                      => 'https://reg.profits.co.id/onlineRegistrationV1/verifyEmailOtp',
-   // 'masterDataEndpoint'             => 'https://reg.profits.co.id/onlineRegistrationV1/masterData',
-   // 'masterDataSchedule'             => 'https://reg.profits.co.id/campaignEducation/getSchedules',
-   // 'masterdataCreateEducation'      => 'https://reg.profits.co.id/campaignEducation/createEducation',
-   // 'masterdataEmploymentPosition'   => 'https://reg.profits.co.id/onlineRegistrationV1/getEmploymentPosition',
-   // 'masterdataEmploymentBusiness'   => 'https://reg.profits.co.id/onlineRegistrationV1/getEmploymentBusinessline',
-   // 'masterCheckKelurahan'           => 'https://reg.profits.co.id/onlineRegistrationV1/checkKelurahan/',
-   // 'masterNewRegistration'          => 'https://reg.profits.co.id/onlineRegistrationV1/createNewRegistration',
-   // 'masterReferralCode'             => 'https://reg.profits.co.id/onlineRegistrationV1/checkReference/',
-   // 'masterAccountRegistration'      => 'https://reg.profits.co.id/onlineRegistrationV1/createAccountRegistration',
-   // 'uploadImage'                    => 'https://reg.profits.co.id/onlineRegistrationV1/upload',
-   
-   // ========== Token
-   // 'dataSchedule'                   => '4fc199c0e98e11ee8793d4f5ef63813c',
-   // 'createedukasi'                  => '4fc199c0e98e11ee8793d4f5ef63813c'
+    // HIT Endpoint Tilaka
+    'authTilaka'                => 'https://sb-api.tilaka.id/auth',
+    'passiveLiveness'           => 'https://sb-api.tilaka.id/passive-liveness',
+    'antiForgery'               => 'https://sb-api.tilaka.id/ocr/v2/ktp/antiforgery',
 ];

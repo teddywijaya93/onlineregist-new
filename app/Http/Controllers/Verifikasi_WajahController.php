@@ -43,12 +43,13 @@ class Verifikasi_WajahController extends Controller
         ];
 
         // HIT API
-        Http::timeout(60)
-        ->connectTimeout(10)
-        ->retry(3, 1000)
-        ->post(
-            'https://dev.profits.co.id:8283/registration/otpResult',$payload
-        );
+        Http::timeout(config('api.timeout'))
+        ->connectTimeout(config('api.connect_timeout'))
+        ->retry(
+            config('api.retry'),
+            config('api.retry_sleep')
+        )
+        ->post(config('api.ocrResult'), $payload);
 
         Log::info('Liveness RESULT SENT', $payload);
     }
@@ -76,14 +77,19 @@ class Verifikasi_WajahController extends Controller
             $imageBase64 = preg_replace('/\s+/', '', $imageBase64);
 
             // 4. AUTH TILAKA
-            $auth = Http::asForm()->post(
-                'https://sb-api.tilaka.id/auth',
-                [
-                    'client_id'     => env('TILAKA_CLIENT_ID'),
-                    'client_secret' => env('TILAKA_CLIENT_SECRET'),
-                    'grant_type'    => 'client_credentials'
-                ]
-            );
+            $auth = Http::asForm()
+            ->timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.authTilaka'), 
+            [
+                'client_id'     => config('api.tilaka_client_id'),
+                'client_secret' => config('api.tilaka_client_secret'),
+                'grant_type'    => 'client_credentials'
+            ]);
 
             if ($auth->failed()) {
                 $this->sendlivenessResult(false, "[HTTP ".$auth->status()."] Auth Tilaka gagal", []);
@@ -96,20 +102,21 @@ class Verifikasi_WajahController extends Controller
             $liveness = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $accessToken,
             ])
-            ->timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://sb-api.tilaka.id/passive-liveness',
-                [
-                    'image'                 => $imageBase64,
-                    'is_quality'            => true,
-                    'is_attribute'          => true,
-                    'validate_quality'      => false,
-                    'validate_attribute'    => true,
-                    'validate_nface'        => true
-                ]
-            );
+            ->timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.passiveLiveness'), 
+            [
+                'image'                 => $imageBase64,
+                'is_quality'            => true,
+                'is_attribute'          => true,
+                'validate_quality'      => false,
+                'validate_attribute'    => true,
+                'validate_nface'        => true
+            ]);
 
             $statusCode = $liveness->status();
             $livenessResult = $liveness->json() ?? [];
@@ -220,20 +227,21 @@ class Verifikasi_WajahController extends Controller
 
             // 8. UPLOAD KE PROFITS
             $response = Http::asJson()
-            ->timeout(60)
-            ->connectTimeout(10)
-            ->retry(3, 1000)
-            ->post(
-                'https://dev.profits.co.id:8283/registration/uploadAttachment',
-                [
-                    "registrationId" => session('registrationId'),
-                    "datas" => [
-                        "fileType"  => "selfie",
-                        "fileName"  => $namaFile,
-                        "fileImage" => $imageBase64
-                    ]
+            ->timeout(config('api.timeout'))
+            ->connectTimeout(config('api.connect_timeout'))
+            ->retry(
+                config('api.retry'),
+                config('api.retry_sleep')
+            )
+            ->post(config('api.uploadAttachment'),
+            [
+                "registrationId" => session('registrationId'),
+                "datas" => [
+                    "fileType"  => "selfie",
+                    "fileName"  => $namaFile,
+                    "fileImage" => $imageBase64
                 ]
-            );
+            ]);
             $resultUpload = $response->json();
 
             if ($response->failed()) {
