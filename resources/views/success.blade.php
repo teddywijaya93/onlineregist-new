@@ -2,6 +2,12 @@
 @section('title','Profits Anywhere')
 @section('content')
 
+@php
+    $registrationStatus = $response['registrationStatus'] ?? null;
+@endphp
+
+<div class="d-none" id="registrationStatusText" style="color:white"></div>
+
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <section class="auth-wrapper d-flex align-items-center min-vh-100">
     <div class="container">
@@ -58,7 +64,11 @@
                     </div>
                     <div class="verification-title">Verifikasi Rekening Efek</div>
                 </div>
-                <i class="fa-solid fa-circle-check" style="font-size: 22px; color:#A6AEBB"></i>
+                @if(in_array($registrationStatus, ['APPROVED','PENDING FUND']))
+                <i class="fa-solid fa-circle-check" style="font-size: 22px; color:#17D98C"></i>
+                @else
+                <i id="step2Icon" class="fa-solid fa-circle-check" style="font-size: 22px; color:#A6AEBB"></i>
+                @endif
             </div>
 
             <div class="verification-item">
@@ -68,7 +78,11 @@
                     </div>
                     <div class="verification-title">Verifikasi Rekening Dana Nasabah</div>
                 </div>
-                <i class="fa-solid fa-circle-check" style="font-size: 22px; color:#A6AEBB"></i>
+                @if($registrationStatus == 'PENDING FUND')
+                <i class="fa-solid fa-circle-check" style="font-size: 22px; color:#17D98C"></i>
+                @else
+                <i id="step3Icon" class="fa-solid fa-circle-check" style="font-size: 22px; color:#A6AEBB"></i>
+                @endif
             </div>
 
             <div class="alert alert-warning d-flex align-items-start gap-3 mb-0 alert-bank">
@@ -122,6 +136,16 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 1500);
         }
     });
+
+    const registrationStatus = sessionStorage.getItem("registrationStatus");
+    document.getElementById("registrationStatusText").innerText = registrationStatus;
+    if (registrationStatus === "APPROVED" || registrationStatus === "PENDING FUND") {
+        document.getElementById("step2Icon").style.color = "#17D98C";
+    }
+
+    if (registrationStatus === "PENDING FUND") {
+        document.getElementById("step3Icon").style.color = "#17D98C";
+    }
 });
 </script>
 

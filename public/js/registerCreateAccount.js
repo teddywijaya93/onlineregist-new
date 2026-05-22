@@ -60,13 +60,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (checkData.redirect && checkData.redirect !== "null") {
                     sessionStorage.setItem("redirect", checkData.redirect);
                 } else {
-                    sessionStorage.removeItem("redirect"); // bersihin kalau kosong
+                    sessionStorage.removeItem("redirect");
                 }
 
+                const allowedStatuses = ["PENDING VERIFICATION","APPROVED","PENDING FUND"];
                 await Swal.fire({
-                    icon: checkData.status ? "success" : "error",
-                    title: checkData.message || "Response"
+                    icon: checkData.status ? "success" : "info",
+                    title: !checkData.status && allowedStatuses.includes(checkData.registrationStatus)
+                        ? "Cek Status Registrasi"
+                        : (checkData.message || "Response")
                 });
+
+                // Status False -> Login
+                if (!checkData.status && allowedStatuses.includes(checkData.registrationStatus)) {
+                    window.location.href = "/sukses";
+                    return;
+                }
 
                 if (!checkData.status) {
                     btnNext.disabled = false;
@@ -236,6 +245,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (status === "NEW") {
                         window.location.href = "/dashboard";
+                        return;
+                    }
+
+                    if (status === "PENDING VERIFICATION" || status === "APPROVED" || status === "PENDING FUND") {
+                        window.location.href = "/sukses";
                         return;
                     }
 

@@ -178,7 +178,7 @@ class CreateAccountController extends Controller
                 'Buddha' => '3',
                 'Katolik' => '3',
                 'Katholik' => '4',
-                'Khonghucu' => '5',
+                'KhongHuCu' => '5',
                 'Kong Hu Cu' => '5',
                 'Hindu' => '6',
             ];
