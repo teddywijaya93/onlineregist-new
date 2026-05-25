@@ -122,7 +122,17 @@ async function loadEmployment() {
     try {
         const res = await fetch(window.routes.employment);
         const json = await res.json();
-        const list = json.data || json.datas || [];
+        let list = json.data || json.datas || [];
+
+        // hide pekerjaan IRT, Pelajar, Mahasiswa
+        list = list.filter(item => {
+            const desc = (item.description || '').toLowerCase().trim();
+            return ![
+                'ibu rumah tangga',
+                'pensiunan',
+                'pelajar, mahasiswa'
+            ].includes(desc);
+        });
 
         select.innerHTML = `<option value="">Pilih Pekerjaan</option>`;
         let selectedId = null;

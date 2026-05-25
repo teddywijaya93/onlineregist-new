@@ -46,7 +46,8 @@ class ReferralController extends Controller
                         'eventDisplayName' => $data['eventDisplayName'] ?? null,
                         'aoCode'           => $data['aoCode'] ?? null,
                         'aoName'           => $data['aoName'] ?? null,
-                        'rdnBank'          => $data['rdnBank'] ?? null,
+                        'referrerId'       => $data['referrerId'] ?? null,
+                        // 'rdnBank'          => $data['rdnBank'] ?? null,
                     ]
                 ]);
 

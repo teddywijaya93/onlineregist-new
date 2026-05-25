@@ -70,14 +70,14 @@ class Verifikasi_KTPController extends Controller
             if ($validator->fails()) {
                 $errorMsg = $validator->errors()->first();
 
-                $this->sendOcrResult(false, "[VALIDATION] ".$errorMsg);
+                $this->sendOcrResult(false, "[VALIDATION] ".$errorMsg, []);
 
                 return back()->with('error', $errorMsg);
             }
 
             $file = $request->file('ktp_image');
             if (!$file->isValid()) {
-                $this->sendOcrResult(false, "[FILE INVALID] File upload tidak valid");
+                $this->sendOcrResult(false, "[FILE INVALID] File upload tidak valid", []);
 
                 return back()->with('error', 'File upload tidak valid');
             }
@@ -85,7 +85,7 @@ class Verifikasi_KTPController extends Controller
             // 3. CONVERT KE BASE64 (CLEAN)
             $binary = file_get_contents($file->getRealPath());
             if ($binary === false) {
-                $this->sendOcrResult(false, "[READ ERROR] Gagal membaca file");
+                $this->sendOcrResult(false, "[READ ERROR] Gagal membaca file", []);
 
                 return back()->with('error', 'Gagal membaca file');
             }

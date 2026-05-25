@@ -184,8 +184,8 @@ class AuthController extends Controller
                     $payload['aoCode'] = $referral['aoCode'];
                 }
 
-                if (!empty($referral['rdnBank'])) {
-                    $payload['rdnBankName'] = $referral['rdnBank'];
+                if (!empty($referral['referrerId'])) {
+                    $payload['referrerId'] = $referral['referrerId'];
                 }
             }
             Log::info('FINAL PAYLOAD', $payload);
