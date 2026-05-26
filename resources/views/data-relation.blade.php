@@ -18,10 +18,10 @@
             <!-- <input type="hidden" name="process_type" value="{{ $isUpdate ? 'UPDATE' : 'CREATE' }}"> -->
             <input type="hidden" name="gender" id="gender" value="{{ $genderId }}">
             <input type="hidden" name="maritalStatus" id="maritalStatus" value="{{ $maritalId }}">
-            <div class="form-group mb-4">
+            <!-- <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Nama Referensi Perorangan</label>
                 <input type="text" name="beneficiaryName" id="beneficiaryName" class="form-control form-global alphabet-only" value="{{ old('beneficiaryName', $relationData['beneficiaryName'] ?? '') }}" placeholder="Tulis Nama Lengkap Referensi">
-            </div>
+            </div> -->
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Hubungan dengan Nasabah</label>
                 <div class="select-wrapper">

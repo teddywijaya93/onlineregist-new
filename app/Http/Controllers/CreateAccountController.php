@@ -179,6 +179,7 @@ class CreateAccountController extends Controller
                 'Katolik' => '3',
                 'Katholik' => '4',
                 'KhongHuCu' => '5',
+                'KHONGHUCU' => '5',
                 'Kong Hu Cu' => '5',
                 'Hindu' => '6',
             ];
@@ -446,7 +447,7 @@ class CreateAccountController extends Controller
     public function saveRelation(Request $request)
     {
         $relationData = $request->validate([
-            'beneficiaryName'               => 'required|string|max:100',
+            // 'beneficiaryName'               => 'nullable',
             'beneficiaryRelation'           => 'required|string',
             'beneficiaryEmploymentType'     => 'required|string',
             'beneficiaryOwnerBusinessLine'  => 'required|string',
@@ -540,6 +541,10 @@ class CreateAccountController extends Controller
             'employmentDurationYear'  => 'required|integer',
             'employmentDurationMonth' => 'required|integer',
             'officeAddress'           => 'required|string|max:100',
+            'officeCity'              => 'required|string',
+            'officeKecamatan'         => 'required|string',
+            'officeKelurahan'         => 'required|string',
+            'officePostalCode'        => 'required|string',
             'officeTelephone'         => 'required|string|max:13',
         ]);
         $employmentData['employmentDurationYear']  = (int) $employmentData['employmentDurationYear'];
@@ -627,6 +632,10 @@ class CreateAccountController extends Controller
             'employmentDurationYear'  => 'required|integer',
             'employmentDurationMonth' => 'required|integer',
             'officeAddress'           => 'required|string|max:100',
+            'officeCity'              => 'required|string',
+            'officeKecamatan'         => 'required|string',
+            'officeKelurahan'         => 'required|string',
+            'officePostalCode'        => 'required|string',
         ]);
         $universitasData['employmentDurationYear']  = (int) $universitasData['employmentDurationYear'];
         $universitasData['employmentDurationMonth'] = (int) $universitasData['employmentDurationMonth'];

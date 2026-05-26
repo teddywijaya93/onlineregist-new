@@ -69,25 +69,26 @@ class Verifikasi_KTPController extends Controller
 
             if ($validator->fails()) {
                 $errorMsg = $validator->errors()->first();
-
-                $this->sendOcrResult(false, "[VALIDATION] ".$errorMsg, []);
+                $this->sendOcrResult(false, "[VALIDATION] " . $errorMsg, []);
 
                 return back()->with('error', $errorMsg);
             }
 
             $file = $request->file('ktp_image');
             if (!$file->isValid()) {
-                $this->sendOcrResult(false, "[FILE INVALID] File upload tidak valid", []);
+                $errorMsg = 'File upload tidak valid';
+                $this->sendOcrResult(false, "[FILE INVALID] " . $errorMsg, []);
 
-                return back()->with('error', 'File upload tidak valid');
+                return back()->with('error', $errorMsg);
             }
 
             // 3. CONVERT KE BASE64 (CLEAN)
             $binary = file_get_contents($file->getRealPath());
             if ($binary === false) {
-                $this->sendOcrResult(false, "[READ ERROR] Gagal membaca file", []);
+                $errorMsg = 'Gagal membaca file upload';
+                $this->sendOcrResult(false, "[READ FILE ERROR] " . $errorMsg, []);
 
-                return back()->with('error', 'Gagal membaca file');
+                return back()->with('error', $errorMsg);
             }
             $imageBase64 = base64_encode($binary);
             $imageBase64 = trim($imageBase64);
@@ -109,7 +110,10 @@ class Verifikasi_KTPController extends Controller
             ]);
 
             if ($auth->failed()) {
-                return back()->with('error', 'Auth Tilaka Gagal!');
+                $errorMsg = $auth->json('message') ?? 'Auth Tilaka gagal';
+                $this->sendOcrResult(false, "[AUTH FAILED] " . $errorMsg, $auth->json() ?? []);
+
+                return back()->with('error', $errorMsg);
             }
             $accessToken = $auth->json('access_token');
 
@@ -121,7 +125,8 @@ class Verifikasi_KTPController extends Controller
             ->connectTimeout(config('api.connect_timeout'))
             ->retry(
                 config('api.retry'),
-                config('api.retry_sleep')
+                config('api.retry_sleep'),
+                throw: false
             )
             ->post(config('api.antiForgery'),
             [
@@ -139,9 +144,17 @@ class Verifikasi_KTPController extends Controller
             $referenceId   = $ocrResult['data']['reference_id'] ?? "";
 
             if ($ocr->failed()) {
-                $this->sendOcrResult(false, "[OCR HTTP ERROR {$statusCode}] " . $message, $ocrResult);
+                // HANDLE FORGERY
+                if (($ocrResult['data']['forgeries'] ?? false) === true) {
+                    $errorMsg = 'Foto terindikasi manipulasi / forgery';
+                } else {
+                    $errorMsg = $ocrResult['message']
+                        ?? $ocrResult['error']
+                        ?? 'OCR gagal diproses';
+                }
+                $this->sendOcrResult(false, "[OCR HTTP ERROR {$statusCode}] " . $errorMsg, $ocrResult);
 
-                return back()->with('error', 'Foto KTP Tidak Valid, Terindikasi Manipulasi');
+                return back()->with('error', $errorMsg);
             }
 
             // SEND KE OTP RESULT
@@ -149,6 +162,8 @@ class Verifikasi_KTPController extends Controller
 
             // HANDLE OCR FAIL
             if (!$tilakaSuccess) {
+                $this->sendOcrResult(false, "[OCR FAILED] " . $errorMsg, $ocrResult );
+
                 return back()->with('error', $message);
             }
 
@@ -239,7 +254,10 @@ class Verifikasi_KTPController extends Controller
             );
 
         } catch (\Throwable $e) {
-            return back()->with('error', $e->getMessage());
+            $errorMsg = $e->getMessage();
+            $this->sendOcrResult(false,"[EXCEPTION] " . $errorMsg, []);
+
+            return back()->with('error', $errorMsg);
         }
     }
 }

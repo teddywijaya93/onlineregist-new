@@ -169,4 +169,13 @@ function initKelurahanSearch() {
         kecamatanId: "residenceKecamatan",
         postalId: "residencePostalCode"
     });
+
+    // Domisili
+    bindDropdown({
+        inputId: "officeKelurahan",
+        dropdownId: "officeKelurahanDropdown",
+        cityId: "officeCity",
+        kecamatanId: "officeKecamatan",
+        postalId: "officePostalCode"
+    });
 }

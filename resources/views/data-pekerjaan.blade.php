@@ -38,12 +38,27 @@
                 </div>
             </div>
             <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Alamat Perusahaan</label>
+                <label class="form-label text-white text-form-global mb-2">Alamat Perusahaan/Tempat Bekerja</label>
                 <textarea rows="3" name="officeAddress" id="officeAddress" class="form-control form-global" placeholder="Tulis Alamat Perusahaan">{{ old('officeAddress', $employmentData['officeAddress'] ?? '') }}</textarea>
             </div>
             <div class="form-group mb-4">
-                <label class="form-label text-white text-form-global mb-2">Telepon Kantor</label>
-                <input type="text" name="officeTelephone" id="officeTelephone" value="{{ old('officeTelephone', $employmentData['officeTelephone'] ?? '') }}" class="form-control form-global" minlength="13" placeholder="Tulis Telepon Kantor">
+                <label class="form-label text-white text-form-global mb-2">Kelurahan Perusahaan/Tempat Bekerja</label>
+                <input type="hidden" name="officeCity" id="officeCity" class="form-control form-global" readonly>
+                <input type="hidden" name="officeKecamatan" id="officeKecamatan" class="form-control form-global" readonly>
+                <div class="custom-select-wrapper">
+                    <div class="select-wrapper">
+                        <input type="text" name="officeKelurahan" id="officeKelurahan" class="form-control form-global" value="{{ old('officeKelurahan', $employmentData['officeKelurahan'] ?? '') }}" placeholder="Pilih Kelurahan Perusahaan">
+                        <div id="officeKelurahanDropdown" class="dropdown-list"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group mb-4">  
+                <label class="form-label text-white text-form-global mb-2">Kode Pos Perusahaan/Tempat Bekerja</label>
+                <input type="text" name="officePostalCode" id="officePostalCode" class="form-control form-global" value="{{ old('officePostalCode', $employmentData['officePostalCode'] ?? '') }}" placeholder="Kode Pos Perusahaan" readonly>
+            </div>
+            <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Telepon Perusahaan/Tempat Bekerja</label>
+                <input type="text" name="officeTelephone" id="officeTelephone" value="{{ old('officeTelephone', $employmentData['officeTelephone'] ?? '') }}" class="form-control form-global" minlength="13" placeholder="Tulis Telepon Perusahaan">
             </div>
             <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Lama Berkerja</label>
@@ -73,9 +88,11 @@
 window.routes = {
     employment         : "{{ route('master.employment') }}",
     position           : "{{ route('master.position') }}",
-    businessline       : "{{ route('master.businessline') }}"
+    businessline       : "{{ route('master.businessline') }}",
+    kelurahan          : "{{ route('master.all.kelurahan') }}"
 };
 </script>
 <script src="{{ asset('js/pekerjaan.js') }}"></script>
+<script src="{{ asset('js/kelurahanAjax.js') }}"></script>
 
 @endsection

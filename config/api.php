@@ -25,7 +25,7 @@ return [
     'createAccountType'         => $baseUrl . '/registration/createAccountType',
     'saveRegistration'          => $baseUrl . '/registration/saveRegistration',
     'getRegistration'           => $baseUrl . '/registration/getRegistration',
-    'ocrResult'                 => $baseUrl . '/registration/otpResult',
+    'ocrResult'                 => $baseUrl . '/registration/ocrResult',
     'uploadAttachment'          => $baseUrl . '/registration/uploadAttachment',
 
     // HIT Endpoint Tilaka

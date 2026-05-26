@@ -25,6 +25,21 @@
                 <textarea rows="3" name="officeAddress" id="officeAddress" class="form-control form-global" placeholder="Masukan Alamat Universitas">{{ old('officeAddress', $universitasData['officeAddress'] ?? '') }}</textarea>
             </div>
             <div class="form-group mb-4">
+                <label class="form-label text-white text-form-global mb-2">Kelurahan Universitas</label>
+                <input type="hidden" name="officeCity" id="officeCity" class="form-control form-global" readonly>
+                <input type="hidden" name="officeKecamatan" id="officeKecamatan" class="form-control form-global" readonly>
+                <div class="custom-select-wrapper">
+                    <div class="select-wrapper">
+                        <input type="text" name="officeKelurahan" id="officeKelurahan" class="form-control form-global" value="{{ old('officeKelurahan', $universitasData['officeKelurahan'] ?? '') }}" placeholder="Pilih Kelurahan Universitas">
+                        <div id="officeKelurahanDropdown" class="dropdown-list"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group mb-4">  
+                <label class="form-label text-white text-form-global mb-2">Kode Pos Universitas</label>
+                <input type="text" name="officePostalCode" id="officePostalCode" class="form-control form-global" value="{{ old('officePostalCode', $universitasData['officePostalCode'] ?? '') }}" placeholder="Kode Pos Universitas" readonly>
+            </div>
+            <div class="form-group mb-4">
                 <label class="form-label text-white text-form-global mb-2">Lama Kuliah</label>
                 <div class="row">
                     <div class="col-12 col-lg-6 mb-3 mb-lg-0">
@@ -48,6 +63,12 @@
     </div>
 </section>
 
+<script>
+window.routes = {
+    kelurahan   : "{{ route('master.all.kelurahan') }}"
+};
+</script>
 <script src="{{ asset('js/university.js') }}"></script>
+<script src="{{ asset('js/kelurahanAjax.js') }}"></script>
 
 @endsection
