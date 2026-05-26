@@ -1,6 +1,6 @@
-document.getElementById('genderSelect')?.addEventListener('change', function () {
-    restrictMaritalByGender();
-});
+// document.getElementById('genderSelect')?.addEventListener('change', function () {
+//     restrictMaritalByGender();
+// });
 
 document.addEventListener("DOMContentLoaded", async () => {
     await initSelects();
@@ -80,11 +80,10 @@ function initSameAddress() {
             const target = document.getElementById(dest);
             if (!source || !target) return;
             if (this.checked) {
-                cache[dest] = target.value;
                 target.value = source.value;
                 target.readOnly = true;
             } else {
-                target.value = cache[dest] || '';
+                target.value = '';
                 target.readOnly = false;
             }
         });

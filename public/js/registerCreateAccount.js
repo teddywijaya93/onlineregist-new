@@ -26,6 +26,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const emailInput = document.getElementById("email");
 
     if (btnNext && emailInput) {
+        emailInput.addEventListener("keypress", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                btnNext.click();
+            }
+        });
+
         btnNext.addEventListener("click", async function () {
             const email = emailInput.value.trim();
             if (!email) {
