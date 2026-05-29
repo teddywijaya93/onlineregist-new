@@ -1,6 +1,6 @@
 <?php
 
-$baseUrl = env('API_BASE_URL_DEV');
+$baseUrl = env('API_BASE_URL');
 return [
     'timeout'                   => env('API_TIMEOUT'),
     'connect_timeout'           => env('API_CONNECT_TIMEOUT'),
