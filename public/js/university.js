@@ -56,6 +56,7 @@ function initValidation() {
 
         isValid &= validateRequired("employer", "Nama Universitas Wajib Diisi");
         isValid &= validateRequired("officeAddress", "Alamat Universitas Wajib Diisi");
+        isValid &= validateRequired("officeKelurahan", "Kelurahan Universitas Wajib Diisi");
         isValid &= validateRequired("employmentDurationYear", "Tahun Wajib Diisi");
         isValid &= validateRequired("employmentDurationMonth", "Bulan Wajib Diisi");
 
@@ -81,6 +82,7 @@ function initValidation() {
     const fields = [
         "employer",
         "officeAddress",
+        "officeKecamatan",
         "employmentDurationYear",
         "employmentDurationMonth",
     ];

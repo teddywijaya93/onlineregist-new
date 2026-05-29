@@ -175,6 +175,7 @@ function initValidation() {
         isValid &= validateRequired("businesslineSelect", "Bidang Usaha Wajib Diisi");
         isValid &= validateRequired("positionSelect", "Jabatan Wajib Diisi");
         isValid &= validateRequired("officeAddress", "Alamat Perusahaan Wajib Diisi");
+        isValid &= validateRequired("officeKelurahan", "Kelurahan Perusahaan Wajib Diisi");
         isValid &= validateRequired("officeTelephone", "Telepon Kantor Wajib Diisi");
         isValid &= validateRequired("employmentDurationYear", "Tahun Bekerja Wajib Diisi");
         isValid &= validateRequired("employmentDurationMonth", "Bulan Bekerja Wajib Diisi");
@@ -212,6 +213,7 @@ function initValidation() {
         "businessLine",
         "employmentPosition",
         "officeAddress",
+        "officeKecamatan",
         "officeTelephone",
         "employmentDurationYear",
         "employmentDurationMonth",

@@ -244,23 +244,29 @@ class CreateAccountController extends Controller
             'gender'                => 'required|string',
             'maritalStatus'         => 'required|string',
             'address'               => 'required|string|max:225',
+            'city'                  => 'string',
+            'kecamatan'             => 'string',
             'kelurahan'             => 'required|string',
             'postalCode'            => 'required|string',
             'residenceAddress'      => 'required|string|max:225',
+            'residenceCity'         => 'string',
+            'residenceKecamatan'    => 'string',
             'residenceKelurahan'    => 'required|string',
             'residencePostalCode'   => 'required|string',
             'motherMaidenName'      => 'required|string',
         ]);
-        $personalData['city'] = $request->city ?? '';
-        $personalData['residenceCity'] = $request->residenceCity ?? $personalData['city'];
-        $personalData['kecamatan'] = $request->kecamatan ?? '';
-        $personalData['residenceKecamatan'] = $request->residenceKecamatan ?? '';
+        // $personalData['city'] = $request->city ?? '';
+        // $personalData['residenceCity'] = $request->residenceCity ?? $personalData['city'];
+        // $personalData['kecamatan'] = $request->kecamatan ?? '';
+        // $personalData['residenceKecamatan'] = $request->residenceKecamatan ?? '';
 
         $currentStep = session('registrationStep');
         $userDashboard = session('from_dashboard', false);
 
         $userUpdates = $userDashboard && $currentStep !== 'personalInformation';
-        $processType = 'UPDATE';
+        $processType = $currentStep === 'personalInformation'
+            ? 'CREATE'
+            : 'UPDATE';
 
         $payload = [
             "registrationId" => session('registrationId'),

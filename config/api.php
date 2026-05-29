@@ -26,6 +26,7 @@ return [
     'saveRegistration'          => $baseUrl . '/registration/saveRegistration',
     'getRegistration'           => $baseUrl . '/registration/getRegistration',
     'ocrResult'                 => $baseUrl . '/registration/ocrResult',
+    'getOcrResult'              => $baseUrl . '/registration/getOcrResult',
     'uploadAttachment'          => $baseUrl . '/registration/uploadAttachment',
 
     // HIT Endpoint Tilaka

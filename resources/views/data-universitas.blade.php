@@ -30,7 +30,7 @@
                 <input type="hidden" name="officeKecamatan" id="officeKecamatan" class="form-control form-global" readonly>
                 <div class="custom-select-wrapper">
                     <div class="select-wrapper">
-                        <input type="text" name="officeKelurahan" id="officeKelurahan" class="form-control form-global" value="{{ old('officeKelurahan', $universitasData['officeKelurahan'] ?? '') }}" placeholder="Pilih Kelurahan Universitas">
+                        <input type="text" name="officeKelurahan" id="officeKelurahan" class="form-control form-global" value="{{ old('officeKelurahan', $universitasData['officeKelurahan'] ?? '') }}" placeholder="Tulis Kelurahan Universitas">
                         <div id="officeKelurahanDropdown" class="dropdown-list"></div>
                     </div>
                 </div>
